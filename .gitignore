@@ -1,0 +1,40 @@
+# dependencies
+node_modules/
+.npm-cache/
+
+# builds
+dist/
+build/
+.next/
+out/
+.turbo/
+*.tsbuildinfo
+coverage/
+
+# expo / react native
+.expo/
+web-build/
+android/
+ios/
+*.jks
+*.keystore
+*.p8
+*.p12
+*.mobileprovision
+
+# supabase
+supabase/.temp/
+supabase/.branches/
+
+# env and secrets
+.env
+.env.*
+!.env.example
+
+# os / editors
+.DS_Store
+Thumbs.db
+*.log
+.vscode/*
+!.vscode/extensions.json
+.idea/
