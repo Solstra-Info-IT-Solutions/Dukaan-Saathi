@@ -29,8 +29,8 @@ jobs:
         run: npm run lint
       - name: Unit tests
         run: npm test
-      - name: Money fixtures in SQL are up to date
-        run: npm run db:fixtures && git diff --exit-code supabase/tests/database/002_money_fixtures.test.sql
+      - name: Generated SQL tests (money fixtures, contract checks) are up to date
+        run: npm run db:fixtures && git diff --exit-code supabase/tests/database/
       - name: Database pre-check (PGlite)
         run: npm run db:check:local
       - name: Admin production build

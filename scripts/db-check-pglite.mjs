@@ -20,7 +20,8 @@ create role service_role nologin bypassrls;
 grant anon, authenticated, service_role to postgres;
 create schema auth;
 create schema extensions;
-create table auth.users (id uuid primary key, email text, aud text, role text);
+create table auth.users (id uuid primary key, email text, phone text, email_confirmed_at timestamptz,
+  phone_confirmed_at timestamptz, aud text, role text);
 create function auth.jwt() returns jsonb language sql stable as $$
   select coalesce(nullif(current_setting('request.jwt.claims', true), ''), '{}')::jsonb $$;
 create function auth.uid() returns uuid language sql stable as $$
@@ -59,6 +60,10 @@ begin
   end;
   return tap._record(false, $4, 'no exception raised');
 end $$;
+create function tap.results_eq(text, text, text default null) returns text language plpgsql as $$
+declare v_diff int; begin
+  execute format('select count(*) from ((select * from (%1$s) a except all select * from (%2$s) b) union all (select * from (%2$s) c except all select * from (%1$s) d)) x', $1, $2) into v_diff;
+  return tap._record(v_diff = 0, $3, v_diff || ' differing rows'); end $$;
 grant execute on all functions in schema tap to public;
 alter role postgres set search_path = public, tap, extensions;
 `;
@@ -111,7 +116,11 @@ for (const t of sqlFiles('supabase/tests/database', '.test.sql')) {
   );
   for (const r of bad) console.log(`   not ok: ${r.description} — ${r.detail}`);
   // Reset fixtures inserted by the test (it committed instead of rolling back).
-  await db.exec('delete from public.platform_admins; delete from auth.users;');
+  await db.exec('truncate auth.users cascade; truncate audit.events; truncate private.idempotency_keys;');
+  // Each real pgTAP file runs in its own rolled-back transaction; emulate by dropping its temp objects.
+  await db.exec(`do $$ declare f regprocedure; begin
+    for f in select p.oid::regprocedure from pg_proc p where p.pronamespace = pg_my_temp_schema() loop
+      execute 'drop function ' || f; end loop; end $$; discard temp;`);
 }
 
 console.log(`\n${total - failed}/${total} assertions passed`);
