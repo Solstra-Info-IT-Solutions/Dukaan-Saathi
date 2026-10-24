@@ -12,3 +12,4 @@ apps/mobile/AGENTS.md
 supabase/tests/database/002_money_fixtures.test.sql
 *.sql
 .claude
+next-env.d.ts
