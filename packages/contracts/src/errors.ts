@@ -34,7 +34,15 @@ export const SERVER_ERROR_CODES = [
   'DS_INTERNAL',
 ] as const;
 
-export const CLIENT_ERROR_CODES = ['NETWORK_OFFLINE', 'NETWORK_TIMEOUT', 'UNKNOWN'] as const;
+export const CLIENT_ERROR_CODES = [
+  'NETWORK_OFFLINE',
+  'NETWORK_TIMEOUT',
+  // Supabase Auth failures (not raised by our SQL)
+  'AUTH_OTP_INVALID',
+  'AUTH_PROVIDER_UNAVAILABLE',
+  'BACKEND_NOT_CONFIGURED',
+  'UNKNOWN',
+] as const;
 
 export type ServerErrorCode = (typeof SERVER_ERROR_CODES)[number];
 export type ClientErrorCode = (typeof CLIENT_ERROR_CODES)[number];

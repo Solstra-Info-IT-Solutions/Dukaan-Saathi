@@ -5,7 +5,10 @@
   "common": {
     "retry": "Try again",
     "loading": "Loading…",
-    "offline": "You are offline"
+    "offline": "You are offline",
+    "back": "Back",
+    "cancel": "Cancel",
+    "confirm": "Confirm"
   },
   "diagnostics": {
     "title": "App status",
@@ -60,6 +63,153 @@
     "DS_INTERNAL": "Something went wrong on our side. Please try again.",
     "NETWORK_OFFLINE": "No internet connection.",
     "NETWORK_TIMEOUT": "The server took too long to respond.",
-    "UNKNOWN": "Something went wrong. Please try again."
+    "UNKNOWN": "Something went wrong. Please try again.",
+    "AUTH_OTP_INVALID": "That code is wrong or has expired.",
+    "AUTH_PROVIDER_UNAVAILABLE": "Sign-in by this method is not available right now.",
+    "BACKEND_NOT_CONFIGURED": "The app is not connected to a server yet."
+  },
+  "tabs": {
+    "home": "Shop",
+    "more": "More"
+  },
+  "auth": {
+    "login": {
+      "subtitle": "Sign in to your shop",
+      "phone": "Phone",
+      "email": "Email",
+      "phoneLabel": "Mobile number",
+      "emailLabel": "Email address",
+      "sendCode": "Send code"
+    },
+    "otp": {
+      "title": "Enter the code",
+      "sentTo": "We sent a code to {{destination}}",
+      "codeLabel": "Code",
+      "verify": "Verify",
+      "resend": "Send code again",
+      "resendIn": "Send again in {{seconds}} s",
+      "change": "Change number / email"
+    },
+    "errors": {
+      "invalid_phone": "Enter a 10-digit Indian mobile number.",
+      "invalid_email": "Enter a valid email address.",
+      "invalid_code": "Enter the 6-digit code."
+    }
+  },
+  "roles": {
+    "owner": "Owner",
+    "manager": "Manager",
+    "cashier": "Cashier"
+  },
+  "shops": {
+    "select": {
+      "welcome": "Welcome!",
+      "title": "Your shops",
+      "invitations": "Invitations",
+      "join": "Join",
+      "suspended": "Suspended",
+      "create": "Create a new shop",
+      "staffHint": "Work in someone else’s shop? Ask the owner to invite your number, then sign in again."
+    },
+    "create": {
+      "title": "Create your shop",
+      "name": "Shop name",
+      "category": "Type of shop",
+      "city": "City (optional)",
+      "submit": "Create shop",
+      "errors": {
+        "NAME_LENGTH": "Name must be 2 to 80 characters.",
+        "CITY_LENGTH": "City is too long."
+      }
+    },
+    "categories": {
+      "kirana": "Kirana",
+      "general": "General store",
+      "medical": "Medical",
+      "hardware": "Hardware",
+      "stationery": "Stationery",
+      "cosmetics": "Cosmetics",
+      "other": "Other"
+    },
+    "home": {
+      "role": "Your role",
+      "device": "This phone’s bill series",
+      "plan": "Plan",
+      "trialDays_one": "Free trial · {{count}} day left",
+      "trialDays_other": "Free trial · {{count}} days left",
+      "planStatus": {
+        "trialing": "Free trial",
+        "active": "Active",
+        "past_due": "Payment due",
+        "grace": "Grace period",
+        "expired": "Free plan",
+        "cancelled": "Cancelled"
+      },
+      "billingSoonTitle": "Billing is coming next",
+      "billingSoonBody": "Quick billing arrives in the next release. Your shop, staff and settings are ready."
+    }
+  },
+  "settings": {
+    "title": "Shop settings",
+    "invoicePrefix": "Bill number prefix",
+    "invoicePrefixHelp": "1–6 letters or digits, e.g. SK",
+    "upiVpa": "UPI ID for QR payments",
+    "paymentMethods": "Payment methods",
+    "roundOff": "Round bills to the nearest rupee",
+    "roundOffHelp": "₹52.16 becomes ₹52",
+    "cashierDiscount": "Cashier max discount",
+    "managerDiscount": "Manager max discount",
+    "save": "Save",
+    "saved": "Saved",
+    "errors": {
+      "INVALID_PREFIX": "Use 1–6 capital letters or digits.",
+      "INVALID_VPA": "Enter a UPI ID like name@bank.",
+      "AT_LEAST_ONE": "Keep at least one payment method.",
+      "DISCOUNT_RANGE": "Discount must be between 0 and 100%.",
+      "GSTIN_REQUIRED": "GSTIN is required for GST billing.",
+      "INVALID_GSTIN": "Enter a valid 15-character GSTIN."
+    }
+  },
+  "payments": {
+    "cash": "Cash",
+    "upi": "UPI",
+    "card": "Card",
+    "other": "Other",
+    "udhaar": "Udhaar"
+  },
+  "staff": {
+    "title": "Staff",
+    "invite": {
+      "title": "Invite staff",
+      "contact": "Mobile number or email",
+      "send": "Send invite",
+      "help": "They join by signing in with this number or email."
+    },
+    "members": "Members",
+    "pending": "Pending invitations",
+    "devices": "Phones",
+    "device": "Phone",
+    "you": "you",
+    "unnamed": "No name yet",
+    "deactivated": "removed",
+    "revoked": "removed",
+    "makeManager": "Make manager",
+    "makeCashier": "Make cashier",
+    "deactivate": "Remove",
+    "revoke": "Remove",
+    "confirm": {
+      "title": "Are you sure?",
+      "deactivate": "{{name}} will lose access to this shop immediately.",
+      "revokeDevice": "Phone {{code}} will no longer be able to bill for this shop."
+    },
+    "errors": {
+      "invalid_contact": "Enter a 10-digit mobile number or an email address."
+    }
+  },
+  "more": {
+    "settings": "Shop settings",
+    "staff": "Staff and phones",
+    "switchShop": "Switch shop",
+    "signOut": "Sign out"
   }
 }

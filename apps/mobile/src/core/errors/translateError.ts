@@ -37,6 +37,22 @@ export function translateError(error: unknown): AppError {
     return new AppError(message, { details: parseDetails(e.details), cause: error });
   }
 
+  // Supabase Auth (GoTrue) error codes
+  switch (code) {
+    case 'otp_expired':
+    case 'invalid_credentials':
+      return new AppError('AUTH_OTP_INVALID', { cause: error });
+    case 'phone_provider_disabled':
+    case 'email_provider_disabled':
+    case 'sms_send_failed':
+    case 'otp_disabled':
+      return new AppError('AUTH_PROVIDER_UNAVAILABLE', { cause: error });
+    case 'over_request_rate_limit':
+    case 'over_sms_send_rate_limit':
+    case 'over_email_send_rate_limit':
+      return new AppError('DS_RATE_LIMITED', { cause: error });
+  }
+
   switch (code) {
     case '42501':
       return new AppError('DS_PERMISSION_DENIED', { cause: error });

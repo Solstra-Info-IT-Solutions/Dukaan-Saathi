@@ -1,13 +1,10 @@
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { useDependencies } from '@/bootstrap/DependenciesProvider';
-import { DiagnosticsScreen } from '@/features/diagnostics';
+import { Redirect } from 'expo-router';
+import { useSessionStore } from '@/core/session/sessionStore';
 
-// Phase 01 entry: the diagnostics screen. Phase 02 replaces this with the session redirect.
+// Anchor route: sends the user to the group their session allows.
 export default function IndexRoute() {
-  const { diagnostics } = useDependencies();
-  return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <DiagnosticsScreen deps={diagnostics} />
-    </SafeAreaView>
-  );
+  const authStatus = useSessionStore((s) => s.authStatus);
+  const hasShop = useSessionStore((s) => s.activeShop !== null);
+  if (authStatus !== 'signedIn') return <Redirect href="/login" />;
+  return <Redirect href={hasShop ? '/home' : '/select-shop'} />;
 }
