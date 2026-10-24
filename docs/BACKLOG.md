@@ -31,10 +31,19 @@ Phase order may shift for dependencies; nothing is removed without a note in PRO
 | BL-110 | Dependency compatibility verification record (`docs/phases/PHASE_01…` appendix) | ✅ |
 
 ## Phase 02 — Auth, tenancy, shop setup
-BL-201 Phone/email OTP login · BL-202 profiles trigger · BL-203 shops/settings/members/invitations/devices tables + RLS ·
-BL-204 `role_permissions` seed · BL-205 RPCs per feature spec · BL-206 entitlement/plan seed + basic resolution + trial on shop creation ·
-BL-207 client config basic + min version gate · BL-208 audit foundation · BL-209 mobile screens (login, OTP, create/select shop, language, staff, settings) ·
-BL-210 security tests S-01, S-02, S-03, S-07, S-10 · BL-211 module registry + route guards.
+| ID | Item | Status |
+|---|---|---|
+| BL-201 | Phone/email OTP login | ✅ (live login needs Supabase Auth config — see PHASE_02 report) |
+| BL-202 | profiles trigger | ✅ |
+| BL-203 | shops/settings/members/invitations/devices tables + RLS | ✅ |
+| BL-204 | `role_permissions` seed (checked against contracts) | ✅ |
+| BL-205 | RPCs per feature spec | ✅ |
+| BL-206 | entitlement/plan seed + basic resolution + trial on shop creation | ✅ |
+| BL-207 | client config basic + min version gate | 🟨 RPC done; app-side version gate screen moves to Phase 12 |
+| BL-208 | audit foundation | ✅ |
+| BL-209 | mobile screens (login, OTP, create/select shop, staff, settings, home, more) | ✅ (language picker on profile → Phase 03) |
+| BL-210 | security tests S-01, S-02, S-03, S-05, S-07, S-08, S-10 | ✅ |
+| BL-211 | module registry + route guards | ✅ |
 
 ## Phase 03 — Catalogue & import
 BL-301 categories/products/barcodes/aliases/price history + RLS + triggers · BL-302 units/tax rates seed · BL-303 `search_products` (trigram, Hindi) ·

@@ -30,6 +30,11 @@ input; each has a recommended default that the plan assumes until you say otherw
 | ADR-022 | ESLint pinned to 9.x | `eslint-plugin-import` and `eslint-plugin-react` (used by `eslint-config-expo` 58) do not support ESLint 10 yet; npm marks 9.x deprecated — revisit when the Expo config supports 10 | 2026-10-24 |
 | ADR-023 | Supabase `auto_expose_new_tables = false` | Every table needs an explicit grant, matching SECURITY_MODEL.md §4 | 2026-10-24 |
 | ADR-024 | `scripts/db-check-pglite.mjs` runs migrations and DB tests in PGlite with Supabase stubs as a local pre-check | No Docker on the dev machine (OD-13); the real pgTAP run is the CI `database` job | 2026-10-24 |
+| ADR-025 | RLS policy helpers live in a separate non-exposed schema `rls` (usage + execute for `authenticated` only); `private` stays closed to clients | Policies run as the querying role, so their helpers must be executable by it; keeping them apart from privileged helpers keeps the "nothing in private is client-executable" check simple | 2026-10-24 |
+| ADR-026 | Invitations match by verified phone **or** verified email | Lets development and shops without SMS work with email OTP; matching uses `auth.users` confirmed contacts only | 2026-10-24 |
+| ADR-027 | `staff_accounts.max` counts active non-owner members plus pending invitations | Prevents bypassing the limit by sending many invitations | 2026-10-24 |
+| ADR-028 | Migrations applied to hosted projects through the Supabase MCP are renamed locally to the version the server recorded | Keeps `supabase db push` / CI in sync with what is deployed | 2026-10-24 |
+| ADR-029 | ViewModels never navigate; screens receive callbacks (`onActivated`, `onCodeSent`) and route files decide where to go | Keeps ViewModels router-free and testable (MVVM_ARCHITECTURE.md §3) | 2026-10-24 |
 | ADR-017 | Voice parsing is deterministic (grammar + fuzzy match) in v1; LLM parsing is an optional, flag-gated later addition | Predictable, offline-capable, no per-request cost, no customer data leaving device. | 2026-10-24 |
 
 ## Open decisions (recommended defaults assumed)
@@ -37,7 +42,7 @@ input; each has a recommended default that the plan assumes until you say otherw
 | ID | Question | Recommended default | Impact if changed |
 |---|---|---|---|
 | OD-01 | ~~Run `git init` in `D:\Dukaan Saathi` and create a new GitHub repo?~~ **Resolved 2026-10-24:** repo `https://github.com/Solstra-Info-IT-Solutions/Dukaan-Saathi.git`, branch `main`; commit and push after every step | — | — |
-| OD-02 | SMS OTP provider for Supabase phone auth (India needs DLT-registered sender/template) | MSG91 or Twilio Verify via Supabase SMS hook; use Supabase test OTP numbers until DLT is done | Login in production blocked until configured |
+| OD-02 | SMS OTP provider for Supabase phone auth (India needs DLT-registered sender/template) | MSG91 or Twilio Verify via Supabase SMS hook; until then use **email OTP** (template must include `{{ .Token }}`) on the dev project | Phone login blocked until configured |
 | OD-03 | Shop roles fixed (owner/manager/cashier) or custom per shop? | Fixed three roles in v1, permissions stored in `role_permissions` so they can be tuned centrally | Custom roles = more UI and test surface |
 | OD-04 | GST scope in v1 | Support unregistered (no tax) and registered-regular (tax-inclusive, CGST/SGST split on receipt, HSN optional). Composition scheme = "bill of supply" receipt. No e-invoicing | More tax features = more compliance testing |
 | OD-05 | How shops pay the subscription. Google Play policy may require Play Billing for in-app digital subscriptions; India alternative-billing rules apply | Sell outside the app (sales-assisted + payment link from a payment provider such as Razorpay; webhook to Edge Function). App shows plan status and "contact us", no in-app purchase button, until a policy/legal review is done | Play Billing integration is a separate workstream |

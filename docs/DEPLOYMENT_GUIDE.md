@@ -7,7 +7,9 @@ Nothing is deployed yet. This document is the target process; each step is verif
 | Item | Needed by | Status |
 |---|---|---|
 | Dedicated git repo + GitHub remote (ADR-001, OD-01) | Phase 01 | ❌ |
-| Supabase account; projects `dukaan-saathi-dev`, `-staging`, `-prod` in Mumbai region | Phase 01/02 | ❌ (a Supabase connector is available in this environment; project creation has cost implications → needs your approval) |
+| Supabase dev project `dukaan-saathi-dev` (ref `qrrhakcmkgmxiyhwyqwg`, ap-south-1, free tier) | Phase 02 | ✅ created 2026-10-24; migrations applied |
+| Supabase Auth on dev: email OTP template with `{{ .Token }}`; phone provider + test numbers | Phase 02 manual testing | ❌ dashboard settings (you) |
+| Supabase `-staging` and `-prod` projects | Phase 13/14 | ❌ |
 | Docker Desktop (local Supabase + pgTAP) | Phase 01 | ❌ not installed |
 | Supabase CLI (as dev dependency `supabase` via npx) | Phase 01 | ❌ |
 | Expo account + EAS CLI login | Phase 01 (builds from Phase 04) | ❌ |

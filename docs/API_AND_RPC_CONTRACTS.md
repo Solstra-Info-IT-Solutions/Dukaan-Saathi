@@ -74,11 +74,16 @@ Legend: Ph = phase; Idem = idempotent via client_operation_id.
 | `get_my_context()` | R | auth | 02 | authenticated | — | Profile, memberships, pending invitations |
 | `create_shop(p_input)` | R | shops | 02 | authenticated | yes | Creates shop, owner membership, settings, trial subscription, default categories |
 | `update_shop_settings(p_shop_id, p_patch)` | R | settings | 02 | `settings.manage` | — | Validates against settings schema version; audits |
-| `invite_shop_member(p_shop_id, p_phone, p_role)` | R | memberships | 02 | `staff.manage` | — | Quota `staff_accounts.max` |
-| `accept_shop_invitation(p_invitation_id)` | R | memberships | 02 | invited user (phone match) | — | |
+| `update_my_profile(p_patch)` | R | auth | 02 | authenticated | — | `displayName`, `preferredLanguage` only |
+| `get_shop_settings(p_shop_id)` | R | settings | 02 | member | — | Shop profile + settings, camelCase |
+| `update_shop_profile(p_shop_id, p_patch)` | R | settings | 02 | `settings.manage` | — | name, category, phone, address; audited |
+| `invite_shop_member(p_shop_id, p_role, p_phone?, p_email?)` | R | memberships | 02 | `staff.manage` | — | Quota `staff_accounts.max` (active non-owners + pending invites); re-inviting refreshes the pending row |
+| `accept_shop_invitation(p_invitation_id)` | R | memberships | 02 | invited user (verified phone or email match) | — | Not-yours and not-found both return `DS_NOT_FOUND` |
+| `revoke_shop_invitation(p_invitation_id)` | R | memberships | 02 | `staff.manage` | — | |
+| `list_shop_members(p_shop_id)` | R | memberships | 02 | member | — | Contacts and deactivated members only for `staff.manage` |
 | `update_member_role(p_shop_id, p_user_id, p_role)` | R | memberships | 02 | `staff.manage` | — | Cannot remove last owner |
 | `deactivate_member(p_shop_id, p_user_id)` | R | memberships | 02 | `staff.manage` | — | Revokes their devices |
-| `register_device(p_shop_id, p_label, p_platform, p_app_version)` | R | devices | 02 | member | — | Returns `device_id`, `device_code`, invoice series state |
+| `register_device(p_shop_id, p_installation_id, p_platform, p_label?, p_app_version?)` | R | devices | 02 | member | per installation | Returns `deviceId`, `deviceCode`, `invoicePrefix`, `fy`, `lastSeq`; quota `devices.max`; revoked installation → `DS_DEVICE_NOT_REGISTERED` |
 | `revoke_device(p_shop_id, p_device_id)` | R | devices | 02 | `staff.manage` | — | |
 | `categories` | T | catalogue | 03 | read: member; write: `product.manage` | — | Soft delete (`archived_at`) |
 | `products` | T | catalogue | 03 | read: member; write: `product.manage` | — | Trigger: quota `products.max`, price history, `updated_at` |
