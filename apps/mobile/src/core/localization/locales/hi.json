@@ -1,0 +1,65 @@
+{
+  "app": {
+    "name": "दुकान साथी"
+  },
+  "common": {
+    "retry": "फिर से कोशिश करें",
+    "loading": "लोड हो रहा है…",
+    "offline": "आप ऑफ़लाइन हैं"
+  },
+  "diagnostics": {
+    "title": "ऐप की स्थिति",
+    "subtitle": "बुनियादी जाँच — बिलिंग अगले चरणों में आएगी",
+    "version": "ऐप संस्करण",
+    "environment": "वातावरण",
+    "backend": "सर्वर",
+    "backendNotConfigured": "सेट नहीं है",
+    "backendReachable": "जुड़ा हुआ",
+    "backendUnreachable": "पहुँच नहीं पा रहे",
+    "network": "नेटवर्क",
+    "online": "ऑनलाइन",
+    "offline": "ऑफ़लाइन",
+    "config": "रिमोट सेटिंग्स",
+    "configBundled": "ऐप की डिफ़ॉल्ट सेटिंग्स",
+    "issues": "सेटिंग की समस्याएँ",
+    "moneySample": "रकम का प्रारूप",
+    "language": "भाषा",
+    "refresh": "फिर से जाँचें"
+  },
+  "language": {
+    "en": "English",
+    "hi": "हिन्दी"
+  },
+  "errors": {
+    "DS_AUTH_REQUIRED": "कृपया फिर से लॉग इन करें।",
+    "DS_MFA_REQUIRED": "दो-चरण सत्यापन ज़रूरी है।",
+    "DS_NOT_A_MEMBER": "आप इस दुकान के सदस्य नहीं हैं।",
+    "DS_PERMISSION_DENIED": "आपको यह करने की अनुमति नहीं है।",
+    "DS_SHOP_SUSPENDED": "यह दुकान निलंबित है। कृपया सहायता से संपर्क करें।",
+    "DS_ENTITLEMENT_REQUIRED": "आपके प्लान में यह सुविधा शामिल नहीं है।",
+    "DS_QUOTA_EXCEEDED": "आप अपने प्लान की सीमा तक पहुँच गए हैं।",
+    "DS_FEATURE_DISABLED": "यह सुविधा अभी उपलब्ध नहीं है।",
+    "DS_VALIDATION_FAILED": "कुछ जानकारी सही नहीं है। कृपया जाँच कर फिर से कोशिश करें।",
+    "DS_IDEMPOTENCY_CONFLICT": "यह काम पहले ही अलग जानकारी के साथ भेजा जा चुका है।",
+    "DS_TOTAL_MISMATCH": "दाम बदल गए हैं। कृपया बिल दोबारा देखें।",
+    "DS_PRODUCT_INACTIVE": "एक सामान अब उपलब्ध नहीं है।",
+    "DS_INSUFFICIENT_STOCK": "स्टॉक कम है।",
+    "DS_CUSTOMER_REQUIRED": "उधार के लिए ग्राहक चुनें।",
+    "DS_CREDIT_LIMIT_EXCEEDED": "इस ग्राहक की उधार सीमा पार हो जाएगी।",
+    "DS_DISCOUNT_LIMIT_EXCEEDED": "यह छूट आपकी सीमा से ज़्यादा है।",
+    "DS_PRICE_OVERRIDE_DENIED": "आप दाम नहीं बदल सकते।",
+    "DS_SALE_ALREADY_VOIDED": "यह बिल पहले ही रद्द है।",
+    "DS_VOID_WINDOW_EXPIRED": "यह बिल रद्द करने के लिए बहुत पुराना है।",
+    "DS_DEVICE_NOT_REGISTERED": "यह फ़ोन दुकान के लिए पंजीकृत नहीं है।",
+    "DS_INVOICE_SEQUENCE_CONFLICT": "बिल नंबर में टकराव। कृपया फ़ोन दोबारा पंजीकृत करें।",
+    "DS_APP_VERSION_UNSUPPORTED": "जारी रखने के लिए कृपया ऐप अपडेट करें।",
+    "DS_CONFIG_INVALID": "सेटिंग्स लोड नहीं हो सकीं।",
+    "DS_RATE_LIMITED": "बहुत ज़्यादा कोशिशें। कृपया थोड़ा रुकें।",
+    "DS_NOT_FOUND": "नहीं मिला।",
+    "DS_CONFLICT": "यह पहले से मौजूद है।",
+    "DS_INTERNAL": "हमारी तरफ़ से कुछ गड़बड़ हुई। कृपया फिर से कोशिश करें।",
+    "NETWORK_OFFLINE": "इंटरनेट कनेक्शन नहीं है।",
+    "NETWORK_TIMEOUT": "सर्वर ने जवाब देने में बहुत देर लगाई।",
+    "UNKNOWN": "कुछ गड़बड़ हुई। कृपया फिर से कोशिश करें।"
+  }
+}

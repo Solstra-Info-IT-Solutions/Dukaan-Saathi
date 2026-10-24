@@ -1,0 +1,65 @@
+{
+  "app": {
+    "name": "Dukaan Saathi"
+  },
+  "common": {
+    "retry": "Try again",
+    "loading": "Loading…",
+    "offline": "You are offline"
+  },
+  "diagnostics": {
+    "title": "App status",
+    "subtitle": "Foundation check — billing arrives in later phases",
+    "version": "App version",
+    "environment": "Environment",
+    "backend": "Server",
+    "backendNotConfigured": "Not configured",
+    "backendReachable": "Connected",
+    "backendUnreachable": "Not reachable",
+    "network": "Network",
+    "online": "Online",
+    "offline": "Offline",
+    "config": "Remote settings",
+    "configBundled": "Using built-in defaults",
+    "issues": "Configuration problems",
+    "moneySample": "Money format",
+    "language": "Language",
+    "refresh": "Check again"
+  },
+  "language": {
+    "en": "English",
+    "hi": "हिन्दी"
+  },
+  "errors": {
+    "DS_AUTH_REQUIRED": "Please sign in again.",
+    "DS_MFA_REQUIRED": "Two-step verification is required.",
+    "DS_NOT_A_MEMBER": "You are not a member of this shop.",
+    "DS_PERMISSION_DENIED": "You don't have permission to do this.",
+    "DS_SHOP_SUSPENDED": "This shop is suspended. Please contact support.",
+    "DS_ENTITLEMENT_REQUIRED": "Your plan doesn't include this feature.",
+    "DS_QUOTA_EXCEEDED": "You have reached your plan's limit.",
+    "DS_FEATURE_DISABLED": "This feature is temporarily unavailable.",
+    "DS_VALIDATION_FAILED": "Some details are not valid. Please check and try again.",
+    "DS_IDEMPOTENCY_CONFLICT": "This action was already submitted with different details.",
+    "DS_TOTAL_MISMATCH": "Prices have changed. Please review the bill.",
+    "DS_PRODUCT_INACTIVE": "An item is no longer available.",
+    "DS_INSUFFICIENT_STOCK": "Not enough stock.",
+    "DS_CUSTOMER_REQUIRED": "Choose a customer for udhaar.",
+    "DS_CREDIT_LIMIT_EXCEEDED": "This customer's credit limit would be exceeded.",
+    "DS_DISCOUNT_LIMIT_EXCEEDED": "This discount is above your limit.",
+    "DS_PRICE_OVERRIDE_DENIED": "You can't change the price.",
+    "DS_SALE_ALREADY_VOIDED": "This bill is already cancelled.",
+    "DS_VOID_WINDOW_EXPIRED": "This bill is too old to cancel.",
+    "DS_DEVICE_NOT_REGISTERED": "This phone is not registered for the shop.",
+    "DS_INVOICE_SEQUENCE_CONFLICT": "Bill number conflict. Please re-register this phone.",
+    "DS_APP_VERSION_UNSUPPORTED": "Please update the app to continue.",
+    "DS_CONFIG_INVALID": "Settings could not be loaded.",
+    "DS_RATE_LIMITED": "Too many attempts. Please wait a moment.",
+    "DS_NOT_FOUND": "Not found.",
+    "DS_CONFLICT": "This already exists.",
+    "DS_INTERNAL": "Something went wrong on our side. Please try again.",
+    "NETWORK_OFFLINE": "No internet connection.",
+    "NETWORK_TIMEOUT": "The server took too long to respond.",
+    "UNKNOWN": "Something went wrong. Please try again."
+  }
+}

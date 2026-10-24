@@ -1,15 +1,18 @@
 {
   "expo": {
-    "name": "mobile",
-    "slug": "mobile",
-    "version": "1.0.0",
+    "name": "Dukaan Saathi",
+    "slug": "dukaan-saathi",
+    "scheme": "dukaansaathi",
+    "version": "0.1.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
+    "userInterfaceStyle": "automatic",
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": false,
+      "bundleIdentifier": "in.dukaansaathi.app"
     },
     "android": {
+      "package": "in.dukaansaathi.app",
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
         "foregroundImage": "./assets/android-icon-foreground.png",
@@ -20,6 +23,10 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "plugins": ["expo-router", "expo-secure-store", "expo-localization"],
+    "experiments": {
+      "typedRoutes": true
     }
   }
 }

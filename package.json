@@ -19,6 +19,10 @@
     "db:test": "supabase test db",
     "db:types": "supabase gen types typescript --local > packages/contracts/src/database.types.ts"
   },
+  "overrides": {
+    "react": "19.3.0",
+    "react-dom": "19.3.0"
+  },
   "devDependencies": {
     "prettier": "3.9.10",
     "supabase": "2.122.0",
