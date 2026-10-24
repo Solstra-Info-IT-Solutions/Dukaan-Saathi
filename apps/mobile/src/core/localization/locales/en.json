@@ -70,7 +70,8 @@
   },
   "tabs": {
     "home": "Shop",
-    "more": "More"
+    "more": "More",
+    "items": "Items"
   },
   "auth": {
     "login": {
@@ -211,5 +212,106 @@
     "staff": "Staff and phones",
     "switchShop": "Switch shop",
     "signOut": "Sign out"
+  },
+  "catalogue": {
+    "search": "Search by name, Hindi name or barcode",
+    "categories": "Categories",
+    "import": "Import CSV",
+    "noResults": "No items match your search.",
+    "empty": "No items yet. Add your first item or import a list.",
+    "add": "Add item",
+    "newCategory": "New category",
+    "addCategory": "Add",
+    "noCategories": "No categories yet.",
+    "renameCategory": "Rename",
+    "archiveCategory": "Remove",
+    "archiveCategoryConfirm": "Items in this category stay, without a category.",
+    "form": {
+      "newTitle": "New item",
+      "editTitle": "Edit item",
+      "name": "Item name",
+      "nameHi": "Hindi name (optional)",
+      "price": "Selling price",
+      "mrp": "MRP (optional)",
+      "unit": "Sold by",
+      "category": "Category",
+      "tax": "GST rate",
+      "noTax": "No GST",
+      "barcodes": "Barcodes (comma separated)",
+      "aliases": "Other names, e.g. cheeni, shakkar",
+      "hsn": "HSN code (optional)",
+      "save": "Save item",
+      "archive": "Remove item",
+      "archiveConfirm": "The item disappears from search and billing. Past bills are not changed."
+    },
+    "errors": {
+      "NAME_REQUIRED": "Enter the item name.",
+      "NAME_TOO_LONG": "Name is too long.",
+      "PRICE_REQUIRED": "Enter the selling price.",
+      "INVALID_PRICE": "Enter a price like 45 or 45.50.",
+      "PRICE_TOO_HIGH": "Price is too high.",
+      "INVALID_HSN": "HSN is 4 to 8 digits.",
+      "INVALID_BARCODE": "Barcodes use letters and digits only.",
+      "CATEGORY_NAME": "Category name must be 1 to 80 characters."
+    }
+  },
+  "imports": {
+    "title": "Import items from CSV",
+    "intro": "Save your Excel sheet as CSV (File → Save As → CSV) and pick it here. You can check every row before anything is added.",
+    "columnsTitle": "Columns we understand",
+    "columnsHelp": "Name and Price are required. Hindi column names work too.",
+    "pick": "Choose CSV file",
+    "reading": "Checking your file…",
+    "committing": "Adding items…",
+    "fields": {
+      "name": "Name",
+      "nameHi": "Hindi name",
+      "category": "Category",
+      "unit": "Unit",
+      "price": "Price",
+      "mrp": "MRP",
+      "taxRate": "GST",
+      "hsn": "HSN",
+      "barcode": "Barcode"
+    },
+    "summary": {
+      "rows": "Rows in file",
+      "create": "New items",
+      "update": "Price updates",
+      "skipped": "Skipped",
+      "errors": "Need fixing"
+    },
+    "ignoredColumns": "Ignored columns: {{columns}}",
+    "fixTitle": "Fix or skip these rows",
+    "row": "Row {{number}}: {{name}}",
+    "skip": "Skip",
+    "saveRow": "Save",
+    "commit_one": "Add {{count}} item",
+    "commit_other": "Add {{count}} items",
+    "startOver": "Choose another file",
+    "done": {
+      "title": "Import complete",
+      "body": "{{created}} new items added, {{updated}} items updated.",
+      "back": "Back to items"
+    },
+    "errors": {
+      "EMPTY_FILE": "The file is empty.",
+      "FILE_TOO_LARGE": "The file is too large. Ask us for managed onboarding instead.",
+      "MISSING_COLUMNS": "Required columns are missing: {{columns}}.",
+      "NO_ROWS": "The file has a header but no items."
+    },
+    "rowErrors": {
+      "REQUIRED_NAME": "Name missing",
+      "TOO_LONG_NAME": "Name too long",
+      "REQUIRED_PRICE": "Price missing",
+      "INVALID_PRICE": "Price not a number",
+      "INVALID_MRP": "MRP not a number",
+      "UNKNOWN_UNIT": "Unknown unit",
+      "UNKNOWN_TAX_RATE": "Unknown GST rate",
+      "INVALID_HSN": "HSN must be 4–8 digits",
+      "INVALID_BARCODE": "Invalid barcode",
+      "BARCODE_TAKEN": "Barcode used by another item",
+      "DUPLICATE_IN_FILE": "Same item appears earlier in the file"
+    }
   }
 }

@@ -19,6 +19,15 @@ export default function ShopLayout() {
         }}
       />
       <Tabs.Screen
+        name="items"
+        options={{
+          title: t('tabs.items'),
+          tabBarIcon: ({ color, size }) => (
+            <MaterialCommunityIcons name="package-variant" color={color as string} size={size} />
+          ),
+        }}
+      />
+      <Tabs.Screen
         name="more"
         options={{
           title: t('tabs.more'),
@@ -29,6 +38,9 @@ export default function ShopLayout() {
       />
       <Tabs.Screen name="settings" options={{ href: null, title: t('settings.title') }} />
       <Tabs.Screen name="staff" options={{ href: null, title: t('staff.title') }} />
+      <Tabs.Screen name="product" options={{ href: null, title: t('catalogue.form.editTitle') }} />
+      <Tabs.Screen name="categories" options={{ href: null, title: t('catalogue.categories') }} />
+      <Tabs.Screen name="import" options={{ href: null, title: t('imports.title') }} />
     </Tabs>
   );
 }

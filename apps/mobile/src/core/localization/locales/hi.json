@@ -70,7 +70,8 @@
   },
   "tabs": {
     "home": "दुकान",
-    "more": "और"
+    "more": "और",
+    "items": "सामान"
   },
   "auth": {
     "login": {
@@ -211,5 +212,106 @@
     "staff": "स्टाफ़ और फ़ोन",
     "switchShop": "दुकान बदलें",
     "signOut": "लॉग आउट"
+  },
+  "catalogue": {
+    "search": "नाम, हिंदी नाम या बारकोड से खोजें",
+    "categories": "श्रेणियाँ",
+    "import": "CSV से जोड़ें",
+    "noResults": "कोई सामान नहीं मिला।",
+    "empty": "अभी कोई सामान नहीं है। पहला सामान जोड़ें या सूची इम्पोर्ट करें।",
+    "add": "सामान जोड़ें",
+    "newCategory": "नई श्रेणी",
+    "addCategory": "जोड़ें",
+    "noCategories": "अभी कोई श्रेणी नहीं है।",
+    "renameCategory": "नाम बदलें",
+    "archiveCategory": "हटाएँ",
+    "archiveCategoryConfirm": "इस श्रेणी का सामान बना रहेगा, बिना श्रेणी के।",
+    "form": {
+      "newTitle": "नया सामान",
+      "editTitle": "सामान बदलें",
+      "name": "सामान का नाम",
+      "nameHi": "हिंदी नाम (वैकल्पिक)",
+      "price": "बिक्री दाम",
+      "mrp": "MRP (वैकल्पिक)",
+      "unit": "किस हिसाब से बिकता है",
+      "category": "श्रेणी",
+      "tax": "GST दर",
+      "noTax": "GST नहीं",
+      "barcodes": "बारकोड (कॉमा से अलग)",
+      "aliases": "दूसरे नाम, जैसे चीनी, शक्कर",
+      "hsn": "HSN कोड (वैकल्पिक)",
+      "save": "सामान सेव करें",
+      "archive": "सामान हटाएँ",
+      "archiveConfirm": "सामान खोज और बिलिंग से हट जाएगा। पुराने बिल नहीं बदलेंगे।"
+    },
+    "errors": {
+      "NAME_REQUIRED": "सामान का नाम लिखें।",
+      "NAME_TOO_LONG": "नाम बहुत लंबा है।",
+      "PRICE_REQUIRED": "बिक्री दाम लिखें।",
+      "INVALID_PRICE": "दाम ऐसे लिखें: 45 या 45.50",
+      "PRICE_TOO_HIGH": "दाम बहुत ज़्यादा है।",
+      "INVALID_HSN": "HSN 4 से 8 अंकों का होता है।",
+      "INVALID_BARCODE": "बारकोड में सिर्फ़ अक्षर और अंक हों।",
+      "CATEGORY_NAME": "श्रेणी का नाम 1 से 80 अक्षरों का हो।"
+    }
+  },
+  "imports": {
+    "title": "CSV से सामान जोड़ें",
+    "intro": "अपनी Excel शीट को CSV में सेव करें (File → Save As → CSV) और यहाँ चुनें। कुछ भी जोड़ने से पहले आप हर पंक्ति देख सकते हैं।",
+    "columnsTitle": "हम ये कॉलम समझते हैं",
+    "columnsHelp": "नाम और दाम ज़रूरी हैं। हिंदी कॉलम नाम भी चलेंगे।",
+    "pick": "CSV फ़ाइल चुनें",
+    "reading": "फ़ाइल जाँची जा रही है…",
+    "committing": "सामान जोड़ा जा रहा है…",
+    "fields": {
+      "name": "नाम",
+      "nameHi": "हिंदी नाम",
+      "category": "श्रेणी",
+      "unit": "इकाई",
+      "price": "दाम",
+      "mrp": "MRP",
+      "taxRate": "GST",
+      "hsn": "HSN",
+      "barcode": "बारकोड"
+    },
+    "summary": {
+      "rows": "फ़ाइल में पंक्तियाँ",
+      "create": "नया सामान",
+      "update": "दाम बदलेंगे",
+      "skipped": "छोड़ी गईं",
+      "errors": "ठीक करनी हैं"
+    },
+    "ignoredColumns": "छोड़े गए कॉलम: {{columns}}",
+    "fixTitle": "इन पंक्तियों को ठीक करें या छोड़ें",
+    "row": "पंक्ति {{number}}: {{name}}",
+    "skip": "छोड़ें",
+    "saveRow": "सेव",
+    "commit_one": "{{count}} सामान जोड़ें",
+    "commit_other": "{{count}} सामान जोड़ें",
+    "startOver": "दूसरी फ़ाइल चुनें",
+    "done": {
+      "title": "इम्पोर्ट पूरा हुआ",
+      "body": "{{created}} नया सामान जुड़ा, {{updated}} सामान बदला।",
+      "back": "सामान पर वापस"
+    },
+    "errors": {
+      "EMPTY_FILE": "फ़ाइल खाली है।",
+      "FILE_TOO_LARGE": "फ़ाइल बहुत बड़ी है। इसके बजाय हमसे सामान जुड़वाएँ।",
+      "MISSING_COLUMNS": "ज़रूरी कॉलम नहीं हैं: {{columns}}।",
+      "NO_ROWS": "फ़ाइल में शीर्षक है पर कोई सामान नहीं।"
+    },
+    "rowErrors": {
+      "REQUIRED_NAME": "नाम नहीं है",
+      "TOO_LONG_NAME": "नाम बहुत लंबा",
+      "REQUIRED_PRICE": "दाम नहीं है",
+      "INVALID_PRICE": "दाम संख्या नहीं",
+      "INVALID_MRP": "MRP संख्या नहीं",
+      "UNKNOWN_UNIT": "अनजान इकाई",
+      "UNKNOWN_TAX_RATE": "अनजान GST दर",
+      "INVALID_HSN": "HSN 4–8 अंकों का हो",
+      "INVALID_BARCODE": "गलत बारकोड",
+      "BARCODE_TAKEN": "बारकोड किसी और सामान का है",
+      "DUPLICATE_IN_FILE": "यही सामान फ़ाइल में पहले भी है"
+    }
   }
 }

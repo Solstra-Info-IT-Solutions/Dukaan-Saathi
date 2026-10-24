@@ -6,6 +6,7 @@ import { createSupabaseClient, type TypedSupabaseClient } from '@/core/network/s
 import { createInstallationIdStore } from '@/core/security/installation';
 import { createKeyValueSlot } from '@/core/storage/keyValueSlot';
 import { createChunkedSecureStorage, type KeyValueStorage } from '@/core/storage/secureStorage';
+import { pickCsvFile } from '@/core/files/csvFileSource';
 import type { MoreViewModelDeps } from '@/features/account';
 import {
   type AuthRepository,
@@ -15,6 +16,17 @@ import {
   SupabaseAuthDataSource,
   VerifyOtp,
 } from '@/features/authentication';
+import {
+  ArchiveCategory,
+  ArchiveProduct,
+  CatalogueRepositoryImpl,
+  GetProduct,
+  LoadCatalogueReference,
+  SaveCategory,
+  SaveProduct,
+  SearchProducts,
+  SupabaseCatalogueDataSource,
+} from '@/features/catalogue';
 import {
   AppInfoDataSource,
   type DiagnosticsViewModelDeps,
@@ -35,6 +47,15 @@ import {
   SupabaseShopDataSource,
   UpdateShopSettings,
 } from '@/features/shops';
+import {
+  CommitImport,
+  FixImportRow,
+  ImportRepositoryImpl,
+  ListProblemRows,
+  PreviewCsvImport,
+  SkipImportRow,
+  SupabaseImportDataSource,
+} from '@/features/imports';
 import { InviteMember, LoadStaff, StaffRepositoryImpl, SupabaseStaffDataSource } from '@/features/staff';
 import type { StaffViewModelDeps } from '@/features/staff';
 
@@ -57,6 +78,25 @@ export interface AppFeatures {
   };
   staff: StaffViewModelDeps;
   account: MoreViewModelDeps;
+  catalogue: {
+    searchProducts: SearchProducts;
+    getProduct: GetProduct;
+    saveProduct: SaveProduct;
+    archiveProduct: ArchiveProduct;
+    loadReference: LoadCatalogueReference;
+    saveCategory: SaveCategory;
+    archiveCategory: ArchiveCategory;
+    newId: () => string;
+  };
+  imports: {
+    fileSource: { pick: typeof pickCsvFile };
+    previewImport: PreviewCsvImport;
+    listProblemRows: ListProblemRows;
+    fixRow: FixImportRow;
+    skipRow: SkipImportRow;
+    commitImport: CommitImport;
+    newId: () => string;
+  };
 }
 
 export interface Container {
@@ -101,6 +141,8 @@ function createFeatures(supabase: TypedSupabaseClient, storage: KeyValueStorage)
   const activateShop = new ActivateShop(deviceRepository, lastShop);
   const staffRepository = new StaffRepositoryImpl(new SupabaseStaffDataSource(supabase));
   const signOut = new SignOut(authRepository, () => lastShop.clear());
+  const catalogueRepository = new CatalogueRepositoryImpl(new SupabaseCatalogueDataSource(supabase));
+  const importRepository = new ImportRepositoryImpl(new SupabaseImportDataSource(supabase));
 
   return {
     auth: {
@@ -126,5 +168,24 @@ function createFeatures(supabase: TypedSupabaseClient, storage: KeyValueStorage)
       staffRepository,
     },
     account: { signOut },
+    catalogue: {
+      searchProducts: new SearchProducts(catalogueRepository),
+      getProduct: new GetProduct(catalogueRepository),
+      saveProduct: new SaveProduct(catalogueRepository, newOperationId),
+      archiveProduct: new ArchiveProduct(catalogueRepository),
+      loadReference: new LoadCatalogueReference(catalogueRepository),
+      saveCategory: new SaveCategory(catalogueRepository),
+      archiveCategory: new ArchiveCategory(catalogueRepository),
+      newId: newOperationId,
+    },
+    imports: {
+      fileSource: { pick: pickCsvFile },
+      previewImport: new PreviewCsvImport(importRepository, newOperationId),
+      listProblemRows: new ListProblemRows(importRepository),
+      fixRow: new FixImportRow(importRepository),
+      skipRow: new SkipImportRow(importRepository),
+      commitImport: new CommitImport(importRepository),
+      newId: newOperationId,
+    },
   };
 }
