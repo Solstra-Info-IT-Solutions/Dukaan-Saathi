@@ -26,7 +26,8 @@ Legend: ✅ allowed · ⚙️ allowed subject to shop setting/limit · ❌ denie
 | `purchase.manage` / `purchase.receive` | Add suppliers, receive purchases | ✅ | ✅ | ❌ |
 | `purchase.pay` | Pay suppliers | ✅ | ✅ | ❌ |
 | `customer.view` | Customer list, balances | ✅ | ✅ | ✅ |
-| `customer.manage` | Create/edit customers | ✅ | ✅ | ⚙️ quick-create only at billing |
+| `customer.manage` | Create/edit customers | ✅ | ✅ | ❌ |
+| `customer.quick_create` | Quick-add a customer while billing | ✅ | ✅ | ✅ |
 | `udhaar.grant` | Give credit on a bill | ✅ | ✅ | ✅ (credit-limit policy applies) |
 | `udhaar.collect` | Record repayment | ✅ | ✅ | ✅ |
 | `udhaar.adjust` | Manual balance adjustment | ✅ | ❌ | ❌ |

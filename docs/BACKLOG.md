@@ -17,18 +17,18 @@ Phase order may shift for dependencies; nothing is removed without a note in PRO
 | BL-008 | Phase plans, backlog, status, limitations | ✅ |
 
 ## Phase 01 — Foundation
-| ID | Item |
-|---|---|
-| BL-101 | `git init` in project folder, `.gitignore`, `.editorconfig`, new GitHub repo (OD-01) |
-| BL-102 | npm workspaces root, TypeScript base config (strict), ESLint + Prettier, architecture boundary lint rules |
-| BL-103 | `packages/contracts`: error codes, feature keys, first Zod schemas, DB types generation script |
-| BL-104 | `packages/domain-core`: money, quantity, tax, rounding, invoice number, FY + shared fixtures + tests |
-| BL-105 | `apps/mobile`: Expo app with Router, providers, container, core (config, errors, logging, secure storage, connectivity, i18n en/hi), theme + Paper wrappers, `<ScreenState>` |
-| BL-106 | `apps/admin`: Next.js app shell, Supabase SSR client, operator guard skeleton, UI kit |
-| BL-107 | `supabase/`: CLI config, first migration (schemas, default privileges, private helpers stub, audit schema), pgTAP harness, money parity test |
-| BL-108 | CI workflow (typecheck, lint, unit, db tests, admin build, expo export) |
-| BL-109 | Sentry wiring (DSN via env, disabled when absent) |
-| BL-110 | Dependency compatibility verification record (`docs/phases/PHASE_01…` appendix) |
+| ID | Item | Status |
+|---|---|---|
+| BL-101 | `git init` in project folder, `.gitignore`, `.editorconfig`, new GitHub repo (OD-01) | ✅ |
+| BL-102 | npm workspaces root, TypeScript base config (strict), ESLint + Prettier, architecture boundary lint rules | ✅ |
+| BL-103 | `packages/contracts`: error codes, feature keys, first Zod schemas, DB types generation script | ✅ |
+| BL-104 | `packages/domain-core`: money, quantity, tax, rounding, invoice number, FY + shared fixtures + tests | ✅ |
+| BL-105 | `apps/mobile`: Expo app with Router, providers, container, core (config, errors, logging, secure storage, connectivity, i18n en/hi), theme + Paper wrappers, `<ScreenState>` | ✅ |
+| BL-106 | `apps/admin`: Next.js app shell, Supabase SSR client, operator guard skeleton, UI kit | ✅ (shadcn/ui deferred to Phase 11) |
+| BL-107 | `supabase/`: CLI config, first migration (schemas, default privileges, private helpers stub, audit schema), pgTAP harness, money parity test | ✅ (pgTAP verified in CI; PGlite locally) |
+| BL-108 | CI workflow (typecheck, lint, unit, db tests, admin build, expo export) | ✅ |
+| BL-109 | Sentry wiring (DSN via env, disabled when absent) | ⬜ deferred — needs DSN |
+| BL-110 | Dependency compatibility verification record (`docs/phases/PHASE_01…` appendix) | ✅ |
 
 ## Phase 02 — Auth, tenancy, shop setup
 BL-201 Phone/email OTP login · BL-202 profiles trigger · BL-203 shops/settings/members/invitations/devices tables + RLS ·

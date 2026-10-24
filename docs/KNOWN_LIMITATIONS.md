@@ -2,11 +2,20 @@
 
 Deliberate gaps. Each has a reason and, where relevant, a backlog item.
 
-## Current state (Phase 00)
-- **No code exists.** Only documentation. Nothing has been built, run, or tested.
-- No external service is configured: no Supabase project, SMS provider, Sentry, Expo/EAS, payment provider, Play account.
-- The project folder is inside an unrelated git repository (`D:\`, remote `aayesha-fashion-admin`). Must be fixed before the first commit (ADR-001).
-- Docker is not installed, so local Supabase and pgTAP cannot run on this machine yet (OD-13).
+## Current state (end of Phase 01)
+- The mobile app has one screen (diagnostics). No authentication, shops or billing yet (Phase 02+).
+- The admin panel has a login page and a guarded placeholder dashboard. Operator MFA enrolment is Phase 11, so a real operator will see "MFA required" until then (by design: deny by default).
+- No external service is configured: no Supabase project, SMS provider, Sentry, Expo/EAS account, payment provider, Play account.
+- Sentry is not wired; `logger.setLogReporter` is the integration point.
+- The mobile app has not been run on an Android device or emulator in this environment. The bundle builds and screens are covered by component tests.
+
+## Development machine (this PC)
+| Issue | Effect | Workaround |
+|---|---|---|
+| **C: drive is full (0 GB free)** | npm's default cache and temp on C: fail with `ENOSPC` | Run npm with `npm_config_cache=D:\.npm-cache` and `TMP=TEMP=D:\.tmp`; freeing space on C: is recommended |
+| Docker not installed (OD-13) | `supabase start` / `supabase test db` cannot run locally | `npm run db:check:local` (PGlite pre-check); real pgTAP runs in CI |
+| `D:\node_modules` exists outside this repo (another project) and contains `react@19.2.0` | `expo-doctor` reports a duplicate React because Node resolution walks up to `D:\` | Not present in CI or a clean clone. Moving the repo to e.g. `D:\Projects\Dukaan Saathi` removes it |
+| `D:\` is itself a git repo (aayesha-fashion-admin) | Commands run from the wrong folder could commit there | Dukaan Saathi has its own nested `.git`; always run git inside the project folder |
 
 ## Product scope (v1)
 | Limitation | Reason | Backlog |
@@ -27,6 +36,8 @@ Deliberate gaps. Each has a reason and, where relevant, a backlog item.
 ## Technical
 | Limitation | Mitigation |
 |---|---|
+| ESLint pinned to 9.x (deprecated upstream) | Expo's ESLint plugins do not support 10 yet (ADR-022) |
+| Generated DB types not yet produced; `database.types.ts` is hand-written for one function | First `supabase gen types` run in Phase 02 makes the CI check blocking |
 | Offline SQLite data not encrypted at rest in v1 | Android app sandbox; SQLCipher decision in Phase 13 (BL-1304) |
 | Feature-flag changes reach installed apps within the refresh interval (default 15 min), not instantly | Server-enforced features are instant |
 | Subscription purchase flow undecided (Play billing policy) | OD-05; manual activation path designed |

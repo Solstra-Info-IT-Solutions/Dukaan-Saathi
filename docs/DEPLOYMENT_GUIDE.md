@@ -23,8 +23,8 @@ Nothing is deployed yet. This document is the target process; each step is verif
 | Variable | mobile | admin | edge | secret? |
 |---|---|---|---|---|
 | `EXPO_PUBLIC_SUPABASE_URL` / `NEXT_PUBLIC_SUPABASE_URL` | ✅ | ✅ | — | no |
-| `EXPO_PUBLIC_SUPABASE_ANON_KEY` / `NEXT_PUBLIC_SUPABASE_ANON_KEY` | ✅ | ✅ | — | no (public) |
-| `EXPO_PUBLIC_SENTRY_DSN` | ✅ | ✅ | ✅ | no |
+| `EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY` / `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | ✅ | ✅ | — | no (public) |
+| `EXPO_PUBLIC_SENTRY_DSN` (not wired yet — see KNOWN_LIMITATIONS.md) | ✅ | ✅ | ✅ | no |
 | `EXPO_PUBLIC_APP_ENV` | ✅ | — | — | no |
 | `SUPABASE_SERVICE_ROLE_KEY` | ❌ never | ❌ never | ✅ (auto-injected) | **yes** |
 | `PAYMENT_WEBHOOK_SECRET`, provider keys | — | — | ✅ | yes |

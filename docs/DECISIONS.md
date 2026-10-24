@@ -23,6 +23,13 @@ input; each has a recommended default that the plan assumes until you say otherw
 | ADR-014 | Feature flags and entitlements resolved **server-side** by `get_shop_entitlements` / `private.assert_entitlement`; clients only read | Client cannot grant itself access. | 2026-10-24 |
 | ADR-015 | Admin panel calls Supabase from Next.js server code with the operator's own JWT; admin RPCs check platform role + MFA (`aal2`). Service role used only inside specific Edge Functions | Least privilege; every admin action attributable. | 2026-10-24 |
 | ADR-016 | Shared `packages/contracts` (Zod) and `packages/domain-core` (pure TS) | One definition of payloads and money math. | 2026-10-24 |
+| ADR-018 | Admin app runs with Next.js Cache Components **off**; guarded pages call `connection()` so they are never prerendered | Every admin page is per-operator and dynamic; a static guarded page would bake in a redirect. Simpler mental model for a solo developer. | 2026-10-24 |
+| ADR-019 | Mobile routes live in `apps/mobile/src/app` (Expo SDK 58 convention); the composition root is `src/bootstrap` (not `src/app` as first drafted) | Expo Router treats every file in `src/app` as a route | 2026-10-24 |
+| ADR-020 | Route files read the container (`useDependencies`) and pass a feature's use cases to its screen as `deps`; screens call their ViewModel with those deps | Features never import the composition root, so there is no import cycle and screens/ViewModels are tested by passing fakes | 2026-10-24 |
+| ADR-021 | Supabase session stored in a **chunked SecureStore adapter** (values split into ≤1800-char keystore entries, count written last) instead of an AES key + AsyncStorage blob | No custom crypto to maintain; data stays in the OS keystore; partial writes read as absent | 2026-10-24 |
+| ADR-022 | ESLint pinned to 9.x | `eslint-plugin-import` and `eslint-plugin-react` (used by `eslint-config-expo` 58) do not support ESLint 10 yet; npm marks 9.x deprecated — revisit when the Expo config supports 10 | 2026-10-24 |
+| ADR-023 | Supabase `auto_expose_new_tables = false` | Every table needs an explicit grant, matching SECURITY_MODEL.md §4 | 2026-10-24 |
+| ADR-024 | `scripts/db-check-pglite.mjs` runs migrations and DB tests in PGlite with Supabase stubs as a local pre-check | No Docker on the dev machine (OD-13); the real pgTAP run is the CI `database` job | 2026-10-24 |
 | ADR-017 | Voice parsing is deterministic (grammar + fuzzy match) in v1; LLM parsing is an optional, flag-gated later addition | Predictable, offline-capable, no per-request cost, no customer data leaving device. | 2026-10-24 |
 
 ## Open decisions (recommended defaults assumed)

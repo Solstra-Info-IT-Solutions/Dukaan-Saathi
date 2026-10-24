@@ -1,14 +1,15 @@
 # Project Status
 
-Last updated: 2026-10-24 · Current phase: **00 complete, awaiting approval for Phase 01**
+Last updated: 2026-10-24 · Current phase: **01 complete, awaiting approval for Phase 02**
+Repository: https://github.com/Solstra-Info-IT-Solutions/Dukaan-Saathi (`main`)
 
 ## 1. Phase overview
 
 | Phase | Title | Status |
 |---|---|---|
-| 00 | Inspection, requirements, architecture, design | ✅ Complete (documentation only) |
-| 01 | Monorepo foundation, tooling, contracts, Supabase, CI | ⬜ Not started |
-| 02 | Auth, tenancy, shop setup, foundational RLS | ⬜ |
+| 00 | Inspection, requirements, architecture, design | ✅ Complete (documentation) |
+| 01 | Monorepo foundation, tooling, contracts, Supabase, CI | ✅ Complete — see [phases/PHASE_01_FOUNDATION.md](phases/PHASE_01_FOUNDATION.md) |
+| 02 | Auth, tenancy, shop setup, foundational RLS | ⬜ Next |
 | 03 | Catalogue, categories, units, import | ⬜ |
 | 04 | Quick billing, transaction-safe sale creation | ⬜ |
 | 05 | Product billing, barcode, payments, receipts, void | ⬜ |
@@ -23,20 +24,37 @@ Last updated: 2026-10-24 · Current phase: **00 complete, awaiting approval for 
 | 14 | Regression, release, pilot | ⬜ |
 | 15 | Post-launch | ⬜ |
 
-## 2. What exists
+## 2. What exists and is verified
 
-- Documentation set under `docs/` (see INDEX.md) and a root README.
-- **No application code, no migrations, no tests, no CI, no configured services.**
+| Item | Verified by |
+|---|---|
+| Shared packages `@ds/domain-core`, `@ds/contracts` | 57 + 22 unit tests |
+| Mobile foundation + diagnostics reference feature | 40 Jest/RNTL tests, typecheck, boundary lint, Android Metro bundle |
+| Admin shell + operator guard | 11 Vitest tests, `next build`, local runtime smoke test |
+| Supabase baseline migration | 45/45 assertions in the PGlite pre-check; pgTAP on real Supabase in CI (§3) |
+| CI workflow | GitHub Actions run on `main` (§3) |
 
-## 3. Blockers and decisions needed before Phase 01
+## 3. CI
+
+Run [40096899950](https://github.com/Solstra-Info-IT-Solutions/Dukaan-Saathi/actions/runs/40096899950) on commit `998d56b`:
+
+| Job | Result |
+|---|---|
+| Typecheck, lint, unit tests, builds (format, typecheck, lint, unit tests, SQL fixture freshness, PGlite pre-check, admin build, mobile Metro export) | ✅ success |
+| Supabase migrations + pgTAP (real Supabase Postgres + Auth, `supabase test db`) | ✅ success |
+
+The generated-types comparison step is advisory (`continue-on-error`) until Phase 02.
+
+## 4. Blockers and inputs needed before / during Phase 02
 
 | Item | Needed from you |
 |---|---|
-| OD-01 / ADR-001 | Approve `git init` in `D:\Dukaan Saathi` and say where the GitHub repo should live |
-| OD-13 | Install Docker Desktop (recommended), or accept DB tests running only in CI |
-| Remaining ODs | Review the recommended defaults in DECISIONS.md; silence = defaults accepted |
+| Supabase dev project (Mumbai) | Approval to create it (has terms/cost), or create it yourself and share the URL + publishable key for `.env.local` |
+| OD-02 SMS provider | Not needed for Phase 02 development (Supabase test OTP numbers); needed before pilot |
+| Free space on C: | Recommended; npm currently has to be redirected to D: |
+| Docker Desktop (OD-13) | Optional; lets `supabase start` + pgTAP run locally |
 
-## 4. Phase report template (used at the end of every phase)
+## 5. Phase report template (used at the end of every phase)
 
 1. Features implemented (with end-to-end data flow per important feature)
 2. Screens and ViewModels created

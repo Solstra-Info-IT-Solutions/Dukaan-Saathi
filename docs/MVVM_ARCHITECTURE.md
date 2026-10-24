@@ -14,9 +14,10 @@ flowchart TD
   RIMPL --> LDS["Local data source<br/>SQLite"]
   RDS --> SB[("Supabase")]
   LDS --> DB[("SQLite")]
-  C["Composition root<br/>src/app/composition/container.ts"] -. builds .-> RIMPL
+  C["Composition root<br/>src/bootstrap/container.ts"] -. builds .-> RIMPL
   C -. builds .-> UC
-  VM -. "useDependencies()" .-> C
+  RF["Route file src/app/*.tsx<br/>useDependencies()"] -. reads .-> C
+  RF -. "deps prop" .-> S
 ```
 
 | Layer | Knows about | Must not know about |
@@ -139,26 +140,43 @@ export function useBillingViewModel() {
 - A screen file renders state and wires intents. Target < 150 lines; extract components when larger.
 - No `supabase`, no `fetch`, no SQL, no `useQuery` in screen files (lint-enforced, see CLEAN_ARCHITECTURE.md §4).
 - Every screen handles the five states in UI_FLOWS.md §5 using shared `<ScreenState>` components.
-- Route files in `app/` are one line: `export { BillingScreen as default } from '@/features/billing';`
-  plus route-level guards (`<RequirePermission permission="sale.create">`).
+- Route files live in `src/app/` (Expo Router). They are thin: read the container, pass the feature's deps
+  to its screen, and add route-level guards (`<RequirePermission permission="sale.create">`, Phase 02).
 
 ## 5. Dependency composition
 
+Implemented in Phase 01 (ADR-019, ADR-020). Reference slice: `src/features/diagnostics`.
+
 ```ts
-// src/app/composition/container.ts
-export function createContainer(env: AppEnv): Container {
-  const supabase = createSupabaseClient(env);           // core/network
-  const db = openLocalDatabase();                       // core/database (Phase 09)
-  const billingRepo = new BillingRepositoryImpl(new SupabaseBillingDataSource(supabase) /*, local */);
-  return {
-    billing: { createSale: new CreateSale(billingRepo, systemClock), voidSale: new VoidSale(billingRepo) },
-    // ... one entry per feature
-  };
+// src/bootstrap/container.ts
+export function createContainer(env: AppEnv, storage = createChunkedSecureStorage()): Container {
+  const supabase = env.backend ? createSupabaseClient(env.backend, storage) : null;   // core/network
+  const diagnosticsRepository = new DiagnosticsRepositoryImpl(
+    new AppInfoDataSource(env),
+    env.backend ? new SupabaseHealthDataSource(env.backend) : null,
+  );
+  return { env, supabase, diagnostics: { getDiagnostics: new GetDiagnostics(diagnosticsRepository) } };
 }
 ```
 
-- `DependenciesProvider` puts the container in React context; `useDependencies()` reads it.
-- Tests render with `DependenciesProvider value={fakeContainer}`; fakes implement the same interfaces.
+```tsx
+// src/app/index.tsx — a route file: the only place that reads the container
+export default function IndexRoute() {
+  const { diagnostics } = useDependencies();
+  return <DiagnosticsScreen deps={diagnostics} />;
+}
+
+// features/diagnostics/presentation/screens/DiagnosticsScreen.tsx
+export function DiagnosticsScreen({ deps }: { deps: DiagnosticsViewModelDeps }) {
+  const { state, actions } = useDiagnosticsViewModel(deps);
+  // render state, forward intents
+}
+```
+
+- `AppProviders` (src/bootstrap) builds the container once and puts it in React context.
+- Only **route files** call `useDependencies()`; features never import `@/bootstrap`, so there is no cycle.
+- Tests pass fakes straight into the screen or ViewModel (`deps={{ getDiagnostics: new GetDiagnostics(fakeRepo) }}`).
+- ViewModels keep the latest deps in a ref so a caller passing new objects each render cannot trigger reload loops.
 - No service locator lookups by string; the container is a typed object.
 
 ## 6. Idempotent submissions

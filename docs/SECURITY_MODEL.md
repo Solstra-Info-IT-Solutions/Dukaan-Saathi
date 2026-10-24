@@ -84,9 +84,10 @@ CI check (Phase 01): a SQL query lists `security definer` functions lacking `sea
 
 ## 6. Mobile security
 
-- Supabase session stored with an encrypted-storage adapter: a random AES key lives in `expo-secure-store`;
-  the (possibly > 2 KB) session blob is encrypted and stored in AsyncStorage/SQLite. (SecureStore has value size limits.)
-- Only the **anon/publishable key** ships in the app. `EXPO_PUBLIC_*` variables are public by definition; no secret uses that prefix.
+- Supabase session stored in `expo-secure-store` through a chunked adapter (`core/storage/secureStorage.ts`, ADR-021):
+  values are split into ≤ 1800-character keystore entries and the chunk count is written last, so a crash mid-write reads as "no session".
+- Only the **publishable key** ships in the app. `EXPO_PUBLIC_*` variables are public by definition; no secret uses that prefix.
+  `core/config/env.ts` (mobile) and `core/config/env.ts` (admin) refuse to start a client with a key that looks like a secret (`sb_secret_…`, `service_role`).
 - SQLite offline data: business data is not encrypted at rest in v1 (Android app sandbox). Encryption (SQLCipher) is a Phase 13 decision — see KNOWN_LIMITATIONS.md.
 - Sign out: unsynced-data warning → revoke push token → clear SecureStore → wipe shop's SQLite data.
 - Deep links: every route guard re-checks session + permission; server re-checks again.

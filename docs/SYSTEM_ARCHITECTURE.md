@@ -44,13 +44,14 @@ Refined from the master prompt. Folders are created **when they get code**, not 
 ```
 dukaan-saathi/
 ├─ apps/
-│  ├─ mobile/                      Expo app
-│  │  ├─ app/                      Expo Router routes — thin files that render feature screens
-│  │  │  ├─ (auth)/                login, otp
-│  │  │  ├─ (onboarding)/          create shop, pick language, first-run tips
-│  │  │  └─ (shop)/                tabs + stacks for the active shop
+│  ├─ mobile/                      Expo app (SDK 58)
+│  │  ├─ tests/                    shared test setup, fakes, renderWithProviders
 │  │  └─ src/
-│  │     ├─ app/                   composition root: providers, container, query client
+│  │     ├─ app/                   Expo Router routes — thin files that pass deps to feature screens
+│  │     │  ├─ (auth)/             login, otp                       (Phase 02)
+│  │     │  ├─ (onboarding)/       create shop, pick language       (Phase 02)
+│  │     │  └─ (shop)/             tabs + stacks for the active shop (Phase 02+)
+│  │     ├─ bootstrap/             composition root: AppProviders, container, query client
 │  │     ├─ core/                  platform services: config, errors, logging, network, storage,
 │  │     │                         security, connectivity, localization, database (SQLite)
 │  │     ├─ shared/                design system wrappers, generic hooks, formatting, theme
@@ -84,7 +85,9 @@ dukaan-saathi/
 | `packages/validation`, `packages/domain-types`, `packages/configuration` | Merged into `packages/contracts` | They change together (a schema, its type, its error codes, the feature keys it checks). Three packages would mean three version bumps for one change. Split later if it grows. |
 | Domain entities only inside each mobile feature | Shared pure calculation logic lives in `packages/domain-core`; feature-specific entities stay in features | Money/tax/ledger math must be identical in mobile, admin, and tests; Postgres re-implements it and is tested against the same fixtures. |
 | `features/<x>/index.ts` everywhere | Only where another feature needs something (public API of a feature) | Avoid barrel files that create import cycles. |
-| `apps/mobile/src/app/composition` | Kept, as `src/app/composition/container.ts` | Simple explicit DI (ADR-006). |
+| `apps/mobile/src/app/composition` | `src/bootstrap/container.ts` | `src/app` is Expo Router's routes folder in SDK 58 (ADR-019). Simple explicit DI (ADR-006). |
+| `supabase/seed/` | Seed files go in `supabase/seed/*.sql` (config.toml `sql_paths`) | Phase 01 has no seed data yet. |
+| Separate `scripts/` folder | `scripts/db-check-pglite.mjs` | Local DB pre-check without Docker (ADR-024). |
 
 ## 3. Runtime responsibilities
 
