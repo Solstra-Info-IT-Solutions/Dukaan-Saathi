@@ -1,5 +1,5 @@
 // GENERATED FILE — do not edit by hand.
-// Source: `supabase gen types typescript` against dukaan-saathi-dev after migration 20261024132657.
+// Source: `supabase gen types typescript` against dukaan-saathi-dev after migration 20261024133107.
 // Regenerate with `npm run db:types` (local stack) whenever a migration changes the public schema.
 
 export type Json =
@@ -650,6 +650,7 @@ export type Database = {
       get_my_platform_role: { Args: never; Returns: string }
       get_shop_entitlements: { Args: { p_shop_id: string }; Returns: Json }
       get_shop_settings: { Args: { p_shop_id: string }; Returns: Json }
+      list_shop_members: { Args: { p_shop_id: string }; Returns: Json }
       invite_shop_member: {
         Args: {
           p_email?: string
