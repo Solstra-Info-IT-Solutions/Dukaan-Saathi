@@ -68,7 +68,9 @@ export function allocateProportionally(total: Paise, weights: readonly Paise[]):
     remainder: (BigInt(total) * BigInt(w)) % BigInt(weightSum),
   }));
   let leftover = BigInt(total) - floors.reduce((s, f) => s + f, 0n);
-  remainders.sort((a, b) => (a.remainder === b.remainder ? a.index - b.index : a.remainder > b.remainder ? -1 : 1));
+  remainders.sort((a, b) =>
+    a.remainder === b.remainder ? a.index - b.index : a.remainder > b.remainder ? -1 : 1,
+  );
   const result = floors.slice();
   for (const { index } of remainders) {
     if (leftover <= 0n) break;
@@ -119,7 +121,13 @@ export function computeBill(input: ComputeBillInput): BillTotals {
     const net = paise(l.net - share);
     const rate = input.lines[i]?.taxRateBp;
     const tax = input.taxMode === 'gst_regular' && rate ? taxFromInclusive(net, rate) : paise(0);
-    return { grossPaise: l.gross, lineDiscountPaise: l.lineDiscount, billDiscountSharePaise: share, netPaise: net, taxPaise: tax };
+    return {
+      grossPaise: l.gross,
+      lineDiscountPaise: l.lineDiscount,
+      billDiscountSharePaise: share,
+      netPaise: net,
+      taxPaise: tax,
+    };
   });
 
   const subtotal = lines.reduce<number>((s, l) => s + l.grossPaise, 0);

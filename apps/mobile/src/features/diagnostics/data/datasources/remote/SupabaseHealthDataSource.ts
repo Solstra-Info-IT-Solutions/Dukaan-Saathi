@@ -5,7 +5,10 @@ export interface HealthDto {
   latencyMs: number;
 }
 
-export type FetchLike = (input: string, init?: { headers?: Record<string, string>; signal?: AbortSignal }) => Promise<{ ok: boolean }>;
+export type FetchLike = (
+  input: string,
+  init?: { headers?: Record<string, string>; signal?: AbortSignal },
+) => Promise<{ ok: boolean }>;
 
 /**
  * Calls the Supabase Auth health endpoint with the publishable key. It needs no session and

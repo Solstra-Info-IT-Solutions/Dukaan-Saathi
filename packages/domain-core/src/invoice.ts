@@ -20,7 +20,11 @@ export function isValidPrefix(prefix: string): boolean {
 
 /** Year and month of an instant as seen in `timeZone` (default Asia/Kolkata). */
 function localYearMonth(instant: Date, timeZone: string): { year: number; month: number } {
-  const parts = new Intl.DateTimeFormat('en-US', { timeZone, year: 'numeric', month: 'numeric' }).formatToParts(instant);
+  const parts = new Intl.DateTimeFormat('en-US', {
+    timeZone,
+    year: 'numeric',
+    month: 'numeric',
+  }).formatToParts(instant);
   const year = Number(parts.find((p) => p.type === 'year')?.value);
   const month = Number(parts.find((p) => p.type === 'month')?.value);
   return { year, month };
@@ -37,7 +41,8 @@ export function financialYear(instant: Date, timeZone = 'Asia/Kolkata'): string 
 
 /** Device codes in registration order: 0 → "A", 25 → "Z", 26 → "AA", 27 → "AB". */
 export function deviceCodeFromIndex(index: number): string {
-  if (!Number.isInteger(index) || index < 0) throw new RangeError('Device index must be a non-negative integer');
+  if (!Number.isInteger(index) || index < 0)
+    throw new RangeError('Device index must be a non-negative integer');
   let n = index;
   let code = '';
   do {
@@ -50,8 +55,10 @@ export function deviceCodeFromIndex(index: number): string {
 export function formatInvoiceNumber(parts: InvoiceNumberParts): string {
   if (!PREFIX_RE.test(parts.prefix)) throw new RangeError(`Invalid invoice prefix "${parts.prefix}"`);
   if (!FY_RE.test(parts.fy)) throw new RangeError(`Invalid financial year "${parts.fy}"`);
-  if (!DEVICE_CODE_RE.test(parts.deviceCode)) throw new RangeError(`Invalid device code "${parts.deviceCode}"`);
-  if (!Number.isSafeInteger(parts.seq) || parts.seq < 1) throw new RangeError(`Invalid sequence ${parts.seq}`);
+  if (!DEVICE_CODE_RE.test(parts.deviceCode))
+    throw new RangeError(`Invalid device code "${parts.deviceCode}"`);
+  if (!Number.isSafeInteger(parts.seq) || parts.seq < 1)
+    throw new RangeError(`Invalid sequence ${parts.seq}`);
   return `${parts.prefix}/${parts.fy}/${parts.deviceCode}-${parts.seq.toString().padStart(6, '0')}`;
 }
 

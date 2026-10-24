@@ -33,7 +33,8 @@ export function pageOf<T extends z.ZodType>(item: T) {
 /** Normalises user-typed Indian numbers ("98765 43210", "09876543210", "+91-9876543210") to E.164. */
 export function normalizeIndianPhone(input: string): string | null {
   const digits = input.replace(/\D/g, '');
-  const national = digits.length === 12 && digits.startsWith('91') ? digits.slice(2) : digits.replace(/^0/, '');
+  const national =
+    digits.length === 12 && digits.startsWith('91') ? digits.slice(2) : digits.replace(/^0/, '');
   const candidate = `+91${national}`;
   return IndianPhoneE164Schema.safeParse(candidate).success ? candidate : null;
 }

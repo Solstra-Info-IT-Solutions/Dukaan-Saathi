@@ -11,7 +11,11 @@ import { spacing } from '../theme/theme';
 export function LoadingState({ label }: { label?: string }) {
   const { t } = useTranslation();
   return (
-    <View style={styles.center} accessibilityRole="progressbar" accessibilityLabel={label ?? t('common.loading')}>
+    <View
+      style={styles.center}
+      accessibilityRole="progressbar"
+      accessibilityLabel={label ?? t('common.loading')}
+    >
       <ActivityIndicator size="large" />
       <Text variant="bodyMedium" style={styles.gap}>
         {label ?? t('common.loading')}
@@ -34,7 +38,13 @@ export function ErrorState({ messageKey, onRetry }: { messageKey: string; onRetr
   );
 }
 
-export function EmptyState({ title, action }: { title: string; action?: { label: string; onPress: () => void } }) {
+export function EmptyState({
+  title,
+  action,
+}: {
+  title: string;
+  action?: { label: string; onPress: () => void };
+}) {
   return (
     <View style={styles.center}>
       <Text variant="titleMedium">{title}</Text>

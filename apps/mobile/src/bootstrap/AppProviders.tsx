@@ -16,13 +16,22 @@ import { createQueryClient } from './queryClient';
 const i18n = initI18n();
 
 /** Root providers. Created once per app launch. */
-export function AppProviders({ children, container: injected }: { children: ReactNode; container?: Container }) {
+export function AppProviders({
+  children,
+  container: injected,
+}: {
+  children: ReactNode;
+  container?: Container;
+}) {
   const [container] = useState(() => injected ?? createContainer(readEnv()));
   const [queryClient] = useState(createQueryClient);
   const scheme = useColorScheme();
 
   useEffect(() => startConnectivityMonitoring(), []);
-  useEffect(() => (container.supabase ? bindAuthRefreshToAppState(container.supabase) : undefined), [container]);
+  useEffect(
+    () => (container.supabase ? bindAuthRefreshToAppState(container.supabase) : undefined),
+    [container],
+  );
 
   return (
     <SafeAreaProvider>

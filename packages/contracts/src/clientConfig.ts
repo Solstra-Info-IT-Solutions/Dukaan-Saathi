@@ -49,7 +49,10 @@ export const DEFAULT_CLIENT_CONFIG: ClientConfig = {
 };
 
 /** Returns the parsed config, or the fallback (last good / bundled) when the payload is invalid. */
-export function parseClientConfig(payload: unknown, fallback: ClientConfig = DEFAULT_CLIENT_CONFIG): {
+export function parseClientConfig(
+  payload: unknown,
+  fallback: ClientConfig = DEFAULT_CLIENT_CONFIG,
+): {
   config: ClientConfig;
   valid: boolean;
 } {

@@ -19,7 +19,10 @@ export interface Container {
   diagnostics: DiagnosticsViewModelDeps;
 }
 
-export function createContainer(env: AppEnv, storage: KeyValueStorage = createChunkedSecureStorage()): Container {
+export function createContainer(
+  env: AppEnv,
+  storage: KeyValueStorage = createChunkedSecureStorage(),
+): Container {
   const supabase = env.backend ? createSupabaseClient(env.backend, storage) : null;
 
   const diagnosticsRepository = new DiagnosticsRepositoryImpl(

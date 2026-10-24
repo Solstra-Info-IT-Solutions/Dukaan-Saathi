@@ -11,7 +11,10 @@ export interface ConnectivityState {
   lastChangedAt: number | null;
 }
 
-export const useConnectivityStore = create<ConnectivityState>(() => ({ isOnline: true, lastChangedAt: null }));
+export const useConnectivityStore = create<ConnectivityState>(() => ({
+  isOnline: true,
+  lastChangedAt: null,
+}));
 
 export function toOnline(state: Pick<NetInfoState, 'isConnected' | 'isInternetReachable'>): boolean {
   return state.isConnected === true && state.isInternetReachable !== false;

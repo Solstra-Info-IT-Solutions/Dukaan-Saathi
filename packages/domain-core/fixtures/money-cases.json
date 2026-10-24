@@ -36,7 +36,13 @@
         { "unitPricePaise": 4500, "quantityMilli": 2000 },
         { "unitPricePaise": 1000, "quantityMilli": 1000 }
       ],
-      "expected": { "subtotalPaise": 10000, "discountPaise": 0, "taxPaise": 0, "roundOffPaise": 0, "totalPaise": 10000 }
+      "expected": {
+        "subtotalPaise": 10000,
+        "discountPaise": 0,
+        "taxPaise": 0,
+        "roundOffPaise": 0,
+        "totalPaise": 10000
+      }
     },
     {
       "name": "GST regular with bill discount allocated across rates",
@@ -47,7 +53,13 @@
         { "unitPricePaise": 11800, "quantityMilli": 1000, "taxRateBp": 1800 },
         { "unitPricePaise": 10500, "quantityMilli": 1000, "taxRateBp": 500 }
       ],
-      "expected": { "subtotalPaise": 22300, "discountPaise": 1000, "taxPaise": 2197, "roundOffPaise": 0, "totalPaise": 21300 }
+      "expected": {
+        "subtotalPaise": 22300,
+        "discountPaise": 1000,
+        "taxPaise": 2197,
+        "roundOffPaise": 0,
+        "totalPaise": 21300
+      }
     },
     {
       "name": "round-off to nearest rupee goes down",
@@ -58,15 +70,29 @@
         { "unitPricePaise": 1999, "quantityMilli": 333 },
         { "unitPricePaise": 4550, "quantityMilli": 1000 }
       ],
-      "expected": { "subtotalPaise": 5216, "discountPaise": 0, "taxPaise": 0, "roundOffPaise": -16, "totalPaise": 5200 }
+      "expected": {
+        "subtotalPaise": 5216,
+        "discountPaise": 0,
+        "taxPaise": 0,
+        "roundOffPaise": -16,
+        "totalPaise": 5200
+      }
     },
     {
       "name": "line discount, composition scheme collects no tax",
       "taxMode": "gst_composition",
       "roundOffEnabled": false,
       "billDiscountPaise": 0,
-      "lines": [{ "unitPricePaise": 5000, "quantityMilli": 3000, "lineDiscountPaise": 1500, "taxRateBp": 500 }],
-      "expected": { "subtotalPaise": 15000, "discountPaise": 1500, "taxPaise": 0, "roundOffPaise": 0, "totalPaise": 13500 }
+      "lines": [
+        { "unitPricePaise": 5000, "quantityMilli": 3000, "lineDiscountPaise": 1500, "taxRateBp": 500 }
+      ],
+      "expected": {
+        "subtotalPaise": 15000,
+        "discountPaise": 1500,
+        "taxPaise": 0,
+        "roundOffPaise": 0,
+        "totalPaise": 13500
+      }
     }
   ],
   "financialYear": [

@@ -23,7 +23,12 @@ export class FakeDiagnosticsRepository implements DiagnosticsRepository {
   envIssues: string[] = [];
 
   getAppInfo() {
-    return { appVersion: '0.1.0', appEnv: 'development' as const, backendConfigured: true, envIssues: this.envIssues };
+    return {
+      appVersion: '0.1.0',
+      appEnv: 'development' as const,
+      backendConfigured: true,
+      envIssues: this.envIssues,
+    };
   }
   async checkBackendHealth(): Promise<BackendHealth> {
     this.healthCalls += 1;

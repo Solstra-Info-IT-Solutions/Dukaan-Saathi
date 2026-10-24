@@ -3,16 +3,28 @@ import { toOnline } from '../connectivity/connectivity';
 import { AppError } from '../errors/AppError';
 import { translateError } from '../errors/translateError';
 import { scrub } from '../logging/logger';
-import { CHUNK_SIZE, createChunkedSecureStorage, type SecureStoreLike, toSecureKey } from '../storage/secureStorage';
+import {
+  CHUNK_SIZE,
+  createChunkedSecureStorage,
+  type SecureStoreLike,
+  toSecureKey,
+} from '../storage/secureStorage';
 
 describe('parseEnv', () => {
   it('runs without a backend when Supabase vars are empty', () => {
-    const env = parseEnv({ EXPO_PUBLIC_APP_ENV: 'development', EXPO_PUBLIC_SUPABASE_URL: '', EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY: '' });
+    const env = parseEnv({
+      EXPO_PUBLIC_APP_ENV: 'development',
+      EXPO_PUBLIC_SUPABASE_URL: '',
+      EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY: '',
+    });
     expect(env.backend).toBeNull();
     expect(env.issues).toEqual([]);
   });
   it('configures the backend when both vars are present', () => {
-    const env = parseEnv({ EXPO_PUBLIC_SUPABASE_URL: 'https://abc.supabase.co', EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY: 'sb_publishable_x' });
+    const env = parseEnv({
+      EXPO_PUBLIC_SUPABASE_URL: 'https://abc.supabase.co',
+      EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY: 'sb_publishable_x',
+    });
     expect(env.backend).toEqual({ url: 'https://abc.supabase.co', publishableKey: 'sb_publishable_x' });
   });
   it('reports a half-configured backend', () => {
@@ -21,7 +33,10 @@ describe('parseEnv', () => {
     expect(env.issues).toHaveLength(1);
   });
   it('refuses a secret key in the public bundle', () => {
-    const env = parseEnv({ EXPO_PUBLIC_SUPABASE_URL: 'https://abc.supabase.co', EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY: 'sb_secret_123' });
+    const env = parseEnv({
+      EXPO_PUBLIC_SUPABASE_URL: 'https://abc.supabase.co',
+      EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY: 'sb_secret_123',
+    });
     expect(env.backend).toBeNull();
     expect(env.issues[0]).toMatch(/secret/);
   });
@@ -34,7 +49,11 @@ describe('parseEnv', () => {
 
 describe('translateError', () => {
   it('maps DS_* codes raised by SQL with JSON details', () => {
-    const e = translateError({ message: 'DS_QUOTA_EXCEEDED', code: 'P0001', details: '{"key":"products.max","limit":100}' });
+    const e = translateError({
+      message: 'DS_QUOTA_EXCEEDED',
+      code: 'P0001',
+      details: '{"key":"products.max","limit":100}',
+    });
     expect(e.code).toBe('DS_QUOTA_EXCEEDED');
     expect(e.details).toEqual({ key: 'products.max', limit: 100 });
     expect(e.messageKey).toBe('errors.DS_QUOTA_EXCEEDED');
@@ -117,7 +136,9 @@ describe('chunked secure storage', () => {
 
 describe('logger scrubbing', () => {
   it('redacts secrets and phone numbers', () => {
-    expect(scrub({ accessToken: 'abc', phone: '+919876543210', nested: { note: 'call 9876543210' }, amount: 500 })).toEqual({
+    expect(
+      scrub({ accessToken: 'abc', phone: '+919876543210', nested: { note: 'call 9876543210' }, amount: 500 }),
+    ).toEqual({
       accessToken: '[redacted]',
       phone: '[phone]',
       nested: { note: 'call [phone]' },

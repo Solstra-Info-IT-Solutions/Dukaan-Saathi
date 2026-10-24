@@ -21,7 +21,10 @@ export async function signInAction(_prev: LoginFormState, formData: FormData): P
   const client = await createAdminServerClient();
   if (!client) return { error: 'backend_not_configured' };
 
-  const result = await new OperatorRepository(client).signInWithPassword(parsed.data.email, parsed.data.password);
+  const result = await new OperatorRepository(client).signInWithPassword(
+    parsed.data.email,
+    parsed.data.password,
+  );
   // Same message for unknown email and wrong password: no account enumeration.
   if (!result.ok) return { error: 'invalid_credentials' };
   redirect('/');

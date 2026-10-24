@@ -20,12 +20,22 @@ export interface AppEnv {
 }
 
 export function parseEnv(raw: Record<string, string | undefined>): AppEnv {
-  const blankToUndefined = Object.fromEntries(Object.entries(raw).map(([k, v]) => [k, v === '' ? undefined : v]));
+  const blankToUndefined = Object.fromEntries(
+    Object.entries(raw).map(([k, v]) => [k, v === '' ? undefined : v]),
+  );
   const parsed = RawEnvSchema.safeParse(blankToUndefined);
   if (!parsed.success) {
-    return { appEnv: 'development', backend: null, issues: parsed.error.issues.map((i) => `${i.path.join('.')}: ${i.message}`) };
+    return {
+      appEnv: 'development',
+      backend: null,
+      issues: parsed.error.issues.map((i) => `${i.path.join('.')}: ${i.message}`),
+    };
   }
-  const { EXPO_PUBLIC_APP_ENV, EXPO_PUBLIC_SUPABASE_URL: url, EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY: key } = parsed.data;
+  const {
+    EXPO_PUBLIC_APP_ENV,
+    EXPO_PUBLIC_SUPABASE_URL: url,
+    EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY: key,
+  } = parsed.data;
   const issues: string[] = [];
   let backend: AppEnv['backend'] = null;
 

@@ -106,7 +106,9 @@ for (const t of sqlFiles('supabase/tests/database', '.test.sql')) {
   const bad = rows.filter((r) => !r.ok);
   total += rows.length;
   failed += bad.length;
-  console.log(`test ${bad.length ? 'FAIL' : 'ok  '}      ${t.name} (${rows.length - bad.length}/${rows.length})`);
+  console.log(
+    `test ${bad.length ? 'FAIL' : 'ok  '}      ${t.name} (${rows.length - bad.length}/${rows.length})`,
+  );
   for (const r of bad) console.log(`   not ok: ${r.description} — ${r.detail}`);
   // Reset fixtures inserted by the test (it committed instead of rolling back).
   await db.exec('delete from public.platform_admins; delete from auth.users;');

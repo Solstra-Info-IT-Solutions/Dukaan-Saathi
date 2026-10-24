@@ -11,7 +11,10 @@ export type TypedSupabaseClient = SupabaseClient<Database>;
  * Creates the single Supabase client for the app. Only the publishable key is used;
  * every query is authorised by RLS on the server.
  */
-export function createSupabaseClient(backend: NonNullable<AppEnv['backend']>, storage: KeyValueStorage): TypedSupabaseClient {
+export function createSupabaseClient(
+  backend: NonNullable<AppEnv['backend']>,
+  storage: KeyValueStorage,
+): TypedSupabaseClient {
   return createClient<Database>(backend.url, backend.publishableKey, {
     auth: {
       storage,

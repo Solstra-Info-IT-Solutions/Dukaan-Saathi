@@ -8,7 +8,10 @@ export default tseslint.config(js.configs.recommended, ...tseslint.configs.stric
       'error',
       {
         patterns: [
-          { group: ['react', 'react-*', 'expo*', '@supabase/*', 'next', 'next/*'], message: 'domain-core is pure TypeScript.' },
+          {
+            group: ['react', 'react-*', 'expo*', '@supabase/*', 'next', 'next/*'],
+            message: 'domain-core is pure TypeScript.',
+          },
         ],
       },
     ],

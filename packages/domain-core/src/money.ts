@@ -85,7 +85,10 @@ function groupIndian(digits: string): string {
 }
 
 /** Formats paise as rupees with Indian grouping: 12345650 → "₹1,23,456.50". */
-export function formatPaise(value: Paise, options: { symbol?: boolean; alwaysShowPaise?: boolean } = {}): string {
+export function formatPaise(
+  value: Paise,
+  options: { symbol?: boolean; alwaysShowPaise?: boolean } = {},
+): string {
   const { symbol = true, alwaysShowPaise = true } = options;
   const negative = value < 0;
   const abs = Math.abs(value);

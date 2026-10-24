@@ -7,3 +7,8 @@ supabase/.temp
 packages/contracts/src/database.types.ts
 package-lock.json
 docs
+apps/admin/AGENTS.md
+apps/mobile/AGENTS.md
+supabase/tests/database/002_money_fixtures.test.sql
+*.sql
+.claude

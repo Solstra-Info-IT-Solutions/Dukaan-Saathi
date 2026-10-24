@@ -17,18 +17,27 @@ const env = { appEnv: 'staging' as const, backend, issues: ['example issue'] };
 describe('diagnosticsReducer', () => {
   it('starts loading, then loaded', () => {
     expect(initialDiagnosticsState.status).toBe('loading');
-    const loaded = diagnosticsReducer(initialDiagnosticsState, { type: 'loadSucceeded', report: sampleReport });
+    const loaded = diagnosticsReducer(initialDiagnosticsState, {
+      type: 'loadSucceeded',
+      report: sampleReport,
+    });
     expect(loaded).toEqual({ status: 'loaded', report: sampleReport, error: null });
   });
   it('refreshes without dropping the existing report', () => {
-    const loaded = diagnosticsReducer(initialDiagnosticsState, { type: 'loadSucceeded', report: sampleReport });
+    const loaded = diagnosticsReducer(initialDiagnosticsState, {
+      type: 'loadSucceeded',
+      report: sampleReport,
+    });
     const refreshing = diagnosticsReducer(loaded, { type: 'refreshRequested' });
     expect(refreshing.status).toBe('refreshing');
     expect(refreshing.report).toBe(sampleReport);
   });
   it('keeps the error for display', () => {
     const error = new AppError('UNKNOWN');
-    expect(diagnosticsReducer(initialDiagnosticsState, { type: 'loadFailed', error })).toMatchObject({ status: 'error', error });
+    expect(diagnosticsReducer(initialDiagnosticsState, { type: 'loadFailed', error })).toMatchObject({
+      status: 'error',
+      error,
+    });
   });
 });
 
@@ -41,13 +50,24 @@ describe('GetDiagnostics', () => {
 
 describe('DiagnosticsRepositoryImpl', () => {
   it('reports not_configured without a backend', async () => {
-    const repo = new DiagnosticsRepositoryImpl(new AppInfoDataSource({ ...env, backend: null }, () => '1.2.3'), null);
-    expect(repo.getAppInfo()).toEqual({ appVersion: '1.2.3', appEnv: 'staging', backendConfigured: false, envIssues: ['example issue'] });
+    const repo = new DiagnosticsRepositoryImpl(
+      new AppInfoDataSource({ ...env, backend: null }, () => '1.2.3'),
+      null,
+    );
+    expect(repo.getAppInfo()).toEqual({
+      appVersion: '1.2.3',
+      appEnv: 'staging',
+      backendConfigured: false,
+      envIssues: ['example issue'],
+    });
     expect(await repo.checkBackendHealth()).toEqual({ status: 'not_configured', latencyMs: null });
   });
   it('calls the auth health endpoint with the publishable key', async () => {
     const fetchFn = jest.fn(async () => ({ ok: true }));
-    const repo = new DiagnosticsRepositoryImpl(new AppInfoDataSource(env), new SupabaseHealthDataSource(backend, fetchFn));
+    const repo = new DiagnosticsRepositoryImpl(
+      new AppInfoDataSource(env),
+      new SupabaseHealthDataSource(backend, fetchFn),
+    );
     const health = await repo.checkBackendHealth();
     expect(health.status).toBe('reachable');
     expect(fetchFn).toHaveBeenCalledWith(
@@ -56,7 +76,10 @@ describe('DiagnosticsRepositoryImpl', () => {
     );
   });
   it('maps a failing or throwing endpoint to unreachable', async () => {
-    const failing = new DiagnosticsRepositoryImpl(new AppInfoDataSource(env), new SupabaseHealthDataSource(backend, async () => ({ ok: false })));
+    const failing = new DiagnosticsRepositoryImpl(
+      new AppInfoDataSource(env),
+      new SupabaseHealthDataSource(backend, async () => ({ ok: false })),
+    );
     expect((await failing.checkBackendHealth()).status).toBe('unreachable');
     const throwing = new DiagnosticsRepositoryImpl(
       new AppInfoDataSource(env),
@@ -78,7 +101,9 @@ describe('useDiagnosticsViewModel', () => {
   it('ignores a refresh while one is in flight', async () => {
     const repo = new FakeDiagnosticsRepository();
     // A new use-case object on every render must not cause reload loops.
-    const { result } = await renderHook(() => useDiagnosticsViewModel({ getDiagnostics: new GetDiagnostics(repo, fixedClock) }));
+    const { result } = await renderHook(() =>
+      useDiagnosticsViewModel({ getDiagnostics: new GetDiagnostics(repo, fixedClock) }),
+    );
     await waitFor(() => expect(result.current.state.status).toBe('loaded'));
     expect(repo.healthCalls).toBe(1);
     await act(async () => {
@@ -89,7 +114,9 @@ describe('useDiagnosticsViewModel', () => {
     expect(repo.healthCalls).toBe(2); // mount + one refresh, not three
   });
   it('exposes a translated error when the use case fails', async () => {
-    const getDiagnostics = { execute: async () => Promise.reject(new TypeError('Network request failed')) } as unknown as GetDiagnostics;
+    const getDiagnostics = {
+      execute: async () => Promise.reject(new TypeError('Network request failed')),
+    } as unknown as GetDiagnostics;
     const { result } = await renderHook(() => useDiagnosticsViewModel({ getDiagnostics }));
     await waitFor(() => expect(result.current.state.status).toBe('error'));
     expect(result.current.state.error?.code).toBe('NETWORK_OFFLINE');
@@ -100,16 +127,23 @@ describe('DiagnosticsScreen', () => {
   it('renders the report in English', async () => {
     const repo = new FakeDiagnosticsRepository();
     repo.envIssues = ['EXPO_PUBLIC_SUPABASE_URL is not a URL'];
-    await renderWithProviders(<DiagnosticsScreen deps={{ getDiagnostics: new GetDiagnostics(repo, fixedClock) }} />);
+    await renderWithProviders(
+      <DiagnosticsScreen deps={{ getDiagnostics: new GetDiagnostics(repo, fixedClock) }} />,
+    );
     expect(await screen.findByText('App status')).toBeOnTheScreen();
     expect(screen.getByText('Connected · 42 ms')).toBeOnTheScreen();
     expect(screen.getByText('₹1,23,456.50')).toBeOnTheScreen();
     expect(screen.getByText('• EXPO_PUBLIC_SUPABASE_URL is not a URL')).toBeOnTheScreen();
   });
   it('renders in Hindi', async () => {
-    await renderWithProviders(<DiagnosticsScreen deps={{ getDiagnostics: new GetDiagnostics(new FakeDiagnosticsRepository(), fixedClock) }} />, {
-      language: 'hi',
-    });
+    await renderWithProviders(
+      <DiagnosticsScreen
+        deps={{ getDiagnostics: new GetDiagnostics(new FakeDiagnosticsRepository(), fixedClock) }}
+      />,
+      {
+        language: 'hi',
+      },
+    );
     expect(await screen.findByText('ऐप की स्थिति')).toBeOnTheScreen();
   });
   it('shows an error with retry when loading fails, and recovers', async () => {

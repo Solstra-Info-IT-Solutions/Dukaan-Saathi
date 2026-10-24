@@ -17,7 +17,10 @@ export function scrub(value: unknown, depth = 0): unknown {
   if (Array.isArray(value)) return value.map((v) => scrub(v, depth + 1));
   if (value && typeof value === 'object') {
     return Object.fromEntries(
-      Object.entries(value as Record<string, unknown>).map(([k, v]) => [k, SENSITIVE_KEY.test(k) ? '[redacted]' : scrub(v, depth + 1)]),
+      Object.entries(value as Record<string, unknown>).map(([k, v]) => [
+        k,
+        SENSITIVE_KEY.test(k) ? '[redacted]' : scrub(v, depth + 1),
+      ]),
     );
   }
   return value;

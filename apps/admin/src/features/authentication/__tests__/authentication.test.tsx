@@ -21,9 +21,21 @@ describe('decideOperatorAccess (deny by default)', () => {
     ['backend missing', { backendConfigured: false, identity: operator() }, 'backend_not_configured'],
     ['signed out', { backendConfigured: true, identity: null }, 'signed_out'],
     ['not an operator', { backendConfigured: true, identity: operator({ role: null }) }, 'not_an_operator'],
-    ['non-operator without MFA is still just not an operator', { backendConfigured: true, identity: operator({ role: null, aal: 'aal1' }) }, 'not_an_operator'],
-    ['operator without MFA', { backendConfigured: true, identity: operator({ aal: 'aal1' }) }, 'mfa_required'],
-    ['wrong role', { backendConfigured: true, identity: operator({ role: 'analyst' }) }, 'role_not_permitted'],
+    [
+      'non-operator without MFA is still just not an operator',
+      { backendConfigured: true, identity: operator({ role: null, aal: 'aal1' }) },
+      'not_an_operator',
+    ],
+    [
+      'operator without MFA',
+      { backendConfigured: true, identity: operator({ aal: 'aal1' }) },
+      'mfa_required',
+    ],
+    [
+      'wrong role',
+      { backendConfigured: true, identity: operator({ role: 'analyst' }) },
+      'role_not_permitted',
+    ],
     ['allowed', { backendConfigured: true, identity: operator() }, 'allowed'],
   ] as const)('%s → %s', (_name, input, expected) => {
     expect(decideOperatorAccess({ ...input, allowedRoles: allowed }).kind).toBe(expected);

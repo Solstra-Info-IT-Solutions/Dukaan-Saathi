@@ -100,5 +100,11 @@ export function roleHasPermission(role: ShopRole, permission: Permission): boole
   return DEFAULT_ROLE_PERMISSIONS[role].includes(permission);
 }
 
-export const PLATFORM_ROLES = ['super_admin', 'billing_admin', 'onboarding_operator', 'support_agent', 'analyst'] as const;
+export const PLATFORM_ROLES = [
+  'super_admin',
+  'billing_admin',
+  'onboarding_operator',
+  'support_agent',
+  'analyst',
+] as const;
 export type PlatformRole = (typeof PLATFORM_ROLES)[number];

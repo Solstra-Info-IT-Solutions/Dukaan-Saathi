@@ -18,7 +18,10 @@ export const ENTITLEMENTS = {
   'offline.enabled': { type: 'boolean', safeDefault: true },
   'voice.billing': { type: 'boolean', safeDefault: false },
   'onboarding.managed': { type: 'boolean', safeDefault: false },
-} as const satisfies Record<string, { type: 'boolean'; safeDefault: boolean } | { type: 'limit'; safeDefault: number }>;
+} as const satisfies Record<
+  string,
+  { type: 'boolean'; safeDefault: boolean } | { type: 'limit'; safeDefault: number }
+>;
 
 export type EntitlementKey = keyof typeof ENTITLEMENTS;
 export const ENTITLEMENT_KEYS = Object.keys(ENTITLEMENTS) as EntitlementKey[];

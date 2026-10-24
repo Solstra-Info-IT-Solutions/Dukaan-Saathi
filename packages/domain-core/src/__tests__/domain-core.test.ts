@@ -101,12 +101,20 @@ describe('computeBill guards', () => {
   });
   it('rejects a line discount larger than the line', () => {
     expect(() =>
-      computeBill({ lines: [{ ...line, lineDiscountPaise: paise(1001) }], taxMode: 'none', roundOffEnabled: false }),
+      computeBill({
+        lines: [{ ...line, lineDiscountPaise: paise(1001) }],
+        taxMode: 'none',
+        roundOffEnabled: false,
+      }),
     ).toThrow(MoneyError);
   });
   it('rejects zero quantity', () => {
     expect(() =>
-      computeBill({ lines: [{ ...line, quantityMilli: quantityMilli(0) }], taxMode: 'none', roundOffEnabled: false }),
+      computeBill({
+        lines: [{ ...line, quantityMilli: quantityMilli(0) }],
+        taxMode: 'none',
+        roundOffEnabled: false,
+      }),
     ).toThrow(MoneyError);
   });
 });
@@ -119,8 +127,12 @@ describe('invoice numbers', () => {
     expect(parseInvoiceNumber(formatted)).toEqual(parts);
   });
   it('rejects invalid parts', () => {
-    expect(() => formatInvoiceNumber({ prefix: 'ds', fy: '2627', deviceCode: 'B', seq: 1 })).toThrow(RangeError);
-    expect(() => formatInvoiceNumber({ prefix: 'DS', fy: '2627', deviceCode: 'B', seq: 0 })).toThrow(RangeError);
+    expect(() => formatInvoiceNumber({ prefix: 'ds', fy: '2627', deviceCode: 'B', seq: 1 })).toThrow(
+      RangeError,
+    );
+    expect(() => formatInvoiceNumber({ prefix: 'DS', fy: '2627', deviceCode: 'B', seq: 0 })).toThrow(
+      RangeError,
+    );
     expect(parseInvoiceNumber('DS-2627-B-1')).toBeNull();
   });
   it.each([

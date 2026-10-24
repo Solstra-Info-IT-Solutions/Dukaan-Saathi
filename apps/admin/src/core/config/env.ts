@@ -9,12 +9,19 @@ export function parseAdminEnv(raw: { url?: string; key?: string }): AdminEnv {
   const key = raw.key?.trim() || undefined;
   if (!url && !key) return { backend: null, issues: [] };
   if (!url || !key) {
-    return { backend: null, issues: ['Both NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY are required'] };
+    return {
+      backend: null,
+      issues: ['Both NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY are required'],
+    };
   }
   if (/service_role|sb_secret_/i.test(key)) {
-    return { backend: null, issues: ['NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY looks like a secret key — refusing to use it'] };
+    return {
+      backend: null,
+      issues: ['NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY looks like a secret key — refusing to use it'],
+    };
   }
-  if (!/^https?:\/\/.+/.test(url)) return { backend: null, issues: ['NEXT_PUBLIC_SUPABASE_URL is not a URL'] };
+  if (!/^https?:\/\/.+/.test(url))
+    return { backend: null, issues: ['NEXT_PUBLIC_SUPABASE_URL is not a URL'] };
   return { backend: { url, publishableKey: key }, issues: [] };
 }
 

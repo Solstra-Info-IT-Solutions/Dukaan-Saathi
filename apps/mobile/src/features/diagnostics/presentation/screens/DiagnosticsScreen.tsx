@@ -5,7 +5,10 @@ import { useTranslation } from 'react-i18next';
 import { ErrorState, LoadingState } from '@/shared/components/ScreenState';
 import { spacing } from '@/shared/theme/theme';
 import type { Language } from '@/core/localization/i18n';
-import { type DiagnosticsViewModelDeps, useDiagnosticsViewModel } from '../viewmodels/useDiagnosticsViewModel';
+import {
+  type DiagnosticsViewModelDeps,
+  useDiagnosticsViewModel,
+} from '../viewmodels/useDiagnosticsViewModel';
 
 /** Renders ViewModel state and forwards intents. No data access here. */
 export function DiagnosticsScreen({ deps }: { deps: DiagnosticsViewModelDeps }) {
@@ -36,11 +39,16 @@ export function DiagnosticsScreen({ deps }: { deps: DiagnosticsViewModelDeps }) 
 
       <List.Item title={t('diagnostics.version')} description={report.appVersion} />
       <List.Item title={t('diagnostics.environment')} description={report.appEnv} />
-      <List.Item title={t('diagnostics.network')} description={state.isOnline ? t('diagnostics.online') : t('diagnostics.offline')} />
+      <List.Item
+        title={t('diagnostics.network')}
+        description={state.isOnline ? t('diagnostics.online') : t('diagnostics.offline')}
+      />
       <List.Item title={t('diagnostics.backend')} description={backendLabel} testID="backend-status" />
       <List.Item
         title={t('diagnostics.config')}
-        description={report.configSource === 'bundled' ? t('diagnostics.configBundled') : report.configRevision}
+        description={
+          report.configSource === 'bundled' ? t('diagnostics.configBundled') : report.configRevision
+        }
       />
       <List.Item title={t('diagnostics.moneySample')} description={formatPaise(paise(12345650))} />
 

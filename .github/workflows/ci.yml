@@ -1,0 +1,67 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  checks:
+    name: Typecheck, lint, unit tests, builds
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: Format
+        run: npm run format:check
+      - name: Typecheck
+        run: npm run typecheck
+      - name: Lint (includes architecture boundary rules)
+        run: npm run lint
+      - name: Unit tests
+        run: npm test
+      - name: Money fixtures in SQL are up to date
+        run: npm run db:fixtures && git diff --exit-code supabase/tests/database/002_money_fixtures.test.sql
+      - name: Database pre-check (PGlite)
+        run: npm run db:check:local
+      - name: Admin production build
+        run: npm run build --workspace @ds/admin
+        env:
+          NEXT_TELEMETRY_DISABLED: 1
+      - name: Mobile bundle (Metro export)
+        run: npx expo export --platform android --output-dir /tmp/expo-export
+        working-directory: apps/mobile
+        env:
+          CI: 1
+
+  database:
+    name: Supabase migrations + pgTAP
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: Start Supabase (database + auth only)
+        run: npx supabase start --exclude studio,imgproxy,mailpit,realtime,storage-api,edge-runtime,logflare,vector,supavisor,postgres-meta
+      - name: pgTAP
+        run: npx supabase test db
+      - name: Generated DB types are current
+        # Not blocking until the first generated file is committed in Phase 02.
+        continue-on-error: true
+        run: npx supabase gen types typescript --local > /tmp/database.types.ts && diff -u packages/contracts/src/database.types.ts /tmp/database.types.ts
+      - name: Stop Supabase
+        if: always()
+        run: npx supabase stop --no-backup

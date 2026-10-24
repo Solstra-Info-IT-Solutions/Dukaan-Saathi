@@ -11,7 +11,10 @@ export default tseslint.config(
         'error',
         {
           patterns: [
-            { group: ['react', 'react-*', 'expo*', '@supabase/*', 'next', 'next/*'], message: 'contracts must stay platform-free.' },
+            {
+              group: ['react', 'react-*', 'expo*', '@supabase/*', 'next', 'next/*'],
+              message: 'contracts must stay platform-free.',
+            },
           ],
         },
       ],
