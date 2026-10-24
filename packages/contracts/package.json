@@ -1,0 +1,23 @@
+{
+  "name": "@ds/contracts",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Typed contracts shared by mobile, admin, edge functions and tests: error codes, permissions, feature keys, Zod schemas, generated database types.",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json",
+    "test": "vitest run",
+    "lint": "eslint src"
+  },
+  "dependencies": {
+    "zod": "4.6.7"
+  },
+  "devDependencies": {
+    "@eslint/js": "~9.39.5",
+    "eslint": "~9.39.5",
+    "typescript": "~6.0.3",
+    "typescript-eslint": "8.72.0",
+    "vitest": "5.0.5"
+  }
+}
