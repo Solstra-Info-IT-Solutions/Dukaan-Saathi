@@ -1,5 +1,5 @@
 // GENERATED FILE — do not edit by hand.
-// Source: `supabase gen types typescript` against dukaan-saathi-dev after migration 20261024133107.
+// Source: `supabase gen types typescript` (Insert/Update of RPC-only tables narrowed to `never`) against dukaan-saathi-dev after migration 20261024143159.
 // Regenerate with `npm run db:types` (local stack) whenever a migration changes the public schema.
 
 export type Json =
@@ -18,6 +18,150 @@ export type Database = {
   }
   public: {
     Tables: {
+      categories: {
+        Row: {
+          archived_at: string | null
+          created_at: string
+          created_by: string | null
+          id: string
+          name: string
+          name_hi: string | null
+          shop_id: string
+          sort_order: number
+          updated_at: string
+        }
+        Insert: never
+        Update: never
+        Relationships: []
+      }
+      import_job_rows: {
+        Row: {
+          action: string
+          errors: string[]
+          id: string
+          job_id: string
+          matched_product_id: string | null
+          normalized: Json | null
+          raw: Json
+          row_number: number
+          shop_id: string
+          skipped_by_user: boolean
+        }
+        Insert: never
+        Update: never
+        Relationships: []
+      }
+      import_jobs: {
+        Row: {
+          client_operation_id: string
+          committed_at: string | null
+          create_count: number
+          created_at: string
+          created_by: string
+          error_count: number
+          file_name: string
+          id: string
+          kind: string
+          row_count: number
+          shop_id: string
+          skip_count: number
+          status: string
+          update_count: number
+          updated_at: string
+          valid_count: number
+        }
+        Insert: never
+        Update: never
+        Relationships: []
+      }
+      product_aliases: {
+        Row: {
+          alias: string
+          created_at: string
+          id: string
+          product_id: string
+          shop_id: string
+          source: string
+        }
+        Insert: never
+        Update: never
+        Relationships: []
+      }
+      product_barcodes: {
+        Row: {
+          barcode: string
+          created_at: string
+          id: string
+          product_id: string
+          shop_id: string
+        }
+        Insert: never
+        Update: never
+        Relationships: []
+      }
+      product_price_history: {
+        Row: {
+          changed_by: string | null
+          effective_from: string
+          id: number
+          price_paise: number
+          product_id: string
+          shop_id: string
+        }
+        Insert: never
+        Update: never
+        Relationships: []
+      }
+      products: {
+        Row: {
+          archived_at: string | null
+          category_id: string | null
+          created_at: string
+          created_by: string | null
+          hsn_code: string | null
+          id: string
+          is_active: boolean
+          last_cost_paise: number | null
+          low_stock_threshold_milli: number | null
+          mrp_paise: number | null
+          name: string
+          name_hi: string | null
+          price_paise: number
+          search_text: string
+          shop_id: string
+          stock_on_hand_milli: number
+          tax_rate_code: string | null
+          track_stock: boolean
+          unit_code: string
+          updated_at: string
+        }
+        Insert: never
+        Update: never
+        Relationships: []
+      }
+      tax_rates: {
+        Row: {
+          code: string
+          effective_from: string
+          effective_to: string | null
+          label: string
+          rate_bp: number
+        }
+        Insert: never
+        Update: never
+        Relationships: []
+      }
+      units: {
+        Row: {
+          allows_fraction: boolean
+          code: string
+          label: Json
+          sort_order: number
+        }
+        Insert: never
+        Update: never
+        Relationships: []
+      }
       entitlement_definitions: {
         Row: {
           default_value: Json
@@ -633,6 +777,27 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      archive_category: { Args: { p_id: string; p_shop_id: string }; Returns: undefined }
+      archive_product: { Args: { p_product_id: string; p_shop_id: string }; Returns: undefined }
+      cancel_import_job: { Args: { p_job_id: string }; Returns: undefined }
+      commit_product_import: { Args: { p_client_operation_id: string; p_job_id: string }; Returns: Json }
+      create_import_job: {
+        Args: { p_client_operation_id: string; p_file_name: string; p_shop_id: string }
+        Returns: Json
+      }
+      get_catalogue_reference: { Args: { p_shop_id: string }; Returns: Json }
+      get_product: { Args: { p_product_id: string; p_shop_id: string }; Returns: Json }
+      save_category: {
+        Args: { p_id: string | null; p_name: string; p_name_hi?: string; p_shop_id: string }
+        Returns: Json
+      }
+      save_product: { Args: { p_input: Json; p_shop_id: string }; Returns: Json }
+      search_products: {
+        Args: { p_category_id?: string; p_limit?: number; p_offset?: number; p_query?: string; p_shop_id: string }
+        Returns: Json
+      }
+      stage_import_rows: { Args: { p_job_id: string; p_rows: Json }; Returns: Json }
+      update_import_row: { Args: { p_patch?: Json; p_row_id: string; p_skip?: boolean }; Returns: Json }
       accept_shop_invitation: {
         Args: { p_invitation_id: string }
         Returns: Json

@@ -7,6 +7,7 @@
 //
 // Usage: node scripts/db-check-pglite.mjs
 import { PGlite } from '@electric-sql/pglite';
+import { pg_trgm } from '@electric-sql/pglite/contrib/pg_trgm';
 import { readdirSync, readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -75,7 +76,7 @@ function sqlFiles(dir, suffix) {
     .map((f) => ({ name: `${dir}/${f}`, sql: readFileSync(join(root, dir, f), 'utf8') }));
 }
 
-const db = await PGlite.create();
+const db = await PGlite.create({ extensions: { pg_trgm } });
 await db.exec(SUPABASE_STUBS);
 
 for (const m of sqlFiles('supabase/migrations', '.sql')) {
