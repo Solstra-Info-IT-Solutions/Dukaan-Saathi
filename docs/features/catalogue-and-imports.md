@@ -1,6 +1,6 @@
 # Feature: Product Catalogue, Categories, Units, Import
 
-Status: Planned · Phase: 03 (import basics), 11 (operator workflow) · Requirements: FR-04, FR-17
+Status: Implemented (CSV; XLSX in Phase 11) — see [../phases/PHASE_03_CATALOGUE.md](../phases/PHASE_03_CATALOGUE.md) · Phase: 03 (import basics), 11 (operator workflow) · Requirements: FR-04, FR-17
 
 ## Purpose
 Maintain the shop's products for fast search, scanning and voice matching; bulk-load products from CSV/XLSX
@@ -68,10 +68,14 @@ Money parsing fixtures; unit synonyms; Edge import-preview with CSV/XLSX fixture
 commit idempotency and atomicity (failure mid-way leaves no products); quota trigger; cross-shop job id rejected; ViewModel import state machine.
 
 ## Acceptance criteria
-- [ ] Create/edit/archive products and categories; price change appears in history.
-- [ ] Search finds "cheeni" for product "Sugar" with alias "cheeni", and Devanagari "चीनी".
-- [ ] 1,000-row CSV previews with per-row errors, can be fixed and committed once; re-commit is a no-op.
-- [ ] Product limit enforced server-side even when the app is bypassed.
+- [x] Create/edit/archive products and categories; price change appears in history.
+- [x] Search finds "cheeni" for product "Sugar" with alias "cheeni", and Devanagari "चीनी".
+- [x] 1,000-row CSV previews with per-row errors, can be fixed and committed once; re-commit is a no-op.
+- [x] Product limit enforced server-side even when the app is bypassed.
 
 ## Limitations
 No product variants (size/colour) in v1. No image per product in v1 (backlog).
+
+As built (Phase 03): CSV is parsed on the phone and staged with `create_import_job` / `stage_import_rows`; there is no upload,
+bucket or Edge preview yet (ADR-032). XLSX, the `import-files` bucket and `import-preview` move to Phase 11. Catalogue writes are
+RPC-only (ADR-030), so `SupabaseCatalogueDataSource` calls RPCs instead of table inserts/updates. Opening stock is ignored until Phase 07.

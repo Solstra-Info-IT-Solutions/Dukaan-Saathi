@@ -85,13 +85,21 @@ Legend: Ph = phase; Idem = idempotent via client_operation_id.
 | `deactivate_member(p_shop_id, p_user_id)` | R | memberships | 02 | `staff.manage` | — | Revokes their devices |
 | `register_device(p_shop_id, p_installation_id, p_platform, p_label?, p_app_version?)` | R | devices | 02 | member | per installation | Returns `deviceId`, `deviceCode`, `invoicePrefix`, `fy`, `lastSeq`; quota `devices.max`; revoked installation → `DS_DEVICE_NOT_REGISTERED` |
 | `revoke_device(p_shop_id, p_device_id)` | R | devices | 02 | `staff.manage` | — | |
-| `categories` | T | catalogue | 03 | read: member; write: `product.manage` | — | Soft delete (`archived_at`) |
-| `products` | T | catalogue | 03 | read: member; write: `product.manage` | — | Trigger: quota `products.max`, price history, `updated_at` |
-| `product_barcodes`, `product_aliases` | T | catalogue | 03 | `product.manage` | — | Barcode unique per shop |
-| `search_products(p_shop_id, p_query, p_limit, p_cursor)` | R | catalogue | 03 | member | — | Trigram + alias search, Hindi/English |
-| `import-preview` | E | imports | 03 | `product.manage`, entitlement `catalogue.import` | — | Parses uploaded CSV/XLSX → `import_job_rows` |
-| `update_import_row(p_job_id, p_row_id, p_patch)` | R | imports | 03 | `product.manage` | — | Revalidates row |
-| `commit_product_import(p_job_id, p_client_operation_id)` | R | imports | 03 | `product.manage` | yes | All-or-nothing upsert; quota checked for net new products |
+| `units`, `tax_rates`, `categories`, `products`, `product_barcodes`, `product_aliases` | T (read only) | catalogue | 03 | member (RLS) | — | `products.last_cost_paise` has no client column grant; no client writes on any catalogue table (ADR-030) |
+| `product_price_history`, `import_jobs`, `import_job_rows` | T (read only) | catalogue | 03 | `product.manage` (RLS) | — | Import screen reads problem rows directly |
+| `get_catalogue_reference(p_shop_id)` | R | catalogue | 03 | member | — | `{ units, taxRates, categories }` |
+| `save_category(p_shop_id, p_id?, p_name, p_name_hi?)` | R | catalogue | 03 | `product.manage` | by id | Name unique per shop (case-insensitive) → `DS_CONFLICT`; returns `{ id }` |
+| `archive_category(p_shop_id, p_id)` | R | catalogue | 03 | `product.manage` | — | Soft delete; its products become uncategorised |
+| `save_product(p_shop_id, p_input)` | R | catalogue | 03 | `product.manage` | by client id (ADR-031) | Full replace incl. barcodes/aliases; triggers: quota `products.max`, price history, `search_text`; barcode taken → `DS_CONFLICT`; returns Product |
+| `archive_product(p_shop_id, p_product_id)` | R | catalogue | 03 | `product.manage` | — | Soft delete |
+| `get_product(p_shop_id, p_product_id)` | R | catalogue | 03 | member | — | Cost masked without `product.view_cost` |
+| `search_products(p_shop_id, p_query?, p_category_id?, p_limit, p_offset)` | R | catalogue | 03 | member | — | Name / Hindi / alias / barcode, trigram; returns `{ items, nextOffset }`; cost masked without `product.view_cost` |
+| `create_import_job(p_shop_id, p_file_name, p_client_operation_id)` | R | imports | 03 | `product.manage`, entitlement `catalogue.import` | yes | Returns ImportJobSummary |
+| `stage_import_rows(p_job_id, p_rows)` | R | imports | 03 | `product.manage` | — | Batches (client sends 500); server validates each row; limit `import.rows_per_job` → `DS_QUOTA_EXCEEDED` |
+| `update_import_row(p_row_id, p_patch, p_skip?)` | R | imports | 03 | `product.manage` | — | Fix fields or skip; revalidates; returns ImportJobSummary |
+| `cancel_import_job(p_job_id)` | R | imports | 03 | `product.manage` | — | |
+| `commit_product_import(p_job_id, p_client_operation_id)` | R | imports | 03 | `product.manage`, entitlement `catalogue.import` | yes | All-or-nothing create/update; refused while errors remain; quota re-checked; returns `{ jobId, created, updated, replayed? }` |
+| `import-preview` | E | imports | 11 | operator / `product.manage` | — | XLSX parsing for the admin workbench (ADR-032); CSV is parsed on the phone |
 | `create_sale(p_input)` | R | billing | 04–05 | `sale.create` (+ `sale.discount`, `sale.price_override`, `udhaar.grant` as needed) | yes | See §5.1. Covers logical `create_quick_sale` and `complete_product_sale` |
 | `void_sale(p_input)` | R | billing | 05 | `sale.void` within window; owner always | yes | Reverses stock + ledger; audits |
 | `create_sale_return(p_input)` | R | billing | 06 | `sale.return` | yes | Partial returns, refund method, stock back |

@@ -35,6 +35,11 @@ input; each has a recommended default that the plan assumes until you say otherw
 | ADR-027 | `staff_accounts.max` counts active non-owner members plus pending invitations | Prevents bypassing the limit by sending many invitations | 2026-10-24 |
 | ADR-028 | Migrations applied to hosted projects through the Supabase MCP are renamed locally to the version the server recorded | Keeps `supabase db push` / CI in sync with what is deployed | 2026-10-24 |
 | ADR-029 | ViewModels never navigate; screens receive callbacks (`onActivated`, `onCodeSent`) and route files decide where to go | Keeps ViewModels router-free and testable (MVVM_ARCHITECTURE.md §3) | 2026-10-24 |
+| ADR-030 | Catalogue writes (products, barcodes, aliases, categories, imports) go only through SECURITY DEFINER RPCs; clients read via RLS | Narrows ADR-005: a product save touches several tables and the quota, and single-table category writes also use RPCs so every write shares the membership, shop-status and permission checks | 2026-10-24 |
+| ADR-031 | Product ids are generated on the phone (UUID v7) and `save_product` upserts by id | A retried create cannot duplicate the product; prepares offline creation (Phase 09) | 2026-10-24 |
+| ADR-032 | CSV is parsed on the phone (`@ds/domain-core`) and rows are staged with RPCs; XLSX, the `import-files` bucket and the Edge preview move to the Phase 11 admin workbench | No upload or Edge Function needed for the common case; Deno cannot be run or tested on this machine yet | 2026-10-24 |
+| ADR-033 | Every import row is validated on the server (`private.validate_import_row`); the client only rejects files that cannot be an import | One source of truth for validation; a modified client cannot import bad rows | 2026-10-24 |
+| ADR-034 | The `opening_stock` import column is recognised but not applied until inventory exists (Phase 07) | Stock must be written as movements, which arrive with inventory | 2026-10-24 |
 | ADR-017 | Voice parsing is deterministic (grammar + fuzzy match) in v1; LLM parsing is an optional, flag-gated later addition | Predictable, offline-capable, no per-request cost, no customer data leaving device. | 2026-10-24 |
 
 ## Open decisions (recommended defaults assumed)

@@ -46,9 +46,19 @@ Phase order may shift for dependencies; nothing is removed without a note in PRO
 | BL-211 | module registry + route guards | ✅ |
 
 ## Phase 03 — Catalogue & import
-BL-301 categories/products/barcodes/aliases/price history + RLS + triggers · BL-302 units/tax rates seed · BL-303 `search_products` (trigram, Hindi) ·
-BL-304 mobile products, product form, categories · BL-305 private bucket `import-files` + policies · BL-306 Edge `import-preview` (CSV/XLSX) ·
-BL-307 import review + commit RPC · BL-308 quota enforcement `products.max` · BL-309 tests.
+| ID | Item | Status |
+|---|---|---|
+| BL-301 | categories/products/barcodes/aliases/price history + RLS + triggers | ✅ |
+| BL-302 | units/tax rates seed (+ unit synonyms) | ✅ |
+| BL-303 | `search_products` (trigram, Hindi, aliases, barcode) | ✅ (timing on hosted DB → Phase 13) |
+| BL-304 | mobile products, product form, categories | ✅ |
+| BL-305 | private bucket `import-files` + policies | ➡️ Phase 11 (CSV is parsed on the device, nothing is uploaded — ADR-032) |
+| BL-306 | Edge `import-preview` (CSV/XLSX) | 🟨 CSV parsed on the device + server staging RPCs; XLSX → Phase 11 |
+| BL-307 | import review + commit RPC | ✅ |
+| BL-308 | quota enforcement `products.max` | ✅ |
+| BL-309 | tests | ✅ |
+| BL-310 | opening stock from import | ➡️ Phase 07 (ADR-034) |
+| BL-311 | category reorder UI, import template download | ⬜ backlog |
 
 ## Phase 04 — Quick billing
 BL-401 `invoice_series`, `sales`, `sale_items`, `sale_payments`, idempotency table · BL-402 `create_sale` (quick lines, cash/UPI/card/other) ·

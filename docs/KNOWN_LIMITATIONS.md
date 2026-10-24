@@ -2,10 +2,14 @@
 
 Deliberate gaps. Each has a reason and, where relevant, a backlog item.
 
-## Current state (end of Phase 01)
-- The mobile app has one screen (diagnostics). No authentication, shops or billing yet (Phase 02+).
+## Current state (end of Phase 03)
+- Mobile: sign-in, shops, staff, settings (Phase 02) and catalogue, categories, CSV import (Phase 03). No billing yet (Phase 04+).
+- Sign-in on a device needs the Supabase Auth settings listed in PHASE_02 (email template with `{{ .Token }}`, SMS provider).
+- Import accepts CSV only; XLSX arrives with the Phase 11 admin workbench (ADR-032). Opening stock from import is ignored until Phase 07.
+- Product search timing measured only in PGlite (51–54 ms typical, 121 ms worst case for 5,000 products); hosted-DB measurement in Phase 13.
+- Barcodes are typed; camera scanning arrives in Phase 05.
 - The admin panel has a login page and a guarded placeholder dashboard. Operator MFA enrolment is Phase 11, so a real operator will see "MFA required" until then (by design: deny by default).
-- No external service is configured: no Supabase project, SMS provider, Sentry, Expo/EAS account, payment provider, Play account.
+- External services: only the Supabase dev project (`dukaan-saathi-dev`) exists. No SMS provider, Sentry, Expo/EAS account, payment provider or Play account yet.
 - Sentry is not wired; `logger.setLogReporter` is the integration point.
 - The mobile app has not been run on an Android device or emulator in this environment. The bundle builds and screens are covered by component tests.
 
@@ -37,7 +41,7 @@ Deliberate gaps. Each has a reason and, where relevant, a backlog item.
 | Limitation | Mitigation |
 |---|---|
 | ESLint pinned to 9.x (deprecated upstream) | Expo's ESLint plugins do not support 10 yet (ADR-022) |
-| Generated DB types not yet produced; `database.types.ts` is hand-written for one function | First `supabase gen types` run in Phase 02 makes the CI check blocking |
+| `database.types.ts` is generated, then narrowed by hand (table Insert/Update set to `never` because clients write only through RPCs), so the CI diff against `supabase gen types` stays advisory | Review the CI diff when migrations change; regenerate with the Supabase MCP/CLI |
 | Offline SQLite data not encrypted at rest in v1 | Android app sandbox; SQLCipher decision in Phase 13 (BL-1304) |
 | Feature-flag changes reach installed apps within the refresh interval (default 15 min), not instantly | Server-enforced features are instant |
 | Subscription purchase flow undecided (Play billing policy) | OD-05; manual activation path designed |
