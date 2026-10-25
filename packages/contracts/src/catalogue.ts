@@ -66,6 +66,8 @@ export const SaveProductInputSchema = z.object({
     .nullable(),
   barcodes: z.array(z.string().regex(/^[A-Za-z0-9.-]{3,64}$/, 'INVALID_BARCODE')).max(10),
   aliases: z.array(z.string().trim().min(1).max(60)).max(20),
+  trackStock: z.boolean().optional(),
+  lowStockThresholdMilli: z.number().int().min(0).nullable().optional(),
 });
 export type SaveProductInput = z.infer<typeof SaveProductInputSchema>;
 

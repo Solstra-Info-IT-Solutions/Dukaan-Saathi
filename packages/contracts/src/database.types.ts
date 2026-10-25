@@ -180,6 +180,54 @@ export type Database = {
         Update: never
         Relationships: []
       }
+      purchase_items: {
+        Row: {
+          amount_paise: number
+          id: string
+          line_no: number
+          name: string
+          product_id: string
+          purchase_id: string
+          quantity_milli: number
+          shop_id: string
+          unit_cost_paise: number
+        }
+        Insert: never
+        Update: never
+        Relationships: []
+      }
+      purchase_payments: {
+        Row: {
+          amount_paise: number
+          id: string
+          method: string
+          purchase_id: string
+          shop_id: string
+        }
+        Insert: never
+        Update: never
+        Relationships: []
+      }
+      purchases: {
+        Row: {
+          business_date: string
+          client_operation_id: string
+          created_at: string
+          created_by: string
+          device_id: string | null
+          id: string
+          note: string | null
+          paid_paise: number
+          shop_id: string
+          supplier_id: string | null
+          supplier_invoice_date: string | null
+          supplier_invoice_no: string | null
+          total_paise: number
+        }
+        Insert: never
+        Update: never
+        Relationships: []
+      }
       report_exports: {
         Row: {
           created_at: string
@@ -308,11 +356,52 @@ export type Database = {
           created_by: string | null
           id: string
           kind: string
+          note: string | null
           product_id: string
+          purchase_id: string | null
           quantity_milli: number
+          reason: string | null
           return_id: string | null
           sale_id: string | null
           shop_id: string
+        }
+        Insert: never
+        Update: never
+        Relationships: []
+      }
+      supplier_ledger_entries: {
+        Row: {
+          amount_paise: number
+          business_date: string
+          client_operation_id: string | null
+          created_at: string
+          created_by: string
+          device_id: string | null
+          id: string
+          kind: string
+          method: string | null
+          note: string | null
+          purchase_id: string | null
+          shop_id: string
+          supplier_id: string
+        }
+        Insert: never
+        Update: never
+        Relationships: []
+      }
+      suppliers: {
+        Row: {
+          archived_at: string | null
+          balance_paise: number
+          created_at: string
+          created_by: string
+          gstin: string | null
+          id: string
+          name: string
+          note: string | null
+          phone_e164: string | null
+          shop_id: string
+          updated_at: string
         }
         Insert: never
         Update: never
@@ -964,7 +1053,14 @@ export type Database = {
         Args: { p_client_operation_id: string; p_file_name: string; p_shop_id: string }
         Returns: Json
       }
+      adjust_stock: { Args: { p_input: Json }; Returns: Json }
       begin_report_export: { Args: { p_shop_id: string }; Returns: Json }
+      check_stock_drift: { Args: { p_shop_id: string }; Returns: Json }
+      list_stock: { Args: { p_low_only?: boolean; p_query?: string; p_shop_id: string }; Returns: Json }
+      receive_purchase: { Args: { p_input: Json }; Returns: Json }
+      record_supplier_payment: { Args: { p_input: Json }; Returns: Json }
+      save_supplier: { Args: { p_input: Json }; Returns: Json }
+      submit_stock_count: { Args: { p_input: Json }; Returns: Json }
       close_day: { Args: { p_input: Json }; Returns: Json }
       create_sale: { Args: { p_input: Json }; Returns: Json }
       create_sale_return: { Args: { p_input: Json }; Returns: Json }

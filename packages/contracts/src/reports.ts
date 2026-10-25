@@ -79,6 +79,8 @@ export const CashBreakdownSchema = z.object({
   cashSalesPaise: PaiseSchema,
   cashRefundsPaise: PaiseSchema,
   cashExpensesPaise: PaiseSchema,
+  /** Phase 07; closings stored before it have no such key. */
+  cashSupplierPaymentsPaise: PaiseSchema.default(0),
   expectedCashPaise: SignedPaiseSchema,
 });
 export const DayCloseSchema = z.object({
