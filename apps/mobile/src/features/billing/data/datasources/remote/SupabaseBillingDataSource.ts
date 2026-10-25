@@ -2,6 +2,8 @@ import {
   CreateSaleOutputSchema,
   type CreateSaleInput,
   SalePageSchema,
+  type SaleReturnInput,
+  SaleReturnOutputSchema,
   SaleSchema,
   type VoidSaleInput,
 } from '@ds/contracts';
@@ -46,6 +48,12 @@ export class SupabaseBillingDataSource {
         ...(cursor ? { p_cursor: cursor } : {}),
       }),
       (d) => SalePageSchema.parse(d),
+    );
+  }
+
+  createReturn(input: SaleReturnInput) {
+    return this.call(this.client.rpc('create_sale_return', { p_input: input }), (d) =>
+      SaleReturnOutputSchema.parse(d),
     );
   }
 

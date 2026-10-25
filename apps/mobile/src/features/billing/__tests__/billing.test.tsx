@@ -26,6 +26,7 @@ import {
   PriceChanged,
   type ProductFinder,
   type ReceiptSharer,
+  type ReturnCommand,
   type Sale,
   type SaleCommand,
   type SaleFilter,
@@ -36,6 +37,7 @@ import type { BillingRepository } from '../domain/repositories/BillingRepository
 import {
   BillInputError,
   CreateSale,
+  CreateSaleReturn,
   GetSale,
   ListSales,
   ShareReceipt,
@@ -104,6 +106,7 @@ class FakeBillingRepository implements BillingRepository {
   saved = new Map<string, { payload: string; result: CreatedSale }>();
   sales = new Map<string, Sale>();
   voids: VoidCommand[] = [];
+  returns: ReturnCommand[] = [];
   listCalls: SaleFilter[] = [];
   loseNextResponse = false;
   failNext: unknown = null;
@@ -162,6 +165,34 @@ class FakeBillingRepository implements BillingRepository {
         createdByName: s.createdByName,
       }));
     return { items, nextCursor: null };
+  }
+
+  async createReturn(command: ReturnCommand) {
+    this.returns.push(command);
+    const sale = this.sales.get(command.saleId)!;
+    let refund = 0;
+    const lines = sale.lines.map((l) => {
+      const r = command.lines.find((x) => x.lineNo === l.lineNo);
+      if (!r) return l;
+      refund += Math.round((l.netPaise * r.quantityMilli) / l.quantityMilli);
+      return { ...l, returnedQuantityMilli: (l.returnedQuantityMilli ?? 0) + r.quantityMilli };
+    });
+    const ret = {
+      returnId: '0190f0f0-0000-7000-8000-000000000901',
+      createdAt: NOW,
+      refundPaise: refund,
+      refundMethod: command.refundMethod,
+      reason: command.reason,
+      lines: command.lines.map((l) => ({ ...l, refundPaise: 0 })),
+    };
+    this.sales.set(sale.saleId, { ...sale, lines, returns: [...(sale.returns ?? []), ret] });
+    return {
+      returnId: ret.returnId,
+      saleId: sale.saleId,
+      refundPaise: refund,
+      refundMethod: command.refundMethod,
+      replayed: false,
+    };
   }
 
   async voidSale(command: VoidCommand): Promise<Sale> {
@@ -503,6 +534,7 @@ const LABELS: ReceiptLabels = {
   taxInvoice: 'Tax invoice',
   hsn: 'HSN',
   voided: 'VOIDED',
+  returned: 'Returned',
   method: (m) => m.toUpperCase(),
   unit: (u) => u,
   formatDate: () => '25 Oct 2026, 11:00 am',
@@ -699,6 +731,7 @@ describe('ReceiptScreen', () => {
         sharer ?? { sharePdf: jest.fn(async () => {}), shareText: jest.fn(async () => {}) },
       ),
       voidSale: new VoidSale(repo),
+      createReturn: new CreateSaleReturn(repo),
       newId,
     };
   }
@@ -712,7 +745,9 @@ describe('ReceiptScreen', () => {
         deps={receiptDeps(repo, sharer)}
         shopId={SHOP_A}
         saleId={SALE.saleId}
+        deviceId={DEVICE}
         canVoid={false}
+        canReturn={false}
         onNewBill={jest.fn()}
       />,
       { language: 'hi' },
@@ -732,7 +767,9 @@ describe('ReceiptScreen', () => {
         deps={receiptDeps(repo)}
         shopId={SHOP_A}
         saleId={SALE.saleId}
+        deviceId={DEVICE}
         canVoid
+        canReturn={false}
         onNewBill={jest.fn()}
       />,
     );
@@ -742,6 +779,69 @@ describe('ReceiptScreen', () => {
     await fireEvent.press(buttons[buttons.length - 1]!);
     expect(await screen.findByText('VOIDED: Wrong items')).toBeTruthy();
     expect(repo.voids).toEqual([expect.objectContaining({ saleId: SALE.saleId, reason: 'Wrong items' })]);
+  });
+});
+
+describe('returns', () => {
+  it('returns part of a line with a reason and shows the refund on the receipt', async () => {
+    const repo = new FakeBillingRepository();
+    repo.sales.set(SALE.saleId, SALE);
+    await renderWithProviders(
+      <ReceiptScreen
+        deps={{
+          getSale: new GetSale(repo),
+          shareReceipt: new ShareReceipt({
+            sharePdf: jest.fn(async () => {}),
+            shareText: jest.fn(async () => {}),
+          }),
+          voidSale: new VoidSale(repo),
+          createReturn: new CreateSaleReturn(repo),
+          newId,
+        }}
+        shopId={SHOP_A}
+        saleId={SALE.saleId}
+        deviceId={DEVICE}
+        canVoid={false}
+        canReturn
+        onNewBill={jest.fn()}
+      />,
+    );
+    await fireEvent.press(await screen.findByText('Return items'));
+    await fireEvent.changeText(await screen.findByLabelText('Return quantity of Doodh <b>'), '0');
+    await fireEvent.changeText(screen.getByLabelText('Return quantity of Pyaaz'), '0.25');
+    await fireEvent.changeText(screen.getByLabelText('Reason for return'), 'Spoilt');
+    await fireEvent.press(screen.getByText('Refund'));
+    await waitFor(() => expect(repo.returns).toHaveLength(1));
+    expect(repo.returns[0]).toMatchObject({
+      saleId: SALE.saleId,
+      deviceId: DEVICE,
+      lines: [{ lineNo: 2, quantityMilli: 250 }],
+      refundMethod: 'cash',
+      reason: 'Spoilt',
+    });
+    expect(await screen.findByText('Returned ₹9.33 (Cash): Spoilt')).toBeTruthy();
+  });
+
+  it('refuses a return with nothing chosen or without a reason', async () => {
+    const repo = new FakeBillingRepository();
+    const use = new CreateSaleReturn(repo);
+    const base = {
+      clientOperationId: newId(),
+      shopId: SHOP_A,
+      deviceId: DEVICE,
+      saleId: SALE.saleId,
+      refundMethod: 'cash' as const,
+    };
+    await expect(
+      use.execute({ ...base, lines: [{ lineNo: 1, quantityMilli: 0 }], reason: 'Spoilt' }),
+    ).rejects.toMatchObject({
+      reason: 'NOTHING_TO_RETURN',
+    });
+    await expect(
+      use.execute({ ...base, lines: [{ lineNo: 1, quantityMilli: 1000 }], reason: '' }),
+    ).rejects.toMatchObject({
+      reason: 'REASON_REQUIRED',
+    });
   });
 });
 

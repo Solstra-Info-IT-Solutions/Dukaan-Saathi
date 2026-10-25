@@ -7,13 +7,29 @@ import type { Permission } from '@ds/contracts';
  */
 export interface ModuleEntry {
   key: string;
-  href: '/settings' | '/staff' | '/diagnostics';
+  href: '/settings' | '/staff' | '/diagnostics' | '/reports' | '/expenses' | '/day-close';
   labelKey: string;
   icon: string;
   permission?: Permission;
 }
 
 export const MORE_MODULES: readonly ModuleEntry[] = [
+  // Everyone sees today's numbers (cashiers only their own); reports inside need report.view_sales.
+  { key: 'reports', href: '/reports', labelKey: 'more.reports', icon: 'chart-bar' },
+  {
+    key: 'expenses',
+    href: '/expenses',
+    labelKey: 'more.expenses',
+    icon: 'cash-minus',
+    permission: 'expense.view',
+  },
+  {
+    key: 'dayClose',
+    href: '/day-close',
+    labelKey: 'more.dayClose',
+    icon: 'cash-register',
+    permission: 'day.close',
+  },
   {
     key: 'settings',
     href: '/settings',

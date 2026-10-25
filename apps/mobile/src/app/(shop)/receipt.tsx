@@ -8,15 +8,19 @@ export default function ReceiptRoute() {
   const router = useRouter();
   const { saleId } = useLocalSearchParams<{ saleId?: string }>();
   const shopId = useSessionStore((s) => s.activeShop?.shopId);
+  const deviceId = useSessionStore((s) => s.activeShop?.deviceId);
+  const canReturn = useHasPermission('sale.return');
   const canVoid = useHasPermission('sale.void');
-  if (!features || !shopId || !saleId) return null;
+  if (!features || !shopId || !deviceId || !saleId) return null;
   return (
     <ReceiptScreen
       key={saleId}
       deps={features.billing}
       shopId={shopId}
       saleId={saleId}
+      deviceId={deviceId}
       canVoid={canVoid}
+      canReturn={canReturn}
       onNewBill={() => router.navigate('/bill')}
     />
   );

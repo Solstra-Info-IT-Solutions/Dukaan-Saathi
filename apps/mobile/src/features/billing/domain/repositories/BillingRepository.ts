@@ -1,4 +1,13 @@
-import type { CreatedSale, Sale, SaleCommand, SaleFilter, SaleListItem, VoidCommand } from '../entities/Bill';
+import type {
+  CreatedSale,
+  ReturnCommand,
+  Sale,
+  SaleCommand,
+  SaleFilter,
+  SaleListItem,
+  SaleReturnResult,
+  VoidCommand,
+} from '../entities/Bill';
 
 export interface SalePage {
   items: SaleListItem[];
@@ -13,4 +22,6 @@ export interface BillingRepository {
   listSales(shopId: string, filter: SaleFilter, cursor: string | null, limit: number): Promise<SalePage>;
   /** Safe to repeat with the same command. */
   voidSale(command: VoidCommand): Promise<Sale>;
+  /** Safe to repeat with the same command. */
+  createReturn(command: ReturnCommand): Promise<SaleReturnResult>;
 }

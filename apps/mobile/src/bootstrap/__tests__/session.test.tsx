@@ -84,11 +84,19 @@ describe('SessionController', () => {
 describe('navigation gating', () => {
   it('lists only modules the role may open', () => {
     expect(visibleModules(DEFAULT_ROLE_PERMISSIONS.owner).map((m) => m.key)).toEqual([
+      'reports',
+      'expenses',
+      'dayClose',
       'settings',
       'staff',
       'diagnostics',
     ]);
-    expect(visibleModules(DEFAULT_ROLE_PERMISSIONS.cashier).map((m) => m.key)).toEqual(['diagnostics']);
+    // Cashiers: today's own sales and closing their drawer, but not expenses, settings or staff.
+    expect(visibleModules(DEFAULT_ROLE_PERMISSIONS.cashier).map((m) => m.key)).toEqual([
+      'reports',
+      'dayClose',
+      'diagnostics',
+    ]);
   });
 
   it('RequirePermission blocks a deep link for a cashier', async () => {

@@ -1,3 +1,4 @@
+import { formatQuantity, quantityMilli } from '@ds/domain-core';
 import { useMemo } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import {
@@ -8,6 +9,7 @@ import {
   Divider,
   HelperText,
   Portal,
+  SegmentedButtons,
   Text,
   TextInput,
 } from 'react-native-paper';
@@ -38,6 +40,7 @@ function useReceiptLabels(): ReceiptLabels {
       taxInvoice: t('billing.receipt.taxInvoice'),
       hsn: t('billing.receipt.hsn'),
       voided: t('billing.receipt.voided'),
+      returned: t('billing.receipt.returned'),
       method: (m: string) => t(`payments.${m}`),
       unit: (code: string) => t(`billing.units.${code}`, { defaultValue: code }),
       formatDate: (iso: string) =>
@@ -55,18 +58,22 @@ export function ReceiptScreen({
   deps,
   shopId,
   saleId,
+  deviceId,
   canVoid,
+  canReturn,
   onNewBill,
 }: {
   deps: ReceiptViewModelDeps;
   shopId: string;
   saleId: string;
+  deviceId: string;
   canVoid: boolean;
+  canReturn: boolean;
   onNewBill: () => void;
 }) {
   const { t } = useTranslation();
   const labels = useReceiptLabels();
-  const { state, actions } = useReceiptViewModel(deps, shopId, saleId);
+  const { state, actions } = useReceiptViewModel(deps, shopId, saleId, deviceId);
 
   if (state.loading) return <LoadingState />;
   if (state.loadErrorKey || !state.sale) {
@@ -130,6 +137,11 @@ export function ReceiptScreen({
               {labels.paid}: {r.payments.join(', ')}
             </Text>
           ) : null}
+          {r.returns.map((x) => (
+            <Text key={x} variant="bodySmall">
+              {x}
+            </Text>
+          ))}
           {r.footer.map((f) => (
             <Text key={f} variant="bodySmall" style={styles.center}>
               {f}
@@ -138,7 +150,7 @@ export function ReceiptScreen({
         </Card.Content>
       </Card>
 
-      <HelperText type="error" visible={state.errorKey !== null && !state.voidOpen}>
+      <HelperText type="error" visible={state.errorKey !== null && !state.voidOpen && !state.returnOpen}>
         {state.errorKey ? t(state.errorKey) : ''}
       </HelperText>
       <Button
@@ -164,6 +176,11 @@ export function ReceiptScreen({
       <Button mode="contained-tonal" icon="plus" onPress={onNewBill} contentStyle={styles.button}>
         {t('billing.receipt.newBill')}
       </Button>
+      {canReturn && !voided && state.returnable.length > 0 ? (
+        <Button mode="text" icon="keyboard-return" onPress={actions.openReturn} contentStyle={styles.button}>
+          {t('billing.returns.button')}
+        </Button>
+      ) : null}
       {canVoid && !voided ? (
         <Button mode="text" icon="cancel" onPress={actions.openVoid} contentStyle={styles.button}>
           {t('billing.void.button')}
@@ -171,6 +188,60 @@ export function ReceiptScreen({
       ) : null}
 
       <Portal>
+        <Dialog visible={state.returnOpen} onDismiss={state.returning ? undefined : actions.closeReturn}>
+          <Dialog.Title>{t('billing.returns.title')}</Dialog.Title>
+          <Dialog.ScrollArea>
+            <ScrollView contentContainerStyle={styles.dialogBody} keyboardShouldPersistTaps="handled">
+              <Text variant="bodySmall">{t('billing.returns.hint')}</Text>
+              {state.returnable.map(({ line, leftMilli }) => {
+                const name = line.label ?? t('billing.item', { number: line.lineNo });
+                return (
+                  <TextInput
+                    key={line.lineNo}
+                    mode="outlined"
+                    dense
+                    keyboardType="decimal-pad"
+                    label={t('billing.returns.quantity', {
+                      name,
+                      left: formatQuantity(quantityMilli(leftMilli)),
+                    })}
+                    accessibilityLabel={t('billing.returns.quantityFor', { name })}
+                    value={state.returnQty[line.lineNo] ?? ''}
+                    onChangeText={(v) => actions.setReturnQty(line.lineNo, v)}
+                  />
+                );
+              })}
+              <Text variant="bodyMedium">{t('billing.returns.refundBy')}</Text>
+              <SegmentedButtons
+                value={state.refundMethod}
+                onValueChange={(v) => actions.setRefundMethod(v as typeof state.refundMethod)}
+                buttons={(['cash', 'upi', 'card', 'other'] as const).map((m) => ({
+                  value: m,
+                  label: t(`payments.${m}`),
+                }))}
+              />
+              <TextInput
+                mode="outlined"
+                label={t('billing.void.reason')}
+                accessibilityLabel={t('billing.returns.reason')}
+                value={state.returnReason}
+                onChangeText={actions.setReturnReason}
+                maxLength={200}
+              />
+              <HelperText type="error" visible={state.errorKey !== null}>
+                {state.errorKey ? t(state.errorKey) : ''}
+              </HelperText>
+            </ScrollView>
+          </Dialog.ScrollArea>
+          <Dialog.Actions>
+            <Button onPress={actions.closeReturn} disabled={state.returning}>
+              {t('common.cancel')}
+            </Button>
+            <Button onPress={actions.confirmReturn} loading={state.returning} disabled={state.returning}>
+              {t('billing.returns.confirm')}
+            </Button>
+          </Dialog.Actions>
+        </Dialog>
         <Dialog visible={state.voidOpen} onDismiss={state.voiding ? undefined : actions.closeVoid}>
           <Dialog.Title>{t('billing.void.title', { invoice: r.invoiceNumber })}</Dialog.Title>
           <Dialog.Content style={styles.gap}>
@@ -208,4 +279,5 @@ const styles = StyleSheet.create({
   row: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm },
   flex: { flex: 1 },
   button: { minHeight: 48 },
+  dialogBody: { gap: spacing.sm, paddingVertical: spacing.sm },
 });

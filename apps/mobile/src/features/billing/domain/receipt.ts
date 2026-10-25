@@ -22,6 +22,7 @@ export interface ReceiptLabels {
   taxInvoice: string;
   hsn: string;
   voided: string;
+  returned: string;
   method: (method: string) => string;
   unit: (code: string) => string;
   formatDate: (iso: string) => string;
@@ -46,6 +47,8 @@ export interface ReceiptModel {
   totals: ReceiptLine[];
   total: string;
   payments: string[];
+  /** "Returned ₹45.00 (Cash): reason" per return. */
+  returns: string[];
   footer: string[];
 }
 
@@ -94,6 +97,9 @@ export function buildReceipt(sale: Sale, labels: ReceiptLabels): ReceiptModel {
         `${labels.method(p.method)} ${money(p.amountPaise)}` +
         (p.confirmation === 'manual' ? ` (${labels.upiConfirmedByShop})` : ''),
     ),
+    returns: (sale.returns ?? []).map(
+      (r) => `${labels.returned} ${money(r.refundPaise)} (${labels.method(r.refundMethod)}): ${r.reason}`,
+    ),
     footer,
   };
 }
@@ -113,6 +119,7 @@ export function receiptText(r: ReceiptModel, labels: Pick<ReceiptLabels, 'bill' 
     ...r.totals.map((l) => `${l.label}: ${l.amount}`),
     `*${labels.total}: ${r.total}*`,
     ...(r.payments.length ? [`${labels.paid}: ${r.payments.join(', ')}`] : []),
+    ...r.returns,
     '',
     ...r.footer,
   ].join('\n');
@@ -138,6 +145,7 @@ ${r.shopPhone ? `<div class="c">${escapeHtml(r.shopPhone)}</div>` : ''}
 <table>${r.lines.map(row).join('')}</table><hr>
 <table>${r.totals.map(row).join('')}<tr class="t"><td>${escapeHtml(labels.total)}</td><td class="r">${escapeHtml(r.total)}</td></tr></table>
 ${r.payments.length ? `<div>${escapeHtml(labels.paid)}: ${escapeHtml(r.payments.join(', '))}</div>` : ''}
+${r.returns.map((x) => `<div>${escapeHtml(x)}</div>`).join('')}
 <hr>${r.footer.map((f) => `<div class="c">${escapeHtml(f)}</div>`).join('')}
 </body></html>`;
 }

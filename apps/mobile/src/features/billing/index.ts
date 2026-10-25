@@ -6,7 +6,14 @@ export type {
   ProductFinder,
   ReceiptSharer,
 } from './domain/entities/Bill';
-export { CreateSale, GetSale, ListSales, ShareReceipt, VoidSale } from './domain/usecases/billingUseCases';
+export {
+  CreateSale,
+  CreateSaleReturn,
+  GetSale,
+  ListSales,
+  ShareReceipt,
+  VoidSale,
+} from './domain/usecases/billingUseCases';
 export { BillingRepositoryImpl } from './data/repositories/BillingRepositoryImpl';
 export { SupabaseBillingDataSource } from './data/datasources/remote/SupabaseBillingDataSource';
 export { BillingScreen } from './presentation/screens/BillingScreen';

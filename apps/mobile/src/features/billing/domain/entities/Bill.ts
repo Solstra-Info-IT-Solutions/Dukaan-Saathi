@@ -7,6 +7,8 @@ import type {
   SaleDto,
   SaleListItemDto,
   SalePaymentMethod,
+  SaleReturnInput,
+  SaleReturnOutputDto,
   ShopRole,
   VoidSaleInput,
 } from '@ds/contracts';
@@ -18,6 +20,8 @@ export type PaymentMethod = SalePaymentMethod;
 export type CreatedSale = CreateSaleOutputDto;
 export type SaleCommand = CreateSaleInput;
 export type VoidCommand = VoidSaleInput;
+export type ReturnCommand = SaleReturnInput;
+export type SaleReturnResult = SaleReturnOutputDto;
 export type SaleListItem = SaleListItemDto;
 export type CatalogueProduct = ProductDto;
 export type CatalogueReference = CatalogueReferenceDto;

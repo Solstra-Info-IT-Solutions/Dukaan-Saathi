@@ -2,6 +2,7 @@ import { translateError } from '@/core/errors/translateError';
 import {
   InvoiceSequenceConflict,
   PriceChanged,
+  type ReturnCommand,
   type SaleCommand,
   type SaleFilter,
   type VoidCommand,
@@ -45,4 +46,5 @@ export class BillingRepositoryImpl implements BillingRepository {
   listSales = (shopId: string, filter: SaleFilter, cursor: string | null, limit: number) =>
     translated(() => this.remote.listSales(shopId, filter, cursor, limit));
   voidSale = (command: VoidCommand) => translated(() => this.remote.voidSale(command));
+  createReturn = (command: ReturnCommand) => translated(() => this.remote.createReturn(command));
 }

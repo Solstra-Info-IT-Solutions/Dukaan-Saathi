@@ -60,6 +60,10 @@ export default function ShopLayout() {
       <Tabs.Screen name="categories" options={{ href: null, title: t('catalogue.categories') }} />
       <Tabs.Screen name="import" options={{ href: null, title: t('imports.title') }} />
       <Tabs.Screen name="receipt" options={{ href: null, title: t('billing.receipt.title') }} />
+      <Tabs.Screen name="reports" options={{ href: null, title: t('more.reports') }} />
+      <Tabs.Screen name="expenses" options={{ href: null, title: t('more.expenses') }} />
+      <Tabs.Screen name="expense-new" options={{ href: null, title: t('expenses.add') }} />
+      <Tabs.Screen name="day-close" options={{ href: null, title: t('more.dayClose') }} />
     </Tabs>
   );
 }

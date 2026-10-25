@@ -213,7 +213,10 @@
     "settings": "Shop settings",
     "staff": "Staff and phones",
     "switchShop": "Switch shop",
-    "signOut": "Sign out"
+    "signOut": "Sign out",
+    "reports": "Today & reports",
+    "expenses": "Expenses",
+    "dayClose": "Close the day"
   },
   "catalogue": {
     "search": "Search by name, Hindi name or barcode",
@@ -348,7 +351,8 @@
       "INVALID_QUANTITY": "Enter a valid quantity.",
       "WHOLE_QUANTITY": "This item is sold in whole units.",
       "INVALID_SPLIT": "The second payment must be less than the total and use another method.",
-      "PRICE_CHANGED": "A price was changed in the catalogue. The bill now shows the new price — check the total and pay again."
+      "PRICE_CHANGED": "A price was changed in the catalogue. The bill now shows the new price — check the total and pay again.",
+      "NOTHING_TO_RETURN": "Choose at least one item to return."
     },
     "receipt": {
       "title": "Receipt",
@@ -369,7 +373,8 @@
       "shareFailed": "Could not share the receipt. Try again.",
       "taxInvoice": "Tax invoice",
       "hsn": "HSN",
-      "voided": "VOIDED"
+      "voided": "VOIDED",
+      "returned": "Returned"
     },
     "searchItems": "Search item",
     "noResults": "No item found",
@@ -413,6 +418,17 @@
       "body": "The bill stays in history marked as voided and stock is returned. This cannot be undone.",
       "reason": "Reason",
       "confirm": "Void bill"
+    },
+    "returns": {
+      "button": "Return items",
+      "title": "Return items",
+      "hint": "Enter how much of each item comes back; leave empty or 0 for items that stay sold.",
+      "quantity": "{{name}} (up to {{left}})",
+      "quantityFor": "Return quantity of {{name}}",
+      "refundBy": "Refund by",
+      "reason": "Reason for return",
+      "confirm": "Refund",
+      "invalidQuantity": "A quantity is more than what is left to return."
     }
   },
   "sales": {
@@ -425,5 +441,92 @@
     "items_one": "{{count}} item",
     "items_other": "{{count}} items",
     "voided": "Voided"
+  },
+  "reports": {
+    "today": "Today",
+    "title": "Sales report",
+    "month": "This month",
+    "sales": "Sales",
+    "bills": "Bills",
+    "returns": "Returns",
+    "net": "Net",
+    "expenses": "Expenses",
+    "voided": "Voided bills",
+    "quantity": "Qty",
+    "profit": "Profit",
+    "profitEstimate": "Profit (estimate, {{coverage}}% of items have a cost)",
+    "ownOnly": "These are your own bills today.",
+    "total": "Total (after returns)",
+    "totalsLine": "Sales {{sales}} · returns {{returns}} · expenses {{expenses}}",
+    "billCount_one": "{{count}} bill",
+    "billCount_other": "{{count}} bills",
+    "quickItems": "Typed amounts",
+    "noCategory": "No category",
+    "empty": "No sales in this period.",
+    "upgrade": "Longer periods and breakdowns by item, category or staff need a plan with advanced reports.",
+    "export": "Export CSV",
+    "exported": "Report exported.",
+    "exportedQuota": "Report exported ({{used}} of {{limit}} this month).",
+    "groups": {
+      "day": "Day",
+      "payment": "Payment",
+      "product": "Item",
+      "category": "Category",
+      "staff": "Staff"
+    }
+  },
+  "dayClose": {
+    "title": "Close the day ({{date}})",
+    "thisPhone": "Cash of this phone's bills only.",
+    "opening": "Opening cash (₹)",
+    "cashSales": "Cash sales",
+    "cashRefunds": "Cash refunds",
+    "cashExpenses": "Cash expenses",
+    "expected": "Expected cash",
+    "counted": "Cash counted (₹)",
+    "expectedIs": "Expected in drawer: {{amount}}",
+    "note": "Note (optional)",
+    "close": "Close the day",
+    "closed": "This day is closed on this phone.",
+    "matches": "Cash matches.",
+    "extra": "{{amount}} extra in the drawer",
+    "short": "{{amount}} short",
+    "errors": {
+      "COUNTED_REQUIRED": "Count the cash and enter the amount.",
+      "INVALID_OPENING": "Enter a valid opening amount."
+    }
+  },
+  "expenses": {
+    "total": "Total: {{amount}}",
+    "empty": "No expenses in this period.",
+    "add": "Add expense",
+    "voided": "Voided",
+    "void": "Void expense",
+    "voidTitle": "Void this expense?",
+    "viewPhoto": "View receipt photo",
+    "category": "Category",
+    "amount": "Amount (₹)",
+    "note": "Note (optional)",
+    "photo": "Receipt photo",
+    "takePhoto": "Take photo",
+    "choosePhoto": "Choose photo",
+    "removePhoto": "Remove photo",
+    "save": "Save expense",
+    "categories": {
+      "rent": "Rent",
+      "salary": "Salary",
+      "electricity": "Electricity",
+      "transport": "Transport",
+      "supplies": "Shop supplies",
+      "tea_snacks": "Tea & snacks",
+      "repairs": "Repairs",
+      "other": "Other"
+    },
+    "errors": {
+      "AMOUNT_REQUIRED": "Enter the amount.",
+      "AMOUNT_TOO_HIGH": "The amount is too large.",
+      "REASON_REQUIRED": "Write a reason (at least 3 letters).",
+      "PHOTO_FAILED": "Could not get the photo. Try again."
+    }
   }
 }

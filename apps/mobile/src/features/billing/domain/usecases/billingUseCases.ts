@@ -9,7 +9,9 @@ import {
   type InvoiceCounterStore,
   InvoiceSequenceConflict,
   type PaymentPart,
+  type PaymentMethod,
   type ReceiptSharer,
+  type SaleReturnResult,
   type Sale,
   type SaleAttempt,
   type SaleCommand,
@@ -20,7 +22,8 @@ import { buildReceipt, type ReceiptLabels, receiptHtml, receiptText } from '../r
 
 export class BillInputError extends Error {
   constructor(
-    readonly reason: 'EMPTY_BILL' | 'METHOD_NOT_ENABLED' | 'PAYMENTS_DO_NOT_MATCH' | 'REASON_REQUIRED',
+    readonly reason:
+      'EMPTY_BILL' | 'METHOD_NOT_ENABLED' | 'PAYMENTS_DO_NOT_MATCH' | 'REASON_REQUIRED' | 'NOTHING_TO_RETURN',
   ) {
     super(reason);
     this.name = 'BillInputError';
@@ -140,6 +143,26 @@ export class VoidSale {
     const reason = input.reason.trim();
     if (reason.length < 3 || reason.length > 200) throw new BillInputError('REASON_REQUIRED');
     return this.billing.voidSale({ ...input, reason });
+  }
+}
+
+/** Takes back items of a bill and refunds them; quantities per line (milli-units). */
+export class CreateSaleReturn {
+  constructor(private readonly billing: BillingRepository) {}
+  async execute(input: {
+    clientOperationId: string;
+    shopId: string;
+    deviceId: string;
+    saleId: string;
+    lines: { lineNo: number; quantityMilli: number }[];
+    refundMethod: PaymentMethod;
+    reason: string;
+  }): Promise<SaleReturnResult> {
+    const lines = input.lines.filter((l) => l.quantityMilli > 0);
+    if (lines.length === 0) throw new BillInputError('NOTHING_TO_RETURN');
+    const reason = input.reason.trim();
+    if (reason.length < 3 || reason.length > 200) throw new BillInputError('REASON_REQUIRED');
+    return this.billing.createReturn({ ...input, lines, reason });
   }
 }
 

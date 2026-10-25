@@ -1,5 +1,5 @@
 import Constants from 'expo-constants';
-import { Platform } from 'react-native';
+import { Linking, Platform } from 'react-native';
 import type { AppEnv } from '@/core/config/env';
 import { newOperationId } from '@/core/ids/operationId';
 import { createSupabaseClient, type TypedSupabaseClient } from '@/core/network/supabaseClient';
@@ -7,6 +7,8 @@ import { createInstallationIdStore } from '@/core/security/installation';
 import { createKeyValueSlot } from '@/core/storage/keyValueSlot';
 import { createChunkedSecureStorage, type KeyValueStorage } from '@/core/storage/secureStorage';
 import { pickCsvFile } from '@/core/files/csvFileSource';
+import { readFileBytes, receiptPhotoPicker } from '@/core/files/receiptPhotoPicker';
+import { fileSharer } from '@/core/sharing/fileSharer';
 import { receiptSharer } from '@/core/sharing/receiptSharer';
 import { createInvoiceCounterStore } from '@/core/storage/invoiceCounterStore';
 import type { MoreViewModelDeps } from '@/features/account';
@@ -14,6 +16,7 @@ import {
   type BillingViewModelDeps,
   BillingRepositoryImpl,
   CreateSale,
+  CreateSaleReturn,
   GetSale,
   ListSales,
   type ProductFinder,
@@ -71,6 +74,27 @@ import {
   SkipImportRow,
   SupabaseImportDataSource,
 } from '@/features/imports';
+import {
+  type ExpenseFormViewModelDeps,
+  ExpenseRepositoryImpl,
+  type ExpensesViewModelDeps,
+  GetExpensePhotoUrl,
+  ListExpenses,
+  RecordExpense,
+  SupabaseExpenseDataSource,
+  VoidExpense,
+} from '@/features/expenses';
+import {
+  CloseDay,
+  type DayCloseViewModelDeps,
+  ExportSalesReport,
+  GetDashboard,
+  GetDayClose,
+  GetSalesReport,
+  type ReportsViewModelDeps,
+  ReportsRepositoryImpl,
+  SupabaseReportsDataSource,
+} from '@/features/reports';
 import { InviteMember, LoadStaff, StaffRepositoryImpl, SupabaseStaffDataSource } from '@/features/staff';
 import type { StaffViewModelDeps } from '@/features/staff';
 
@@ -113,6 +137,8 @@ export interface AppFeatures {
     newId: () => string;
   };
   billing: BillingViewModelDeps & ReceiptViewModelDeps & SalesHistoryViewModelDeps;
+  reports: ReportsViewModelDeps & DayCloseViewModelDeps;
+  expenses: ExpensesViewModelDeps & ExpenseFormViewModelDeps;
 }
 
 export interface Container {
@@ -160,6 +186,8 @@ function createFeatures(supabase: TypedSupabaseClient, storage: KeyValueStorage)
   const catalogueRepository = new CatalogueRepositoryImpl(new SupabaseCatalogueDataSource(supabase));
   const importRepository = new ImportRepositoryImpl(new SupabaseImportDataSource(supabase));
   const billingRepository = new BillingRepositoryImpl(new SupabaseBillingDataSource(supabase));
+  const reportsRepository = new ReportsRepositoryImpl(new SupabaseReportsDataSource(supabase));
+  const expenseRepository = new ExpenseRepositoryImpl(new SupabaseExpenseDataSource(supabase, readFileBytes));
   const getSettings = new GetShopSettings(shopRepository);
   const searchProducts = new SearchProducts(catalogueRepository);
   const loadReference = new LoadCatalogueReference(catalogueRepository);
@@ -224,7 +252,25 @@ function createFeatures(supabase: TypedSupabaseClient, storage: KeyValueStorage)
       getSale: new GetSale(billingRepository),
       listSales: new ListSales(billingRepository),
       voidSale: new VoidSale(billingRepository),
+      createReturn: new CreateSaleReturn(billingRepository),
       shareReceipt: new ShareReceipt(receiptSharer),
+      newId: newOperationId,
+    },
+    reports: {
+      getDashboard: new GetDashboard(reportsRepository),
+      getSalesReport: new GetSalesReport(reportsRepository),
+      exportReport: new ExportSalesReport(reportsRepository, fileSharer),
+      getDayClose: new GetDayClose(reportsRepository),
+      closeDay: new CloseDay(reportsRepository),
+      newId: newOperationId,
+    },
+    expenses: {
+      listExpenses: new ListExpenses(expenseRepository),
+      voidExpense: new VoidExpense(expenseRepository),
+      photoUrl: new GetExpensePhotoUrl(expenseRepository),
+      openUrl: (url) => Linking.openURL(url),
+      recordExpense: new RecordExpense(expenseRepository),
+      photos: receiptPhotoPicker,
       newId: newOperationId,
     },
   };
