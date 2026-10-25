@@ -46,7 +46,7 @@ submit "$(bill 1 99999999-0000-7000-8000-00000000c001)" "$TMP_DIR/race-a.out" &
 submit "$(bill 1 99999999-0000-7000-8000-00000000c002)" "$TMP_DIR/race-b.out" &
 wait
 WINS=$(cat "$TMP_DIR"/race-*.out | grep -c '"invoiceNumber"' || true)
-CONFLICTS=$(cat "$TMP_DIR"/race-*.out | grep -c 'DS_INVOICE_SEQUENCE_CONFLICT' || true)
+CONFLICTS=$(cat "$TMP_DIR"/race-*.out | grep -c '^ERROR:  DS_INVOICE_SEQUENCE_CONFLICT' || true)
 [ "$WINS" = 1 ] && [ "$CONFLICTS" = 1 ] || fail "race for one invoice number: $WINS wins, $CONFLICTS conflicts (expected 1 and 1)"
 echo "ok 1 - concurrent bills with the same invoice number: one saved, one DS_INVOICE_SEQUENCE_CONFLICT"
 
