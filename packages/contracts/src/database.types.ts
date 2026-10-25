@@ -139,6 +139,80 @@ export type Database = {
         Update: never
         Relationships: []
       }
+      sale_items: {
+        Row: {
+          bill_discount_share_paise: number
+          entry_mode: string | null
+          gross_paise: number
+          id: string
+          kind: string
+          label: string | null
+          line_discount_paise: number
+          line_no: number
+          net_paise: number
+          product_id: string | null
+          quantity_milli: number
+          sale_id: string
+          shop_id: string
+          tax_paise: number
+          tax_rate_bp: number
+          unit_code: string | null
+          unit_price_paise: number
+        }
+        Insert: never
+        Update: never
+        Relationships: []
+      }
+      sale_payments: {
+        Row: {
+          amount_paise: number
+          confirmation: string | null
+          created_at: string
+          id: string
+          method: string
+          reference: string | null
+          sale_id: string
+          shop_id: string
+        }
+        Insert: never
+        Update: never
+        Relationships: []
+      }
+      sales: {
+        Row: {
+          bill_discount_paise: number
+          client_operation_id: string
+          created_at: string
+          created_by: string
+          customer_id: string | null
+          device_id: string
+          discount_paise: number
+          fy: string
+          id: string
+          invoice_number: string
+          note: string | null
+          occurred_at: string
+          origin: string
+          paid_paise: number
+          review_reasons: string[]
+          round_off_paise: number
+          seq: number
+          shop_id: string
+          source: string | null
+          status: string
+          subtotal_paise: number
+          tax_mode: string
+          tax_paise: number
+          total_paise: number
+          udhaar_paise: number
+          void_reason: string | null
+          voided_at: string | null
+          voided_by: string | null
+        }
+        Insert: never
+        Update: never
+        Relationships: []
+      }
       tax_rates: {
         Row: {
           code: string
@@ -785,6 +859,8 @@ export type Database = {
         Args: { p_client_operation_id: string; p_file_name: string; p_shop_id: string }
         Returns: Json
       }
+      create_sale: { Args: { p_input: Json }; Returns: Json }
+      get_sale: { Args: { p_sale_id: string; p_shop_id: string }; Returns: Json }
       get_catalogue_reference: { Args: { p_shop_id: string }; Returns: Json }
       get_product: { Args: { p_product_id: string; p_shop_id: string }; Returns: Json }
       save_category: {

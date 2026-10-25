@@ -1,30 +1,110 @@
 {
   "$comment": "Shared money fixtures. Executed by packages/domain-core tests (Vitest) AND supabase/tests (pgTAP). Never change an expected value without changing both implementations.",
   "lineGross": [
-    { "unitPricePaise": 4500, "quantityMilli": 2000, "expected": 9000 },
-    { "unitPricePaise": 4500, "quantityMilli": 250, "expected": 1125 },
-    { "unitPricePaise": 3333, "quantityMilli": 1500, "expected": 5000 },
-    { "unitPricePaise": 1999, "quantityMilli": 333, "expected": 666 },
-    { "unitPricePaise": 1, "quantityMilli": 500, "expected": 1 },
-    { "unitPricePaise": 1, "quantityMilli": 499, "expected": 0 },
-    { "unitPricePaise": 12345, "quantityMilli": 1, "expected": 12 },
-    { "unitPricePaise": 99999999, "quantityMilli": 1000000, "expected": 99999999000 }
+    {
+      "unitPricePaise": 4500,
+      "quantityMilli": 2000,
+      "expected": 9000
+    },
+    {
+      "unitPricePaise": 4500,
+      "quantityMilli": 250,
+      "expected": 1125
+    },
+    {
+      "unitPricePaise": 3333,
+      "quantityMilli": 1500,
+      "expected": 5000
+    },
+    {
+      "unitPricePaise": 1999,
+      "quantityMilli": 333,
+      "expected": 666
+    },
+    {
+      "unitPricePaise": 1,
+      "quantityMilli": 500,
+      "expected": 1
+    },
+    {
+      "unitPricePaise": 1,
+      "quantityMilli": 499,
+      "expected": 0
+    },
+    {
+      "unitPricePaise": 12345,
+      "quantityMilli": 1,
+      "expected": 12
+    },
+    {
+      "unitPricePaise": 99999999,
+      "quantityMilli": 1000000,
+      "expected": 99999999000
+    }
   ],
   "taxFromInclusive": [
-    { "amountPaise": 11800, "rateBp": 1800, "expected": 1800 },
-    { "amountPaise": 10000, "rateBp": 500, "expected": 476 },
-    { "amountPaise": 10000, "rateBp": 1800, "expected": 1525 },
-    { "amountPaise": 105, "rateBp": 500, "expected": 5 },
-    { "amountPaise": 0, "rateBp": 1800, "expected": 0 },
-    { "amountPaise": 1, "rateBp": 4000, "expected": 0 },
-    { "amountPaise": 21, "rateBp": 500, "expected": 1 },
-    { "amountPaise": 3150, "rateBp": 500, "expected": 150 }
+    {
+      "amountPaise": 11800,
+      "rateBp": 1800,
+      "expected": 1800
+    },
+    {
+      "amountPaise": 10000,
+      "rateBp": 500,
+      "expected": 476
+    },
+    {
+      "amountPaise": 10000,
+      "rateBp": 1800,
+      "expected": 1525
+    },
+    {
+      "amountPaise": 105,
+      "rateBp": 500,
+      "expected": 5
+    },
+    {
+      "amountPaise": 0,
+      "rateBp": 1800,
+      "expected": 0
+    },
+    {
+      "amountPaise": 1,
+      "rateBp": 4000,
+      "expected": 0
+    },
+    {
+      "amountPaise": 21,
+      "rateBp": 500,
+      "expected": 1
+    },
+    {
+      "amountPaise": 3150,
+      "rateBp": 500,
+      "expected": 150
+    }
   ],
   "allocate": [
-    { "total": 100, "weights": [1, 1, 1], "expected": [34, 33, 33] },
-    { "total": 10, "weights": [300, 700], "expected": [3, 7] },
-    { "total": 7, "weights": [0, 0], "expected": [7, 0] },
-    { "total": 5, "weights": [200, 100, 100], "expected": [3, 1, 1] }
+    {
+      "total": 100,
+      "weights": [1, 1, 1],
+      "expected": [34, 33, 33]
+    },
+    {
+      "total": 10,
+      "weights": [300, 700],
+      "expected": [3, 7]
+    },
+    {
+      "total": 7,
+      "weights": [0, 0],
+      "expected": [7, 0]
+    },
+    {
+      "total": 5,
+      "weights": [200, 100, 100],
+      "expected": [3, 1, 1]
+    }
   ],
   "bills": [
     {
@@ -33,8 +113,14 @@
       "roundOffEnabled": false,
       "billDiscountPaise": 0,
       "lines": [
-        { "unitPricePaise": 4500, "quantityMilli": 2000 },
-        { "unitPricePaise": 1000, "quantityMilli": 1000 }
+        {
+          "unitPricePaise": 4500,
+          "quantityMilli": 2000
+        },
+        {
+          "unitPricePaise": 1000,
+          "quantityMilli": 1000
+        }
       ],
       "expected": {
         "subtotalPaise": 10000,
@@ -50,8 +136,16 @@
       "roundOffEnabled": false,
       "billDiscountPaise": 1000,
       "lines": [
-        { "unitPricePaise": 11800, "quantityMilli": 1000, "taxRateBp": 1800 },
-        { "unitPricePaise": 10500, "quantityMilli": 1000, "taxRateBp": 500 }
+        {
+          "unitPricePaise": 11800,
+          "quantityMilli": 1000,
+          "taxRateBp": 1800
+        },
+        {
+          "unitPricePaise": 10500,
+          "quantityMilli": 1000,
+          "taxRateBp": 500
+        }
       ],
       "expected": {
         "subtotalPaise": 22300,
@@ -67,8 +161,14 @@
       "roundOffEnabled": true,
       "billDiscountPaise": 0,
       "lines": [
-        { "unitPricePaise": 1999, "quantityMilli": 333 },
-        { "unitPricePaise": 4550, "quantityMilli": 1000 }
+        {
+          "unitPricePaise": 1999,
+          "quantityMilli": 333
+        },
+        {
+          "unitPricePaise": 4550,
+          "quantityMilli": 1000
+        }
       ],
       "expected": {
         "subtotalPaise": 5216,
@@ -84,7 +184,12 @@
       "roundOffEnabled": false,
       "billDiscountPaise": 0,
       "lines": [
-        { "unitPricePaise": 5000, "quantityMilli": 3000, "lineDiscountPaise": 1500, "taxRateBp": 500 }
+        {
+          "unitPricePaise": 5000,
+          "quantityMilli": 3000,
+          "lineDiscountPaise": 1500,
+          "taxRateBp": 500
+        }
       ],
       "expected": {
         "subtotalPaise": 15000,
@@ -93,12 +198,116 @@
         "roundOffPaise": 0,
         "totalPaise": 13500
       }
+    },
+    {
+      "name": "quick bill: three amounts, bill discount, round-off down",
+      "taxMode": "none",
+      "roundOffEnabled": true,
+      "billDiscountPaise": 300,
+      "lines": [
+        {
+          "unitPricePaise": 1250,
+          "quantityMilli": 1000
+        },
+        {
+          "unitPricePaise": 4099,
+          "quantityMilli": 1000
+        },
+        {
+          "unitPricePaise": 2000,
+          "quantityMilli": 1000
+        }
+      ],
+      "expected": {
+        "subtotalPaise": 7349,
+        "discountPaise": 300,
+        "taxPaise": 0,
+        "roundOffPaise": -49,
+        "totalPaise": 7000
+      }
+    },
+    {
+      "name": "quick bill: round-off half up",
+      "taxMode": "none",
+      "roundOffEnabled": true,
+      "billDiscountPaise": 0,
+      "lines": [
+        {
+          "unitPricePaise": 1050,
+          "quantityMilli": 1000
+        }
+      ],
+      "expected": {
+        "subtotalPaise": 1050,
+        "discountPaise": 0,
+        "taxPaise": 0,
+        "roundOffPaise": 50,
+        "totalPaise": 1100
+      }
+    },
+    {
+      "name": "quick bill in a GST shop: quick lines carry no tax",
+      "taxMode": "gst_regular",
+      "roundOffEnabled": false,
+      "billDiscountPaise": 1000,
+      "lines": [
+        {
+          "unitPricePaise": 10000,
+          "quantityMilli": 1000
+        },
+        {
+          "unitPricePaise": 5000,
+          "quantityMilli": 1000
+        }
+      ],
+      "expected": {
+        "subtotalPaise": 15000,
+        "discountPaise": 1000,
+        "taxPaise": 0,
+        "roundOffPaise": 0,
+        "totalPaise": 14000
+      }
+    },
+    {
+      "name": "full bill discount",
+      "taxMode": "none",
+      "roundOffEnabled": false,
+      "billDiscountPaise": 3333,
+      "lines": [
+        {
+          "unitPricePaise": 1111,
+          "quantityMilli": 1000
+        },
+        {
+          "unitPricePaise": 2222,
+          "quantityMilli": 1000
+        }
+      ],
+      "expected": {
+        "subtotalPaise": 3333,
+        "discountPaise": 3333,
+        "taxPaise": 0,
+        "roundOffPaise": 0,
+        "totalPaise": 0
+      }
     }
   ],
   "financialYear": [
-    { "instant": "2026-03-31T18:29:59Z", "expected": "2526" },
-    { "instant": "2026-03-31T18:30:00Z", "expected": "2627" },
-    { "instant": "2027-01-15T06:00:00Z", "expected": "2627" },
-    { "instant": "2099-12-31T00:00:00Z", "expected": "9900" }
+    {
+      "instant": "2026-03-31T18:29:59Z",
+      "expected": "2526"
+    },
+    {
+      "instant": "2026-03-31T18:30:00Z",
+      "expected": "2627"
+    },
+    {
+      "instant": "2027-01-15T06:00:00Z",
+      "expected": "2627"
+    },
+    {
+      "instant": "2099-12-31T00:00:00Z",
+      "expected": "9900"
+    }
   ]
 }

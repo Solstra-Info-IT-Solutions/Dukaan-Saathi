@@ -58,6 +58,8 @@ jobs:
         run: npx supabase start --exclude studio,imgproxy,mailpit,realtime,storage-api,edge-runtime,logflare,vector,supavisor,postgres-meta
       - name: pgTAP
         run: npx supabase test db
+      - name: Concurrency checks (create_sale)
+        run: bash supabase/tests/concurrency/invoice-sequence.sh
       - name: Generated DB types are current
         # Not blocking until the first generated file is committed in Phase 02.
         continue-on-error: true

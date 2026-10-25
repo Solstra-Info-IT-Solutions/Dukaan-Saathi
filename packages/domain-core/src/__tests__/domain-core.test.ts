@@ -1,6 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import {
   allocateProportionally,
+  basisPoints,
+  isDiscountWithinLimit,
+  maxDiscountPaise,
   computeBill,
   deviceCodeFromIndex,
   formatInvoiceNumber,
@@ -144,5 +147,19 @@ describe('invoice numbers', () => {
     [702, 'AAA'],
   ])('deviceCodeFromIndex(%d) = %s', (index, code) => {
     expect(deviceCodeFromIndex(index)).toBe(code);
+  });
+});
+
+describe('discount limits (BR-13, twin of create_sale)', () => {
+  it('allows a discount exactly at the limit and refuses one paisa more', () => {
+    expect(isDiscountWithinLimit(paise(1000), paise(10000), basisPoints(1000))).toBe(true);
+    expect(isDiscountWithinLimit(paise(1001), paise(10000), basisPoints(1000))).toBe(false);
+  });
+  it('a zero limit allows no discount', () => {
+    expect(isDiscountWithinLimit(paise(0), paise(7500), basisPoints(0))).toBe(true);
+    expect(isDiscountWithinLimit(paise(1), paise(7500), basisPoints(0))).toBe(false);
+  });
+  it('maxDiscountPaise floors', () => {
+    expect(maxDiscountPaise(paise(7599), basisPoints(1000))).toBe(759);
   });
 });

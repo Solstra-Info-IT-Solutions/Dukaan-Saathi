@@ -2,7 +2,7 @@
 -- Do not edit by hand. Bill-level fixtures are added when private.compute_bill exists (Phase 04).
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(24);
+select plan(32);
 
 select is(private.line_gross(4500, 2000), 9000::bigint, 'line_gross(4500, 2000)');
 select is(private.line_gross(4500, 250), 1125::bigint, 'line_gross(4500, 250)');
@@ -24,6 +24,14 @@ select is(private.allocate_proportionally(100, array[1,1,1]::bigint[]), array[34
 select is(private.allocate_proportionally(10, array[300,700]::bigint[]), array[3,7]::bigint[], 'allocate(10, [300,700])');
 select is(private.allocate_proportionally(7, array[0,0]::bigint[]), array[7,0]::bigint[], 'allocate(7, [0,0])');
 select is(private.allocate_proportionally(5, array[200,100,100]::bigint[]), array[3,1,1]::bigint[], 'allocate(5, [200,100,100])');
+select is(private.compute_bill('[{"unitPricePaise":4500,"quantityMilli":2000},{"unitPricePaise":1000,"quantityMilli":1000}]'::jsonb, 0, 'none', false) - 'lines', '{"subtotalPaise":10000,"discountPaise":0,"taxPaise":0,"roundOffPaise":0,"totalPaise":10000}'::jsonb, 'compute_bill: no tax, no discount');
+select is(private.compute_bill('[{"unitPricePaise":11800,"quantityMilli":1000,"taxRateBp":1800},{"unitPricePaise":10500,"quantityMilli":1000,"taxRateBp":500}]'::jsonb, 1000, 'gst_regular', false) - 'lines', '{"subtotalPaise":22300,"discountPaise":1000,"taxPaise":2197,"roundOffPaise":0,"totalPaise":21300}'::jsonb, 'compute_bill: GST regular with bill discount allocated across rates');
+select is(private.compute_bill('[{"unitPricePaise":1999,"quantityMilli":333},{"unitPricePaise":4550,"quantityMilli":1000}]'::jsonb, 0, 'none', true) - 'lines', '{"subtotalPaise":5216,"discountPaise":0,"taxPaise":0,"roundOffPaise":-16,"totalPaise":5200}'::jsonb, 'compute_bill: round-off to nearest rupee goes down');
+select is(private.compute_bill('[{"unitPricePaise":5000,"quantityMilli":3000,"lineDiscountPaise":1500,"taxRateBp":500}]'::jsonb, 0, 'gst_composition', false) - 'lines', '{"subtotalPaise":15000,"discountPaise":1500,"taxPaise":0,"roundOffPaise":0,"totalPaise":13500}'::jsonb, 'compute_bill: line discount, composition scheme collects no tax');
+select is(private.compute_bill('[{"unitPricePaise":1250,"quantityMilli":1000},{"unitPricePaise":4099,"quantityMilli":1000},{"unitPricePaise":2000,"quantityMilli":1000}]'::jsonb, 300, 'none', true) - 'lines', '{"subtotalPaise":7349,"discountPaise":300,"taxPaise":0,"roundOffPaise":-49,"totalPaise":7000}'::jsonb, 'compute_bill: quick bill: three amounts, bill discount, round-off down');
+select is(private.compute_bill('[{"unitPricePaise":1050,"quantityMilli":1000}]'::jsonb, 0, 'none', true) - 'lines', '{"subtotalPaise":1050,"discountPaise":0,"taxPaise":0,"roundOffPaise":50,"totalPaise":1100}'::jsonb, 'compute_bill: quick bill: round-off half up');
+select is(private.compute_bill('[{"unitPricePaise":10000,"quantityMilli":1000},{"unitPricePaise":5000,"quantityMilli":1000}]'::jsonb, 1000, 'gst_regular', false) - 'lines', '{"subtotalPaise":15000,"discountPaise":1000,"taxPaise":0,"roundOffPaise":0,"totalPaise":14000}'::jsonb, 'compute_bill: quick bill in a GST shop: quick lines carry no tax');
+select is(private.compute_bill('[{"unitPricePaise":1111,"quantityMilli":1000},{"unitPricePaise":2222,"quantityMilli":1000}]'::jsonb, 3333, 'none', false) - 'lines', '{"subtotalPaise":3333,"discountPaise":3333,"taxPaise":0,"roundOffPaise":0,"totalPaise":0}'::jsonb, 'compute_bill: full bill discount');
 select is(private.financial_year('2026-03-31T18:29:59Z'::timestamptz), '2526', 'financial_year(2026-03-31T18:29:59Z)');
 select is(private.financial_year('2026-03-31T18:30:00Z'::timestamptz), '2627', 'financial_year(2026-03-31T18:30:00Z)');
 select is(private.financial_year('2027-01-15T06:00:00Z'::timestamptz), '2627', 'financial_year(2027-01-15T06:00:00Z)');

@@ -26,6 +26,18 @@ for (const c of cases.allocate) {
     `select is(private.allocate_proportionally(${c.total}, array[${c.weights.join(',')}]::bigint[]), array[${c.expected.join(',')}]::bigint[], ${q(`allocate(${c.total}, [${c.weights}])`)});`,
   );
 }
+for (const c of cases.bills) {
+  const billLines = c.lines.map((l) => ({
+    unitPricePaise: l.unitPricePaise,
+    quantityMilli: l.quantityMilli,
+    ...(l.lineDiscountPaise ? { lineDiscountPaise: l.lineDiscountPaise } : {}),
+    ...(l.taxRateBp ? { taxRateBp: l.taxRateBp } : {}),
+  }));
+  const call = `private.compute_bill(${q(JSON.stringify(billLines))}::jsonb, ${c.billDiscountPaise}, ${q(c.taxMode)}, ${c.roundOffEnabled})`;
+  lines.push(
+    `select is(${call} - 'lines', ${q(JSON.stringify(c.expected))}::jsonb, ${q(`compute_bill: ${c.name}`)});`,
+  );
+}
 for (const c of cases.financialYear) {
   lines.push(
     `select is(private.financial_year(${q(c.instant)}::timestamptz), ${q(c.expected)}, ${q(`financial_year(${c.instant})`)});`,

@@ -145,3 +145,20 @@ export function computeBill(input: ComputeBillInput): BillTotals {
     totalPaise: paise(rounded),
   };
 }
+
+/**
+ * Discount limit check (BR-13): discount / subtotal ≤ limit, compared exactly in integers.
+ * Mirrors the check in create_sale; owners use a limit of 10000 bp (100 %).
+ */
+export function isDiscountWithinLimit(
+  discountPaise: Paise,
+  subtotalPaise: Paise,
+  limitBp: BasisPoints,
+): boolean {
+  return BigInt(discountPaise) * 10_000n <= BigInt(limitBp) * BigInt(subtotalPaise);
+}
+
+/** Largest discount allowed on a subtotal: floor(subtotal × limit / 10000). */
+export function maxDiscountPaise(subtotalPaise: Paise, limitBp: BasisPoints): Paise {
+  return paise(Number((BigInt(subtotalPaise) * BigInt(limitBp)) / 10_000n));
+}
