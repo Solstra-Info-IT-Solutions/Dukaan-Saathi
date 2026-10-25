@@ -71,7 +71,8 @@
   "tabs": {
     "home": "दुकान",
     "more": "और",
-    "items": "सामान"
+    "items": "सामान",
+    "bill": "बिल"
   },
   "auth": {
     "login": {
@@ -312,6 +313,51 @@
       "INVALID_BARCODE": "गलत बारकोड",
       "BARCODE_TAKEN": "बारकोड किसी और सामान का है",
       "DUPLICATE_IN_FILE": "यही सामान फ़ाइल में पहले भी है"
+    }
+  },
+  "billing": {
+    "emptyHint": "रकम लिखकर जोड़ें दबाएँ, या एक ही रकम हो तो सीधे भुगतान दबाएँ।",
+    "item": "सामान {{number}}",
+    "removeLine": "सामान {{number}} हटाएँ",
+    "discount": "छूट",
+    "discountLabel": "छूट ₹ ({{percent}}% तक)",
+    "roundOff": "राउंड ऑफ़",
+    "total": "कुल",
+    "amount": "रकम",
+    "itemName": "सामान का नाम (वैकल्पिक)",
+    "backspace": "आख़िरी अंक मिटाएँ",
+    "addLine": "जोड़ें",
+    "pay": "भुगतान",
+    "payAmount": "भुगतान {{amount}}",
+    "cashTendered": "ग्राहक से मिला नकद (₹)",
+    "change": "वापस दें {{amount}}",
+    "upiHint": "ग्राहक से स्कैन करके भुगतान करने को कहें। अपने UPI ऐप में पैसा आया है यह देखकर 'मिल गया' दबाएँ।",
+    "upiNoVpa": "QR कोड दिखाने के लिए सेटिंग्स में अपनी UPI ID जोड़ें।",
+    "confirmUpi": "UPI मिल गया – बिल सेव करें",
+    "confirmCash": "नकद मिल गया – बिल सेव करें",
+    "confirm": "भुगतान मिल गया – बिल सेव करें",
+    "errors": {
+      "EMPTY_BILL": "कम से कम एक रकम जोड़ें।",
+      "METHOD_NOT_ENABLED": "यह भुगतान तरीका सेटिंग्स में बंद है।",
+      "DISCOUNT_LIMIT": "छूट बहुत ज़्यादा है। आप ₹{{max}} तक दे सकते हैं।"
+    },
+    "receipt": {
+      "title": "रसीद",
+      "saved": "बिल सेव हो गया",
+      "bill": "बिल",
+      "subtotal": "उप-योग",
+      "paid": "भुगतान",
+      "cgst": "CGST",
+      "sgst": "SGST",
+      "gstin": "GSTIN",
+      "billOfSupply": "बिल ऑफ़ सप्लाई (कंपोज़िशन डीलर)",
+      "item": "सामान",
+      "thanks": "धन्यवाद! फिर पधारें।",
+      "upiConfirmedByShop": "दुकान ने पुष्टि की",
+      "shareWhatsapp": "WhatsApp पर भेजें",
+      "sharePdf": "PDF शेयर करें",
+      "newBill": "नया बिल",
+      "shareFailed": "रसीद शेयर नहीं हो सकी। फिर कोशिश करें।"
     }
   }
 }

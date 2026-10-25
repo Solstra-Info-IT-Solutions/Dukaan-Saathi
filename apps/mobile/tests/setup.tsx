@@ -9,3 +9,10 @@ jest.mock('@expo/vector-icons/MaterialCommunityIcons', () => {
   const Icon = ({ name }: { name: string }) => <Text>{`icon:${name}`}</Text>;
   return { __esModule: true, default: Icon };
 });
+
+// The UPI QR draws with native SVG; render its value as text so tests can assert the payment link.
+jest.mock('react-native-qrcode-svg', () => {
+  const { Text } = require('react-native');
+  const QRCode = ({ value }: { value: string }) => <Text>{`qr:${value}`}</Text>;
+  return { __esModule: true, default: QRCode };
+});

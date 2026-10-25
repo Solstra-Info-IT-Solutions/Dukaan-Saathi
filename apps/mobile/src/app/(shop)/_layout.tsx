@@ -3,12 +3,21 @@ import { Tabs } from 'expo-router/js-tabs';
 import { useTranslation } from 'react-i18next';
 import { useSessionStore } from '@/core/session/sessionStore';
 
-/** Tabs for the active shop. Billing tabs arrive in Phase 04; settings/staff open from More. */
+/** Tabs for the active shop. Settings/staff open from More; the receipt opens after a bill. */
 export default function ShopLayout() {
   const { t } = useTranslation();
   const shopName = useSessionStore((s) => s.activeShop?.shopName ?? '');
   return (
     <Tabs screenOptions={{ headerTitle: shopName }}>
+      <Tabs.Screen
+        name="bill"
+        options={{
+          title: t('tabs.bill'),
+          tabBarIcon: ({ color, size }) => (
+            <MaterialCommunityIcons name="cash-register" color={color as string} size={size} />
+          ),
+        }}
+      />
       <Tabs.Screen
         name="home"
         options={{
@@ -41,6 +50,7 @@ export default function ShopLayout() {
       <Tabs.Screen name="product" options={{ href: null, title: t('catalogue.form.editTitle') }} />
       <Tabs.Screen name="categories" options={{ href: null, title: t('catalogue.categories') }} />
       <Tabs.Screen name="import" options={{ href: null, title: t('imports.title') }} />
+      <Tabs.Screen name="receipt" options={{ href: null, title: t('billing.receipt.title') }} />
     </Tabs>
   );
 }

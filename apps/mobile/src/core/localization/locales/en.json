@@ -71,7 +71,8 @@
   "tabs": {
     "home": "Shop",
     "more": "More",
-    "items": "Items"
+    "items": "Items",
+    "bill": "Bill"
   },
   "auth": {
     "login": {
@@ -312,6 +313,51 @@
       "INVALID_BARCODE": "Invalid barcode",
       "BARCODE_TAKEN": "Barcode used by another item",
       "DUPLICATE_IN_FILE": "Same item appears earlier in the file"
+    }
+  },
+  "billing": {
+    "emptyHint": "Type an amount and tap Add, or just tap Pay for a single amount.",
+    "item": "Item {{number}}",
+    "removeLine": "Remove item {{number}}",
+    "discount": "Discount",
+    "discountLabel": "Discount ₹ (up to {{percent}}%)",
+    "roundOff": "Round off",
+    "total": "Total",
+    "amount": "Amount",
+    "itemName": "Item name (optional)",
+    "backspace": "Delete last digit",
+    "addLine": "Add",
+    "pay": "Pay",
+    "payAmount": "Pay {{amount}}",
+    "cashTendered": "Cash received from customer (₹)",
+    "change": "Give back {{amount}}",
+    "upiHint": "Ask the customer to scan and pay. Check that the money reached your UPI app, then tap Received.",
+    "upiNoVpa": "Add your UPI ID in Settings to show a QR code.",
+    "confirmUpi": "UPI received – save bill",
+    "confirmCash": "Cash received – save bill",
+    "confirm": "Payment received – save bill",
+    "errors": {
+      "EMPTY_BILL": "Add at least one amount.",
+      "METHOD_NOT_ENABLED": "This payment method is turned off in settings.",
+      "DISCOUNT_LIMIT": "Discount too high. You can give up to ₹{{max}}."
+    },
+    "receipt": {
+      "title": "Receipt",
+      "saved": "Bill saved",
+      "bill": "Bill",
+      "subtotal": "Subtotal",
+      "paid": "Paid",
+      "cgst": "CGST",
+      "sgst": "SGST",
+      "gstin": "GSTIN",
+      "billOfSupply": "Bill of supply (composition dealer)",
+      "item": "Item",
+      "thanks": "Thank you! Please visit again.",
+      "upiConfirmedByShop": "confirmed by shop",
+      "shareWhatsapp": "Send on WhatsApp",
+      "sharePdf": "Share PDF",
+      "newBill": "New bill",
+      "shareFailed": "Could not share the receipt. Try again."
     }
   }
 }

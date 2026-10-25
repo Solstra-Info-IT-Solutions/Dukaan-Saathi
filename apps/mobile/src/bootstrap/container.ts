@@ -7,7 +7,18 @@ import { createInstallationIdStore } from '@/core/security/installation';
 import { createKeyValueSlot } from '@/core/storage/keyValueSlot';
 import { createChunkedSecureStorage, type KeyValueStorage } from '@/core/storage/secureStorage';
 import { pickCsvFile } from '@/core/files/csvFileSource';
+import { receiptSharer } from '@/core/sharing/receiptSharer';
+import { createInvoiceCounterStore } from '@/core/storage/invoiceCounterStore';
 import type { MoreViewModelDeps } from '@/features/account';
+import {
+  type BillingViewModelDeps,
+  BillingRepositoryImpl,
+  CreateQuickSale,
+  GetSale,
+  type ReceiptViewModelDeps,
+  ShareReceipt,
+  SupabaseBillingDataSource,
+} from '@/features/billing';
 import {
   type AuthRepository,
   AuthRepositoryImpl,
@@ -97,6 +108,7 @@ export interface AppFeatures {
     commitImport: CommitImport;
     newId: () => string;
   };
+  billing: BillingViewModelDeps & ReceiptViewModelDeps;
 }
 
 export interface Container {
@@ -143,6 +155,8 @@ function createFeatures(supabase: TypedSupabaseClient, storage: KeyValueStorage)
   const signOut = new SignOut(authRepository, () => lastShop.clear());
   const catalogueRepository = new CatalogueRepositoryImpl(new SupabaseCatalogueDataSource(supabase));
   const importRepository = new ImportRepositoryImpl(new SupabaseImportDataSource(supabase));
+  const billingRepository = new BillingRepositoryImpl(new SupabaseBillingDataSource(supabase));
+  const getSettings = new GetShopSettings(shopRepository);
 
   return {
     auth: {
@@ -157,7 +171,7 @@ function createFeatures(supabase: TypedSupabaseClient, storage: KeyValueStorage)
       acceptInvitation: new AcceptInvitation(shopRepository),
       createShop: new CreateShop(shopRepository, newOperationId),
       restoreSession: new RestoreSession(loadContext, activateShop, lastShop),
-      getSettings: new GetShopSettings(shopRepository),
+      getSettings,
       updateSettings: new UpdateShopSettings(shopRepository),
       getEntitlements: new GetShopEntitlements(shopRepository),
       newOperationId,
@@ -185,6 +199,13 @@ function createFeatures(supabase: TypedSupabaseClient, storage: KeyValueStorage)
       fixRow: new FixImportRow(importRepository),
       skipRow: new SkipImportRow(importRepository),
       commitImport: new CommitImport(importRepository),
+      newId: newOperationId,
+    },
+    billing: {
+      getSettings,
+      createSale: new CreateQuickSale(billingRepository, createInvoiceCounterStore(storage)),
+      getSale: new GetSale(billingRepository),
+      shareReceipt: new ShareReceipt(receiptSharer),
       newId: newOperationId,
     },
   };
