@@ -1,6 +1,16 @@
 import { useMemo } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
-import { Button, Card, Divider, HelperText, Text } from 'react-native-paper';
+import {
+  Banner,
+  Button,
+  Card,
+  Dialog,
+  Divider,
+  HelperText,
+  Portal,
+  Text,
+  TextInput,
+} from 'react-native-paper';
 import { useTranslation } from 'react-i18next';
 import { ErrorState, LoadingState } from '@/shared/components/ScreenState';
 import { spacing } from '@/shared/theme/theme';
@@ -25,7 +35,11 @@ function useReceiptLabels(): ReceiptLabels {
       item: t('billing.receipt.item'),
       thanks: t('billing.receipt.thanks'),
       upiConfirmedByShop: t('billing.receipt.upiConfirmedByShop'),
+      taxInvoice: t('billing.receipt.taxInvoice'),
+      hsn: t('billing.receipt.hsn'),
+      voided: t('billing.receipt.voided'),
       method: (m: string) => t(`payments.${m}`),
+      unit: (code: string) => t(`billing.units.${code}`, { defaultValue: code }),
       formatDate: (iso: string) =>
         new Intl.DateTimeFormat(i18n.language === 'hi' ? 'hi-IN' : 'en-IN', {
           dateStyle: 'medium',
@@ -41,11 +55,13 @@ export function ReceiptScreen({
   deps,
   shopId,
   saleId,
+  canVoid,
   onNewBill,
 }: {
   deps: ReceiptViewModelDeps;
   shopId: string;
   saleId: string;
+  canVoid: boolean;
   onNewBill: () => void;
 }) {
   const { t } = useTranslation();
@@ -57,17 +73,25 @@ export function ReceiptScreen({
     return <ErrorState messageKey={state.loadErrorKey ?? 'errors.UNKNOWN'} onRetry={actions.reload} />;
   }
   const r = buildReceipt(state.sale, labels);
+  const voided = state.sale.status === 'voided';
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text variant="titleMedium" style={styles.center} accessibilityRole="header">
-        {t('billing.receipt.saved')}
-      </Text>
+      {voided ? (
+        <Banner visible icon="cancel">
+          {r.voided}
+        </Banner>
+      ) : null}
       <Card>
         <Card.Content style={styles.gap}>
-          <Text variant="titleLarge" style={styles.center}>
+          <Text variant="titleLarge" style={styles.center} accessibilityRole="header">
             {r.shopName}
           </Text>
+          {r.title ? (
+            <Text variant="titleSmall" style={styles.center}>
+              {r.title}
+            </Text>
+          ) : null}
           {r.shopAddress ? (
             <Text variant="bodySmall" style={styles.center}>
               {r.shopAddress}
@@ -114,7 +138,7 @@ export function ReceiptScreen({
         </Card.Content>
       </Card>
 
-      <HelperText type="error" visible={state.errorKey !== null}>
+      <HelperText type="error" visible={state.errorKey !== null && !state.voidOpen}>
         {state.errorKey ? t(state.errorKey) : ''}
       </HelperText>
       <Button
@@ -140,6 +164,39 @@ export function ReceiptScreen({
       <Button mode="contained-tonal" icon="plus" onPress={onNewBill} contentStyle={styles.button}>
         {t('billing.receipt.newBill')}
       </Button>
+      {canVoid && !voided ? (
+        <Button mode="text" icon="cancel" onPress={actions.openVoid} contentStyle={styles.button}>
+          {t('billing.void.button')}
+        </Button>
+      ) : null}
+
+      <Portal>
+        <Dialog visible={state.voidOpen} onDismiss={state.voiding ? undefined : actions.closeVoid}>
+          <Dialog.Title>{t('billing.void.title', { invoice: r.invoiceNumber })}</Dialog.Title>
+          <Dialog.Content style={styles.gap}>
+            <Text variant="bodyMedium">{t('billing.void.body')}</Text>
+            <TextInput
+              mode="outlined"
+              label={t('billing.void.reason')}
+              accessibilityLabel={t('billing.void.reason')}
+              value={state.reason}
+              onChangeText={actions.setReason}
+              maxLength={200}
+            />
+            <HelperText type="error" visible={state.errorKey !== null}>
+              {state.errorKey ? t(state.errorKey) : ''}
+            </HelperText>
+          </Dialog.Content>
+          <Dialog.Actions>
+            <Button onPress={actions.closeVoid} disabled={state.voiding}>
+              {t('common.cancel')}
+            </Button>
+            <Button onPress={actions.confirmVoid} loading={state.voiding} disabled={state.voiding}>
+              {t('billing.void.confirm')}
+            </Button>
+          </Dialog.Actions>
+        </Dialog>
+      </Portal>
     </ScrollView>
   );
 }

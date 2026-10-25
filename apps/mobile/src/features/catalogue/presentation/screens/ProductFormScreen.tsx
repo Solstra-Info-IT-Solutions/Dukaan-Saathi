@@ -17,14 +17,16 @@ export function ProductFormScreen({
   shopId,
   productId,
   onDone,
+  initialBarcode,
 }: {
   deps: ProductFormViewModelDeps;
   shopId: string;
   productId: string | null;
   onDone: () => void;
+  initialBarcode?: string;
 }) {
   const { t, i18n } = useTranslation();
-  const { form, state, actions } = useProductFormViewModel(deps, shopId, productId, onDone);
+  const { form, state, actions } = useProductFormViewModel(deps, shopId, productId, onDone, initialBarcode);
   const { errors } = form.formState;
   const lang = i18n.language === 'hi' ? 'hi' : 'en';
 

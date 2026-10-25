@@ -13,11 +13,15 @@ import type { MoreViewModelDeps } from '@/features/account';
 import {
   type BillingViewModelDeps,
   BillingRepositoryImpl,
-  CreateQuickSale,
+  CreateSale,
   GetSale,
+  ListSales,
+  type ProductFinder,
   type ReceiptViewModelDeps,
+  type SalesHistoryViewModelDeps,
   ShareReceipt,
   SupabaseBillingDataSource,
+  VoidSale,
 } from '@/features/billing';
 import {
   type AuthRepository,
@@ -108,7 +112,7 @@ export interface AppFeatures {
     commitImport: CommitImport;
     newId: () => string;
   };
-  billing: BillingViewModelDeps & ReceiptViewModelDeps;
+  billing: BillingViewModelDeps & ReceiptViewModelDeps & SalesHistoryViewModelDeps;
 }
 
 export interface Container {
@@ -157,6 +161,18 @@ function createFeatures(supabase: TypedSupabaseClient, storage: KeyValueStorage)
   const importRepository = new ImportRepositoryImpl(new SupabaseImportDataSource(supabase));
   const billingRepository = new BillingRepositoryImpl(new SupabaseBillingDataSource(supabase));
   const getSettings = new GetShopSettings(shopRepository);
+  const searchProducts = new SearchProducts(catalogueRepository);
+  const loadReference = new LoadCatalogueReference(catalogueRepository);
+  // Billing sees the catalogue only through this port (features stay independent).
+  const productFinder: ProductFinder = {
+    search: async (shopId, text) =>
+      (await searchProducts.execute(shopId, { query: text, categoryId: null, offset: 0, limit: 10 })).items,
+    byBarcode: async (shopId, code) =>
+      (
+        await searchProducts.execute(shopId, { query: code, categoryId: null, offset: 0, limit: 5 })
+      ).items.find((p) => p.isActive && p.barcodes.includes(code)) ?? null,
+    reference: (shopId) => loadReference.execute(shopId),
+  };
 
   return {
     auth: {
@@ -183,11 +199,11 @@ function createFeatures(supabase: TypedSupabaseClient, storage: KeyValueStorage)
     },
     account: { signOut },
     catalogue: {
-      searchProducts: new SearchProducts(catalogueRepository),
+      searchProducts,
       getProduct: new GetProduct(catalogueRepository),
       saveProduct: new SaveProduct(catalogueRepository, newOperationId),
       archiveProduct: new ArchiveProduct(catalogueRepository),
-      loadReference: new LoadCatalogueReference(catalogueRepository),
+      loadReference,
       saveCategory: new SaveCategory(catalogueRepository),
       archiveCategory: new ArchiveCategory(catalogueRepository),
       newId: newOperationId,
@@ -203,8 +219,11 @@ function createFeatures(supabase: TypedSupabaseClient, storage: KeyValueStorage)
     },
     billing: {
       getSettings,
-      createSale: new CreateQuickSale(billingRepository, createInvoiceCounterStore(storage)),
+      createSale: new CreateSale(billingRepository, createInvoiceCounterStore(storage)),
+      products: productFinder,
       getSale: new GetSale(billingRepository),
+      listSales: new ListSales(billingRepository),
+      voidSale: new VoidSale(billingRepository),
       shareReceipt: new ShareReceipt(receiptSharer),
       newId: newOperationId,
     },

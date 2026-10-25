@@ -72,7 +72,8 @@
     "home": "Shop",
     "more": "More",
     "items": "Items",
-    "bill": "Bill"
+    "bill": "Bill",
+    "sales": "Sales"
   },
   "auth": {
     "login": {
@@ -339,7 +340,15 @@
     "errors": {
       "EMPTY_BILL": "Add at least one amount.",
       "METHOD_NOT_ENABLED": "This payment method is turned off in settings.",
-      "DISCOUNT_LIMIT": "Discount too high. You can give up to ₹{{max}}."
+      "DISCOUNT_LIMIT": "Discount too high. You can give up to ₹{{max}}.",
+      "PAYMENTS_DO_NOT_MATCH": "Payments do not add up to the total.",
+      "REASON_REQUIRED": "Write a reason (at least 3 letters).",
+      "INVALID_PRICE": "Enter a valid price.",
+      "INVALID_AMOUNT": "This amount is too small for one unit.",
+      "INVALID_QUANTITY": "Enter a valid quantity.",
+      "WHOLE_QUANTITY": "This item is sold in whole units.",
+      "INVALID_SPLIT": "The second payment must be less than the total and use another method.",
+      "PRICE_CHANGED": "A price was changed in the catalogue. The bill now shows the new price — check the total and pay again."
     },
     "receipt": {
       "title": "Receipt",
@@ -357,7 +366,64 @@
       "shareWhatsapp": "Send on WhatsApp",
       "sharePdf": "Share PDF",
       "newBill": "New bill",
-      "shareFailed": "Could not share the receipt. Try again."
+      "shareFailed": "Could not share the receipt. Try again.",
+      "taxInvoice": "Tax invoice",
+      "hsn": "HSN",
+      "voided": "VOIDED"
+    },
+    "searchItems": "Search item",
+    "noResults": "No item found",
+    "overridden": "price changed",
+    "taxIncluded": "GST included",
+    "split": "Split payment",
+    "noSplit": "Pay with one method",
+    "splitHint": "The rest is paid by {{method}}.",
+    "splitAmount": "Amount by {{method}} (₹)",
+    "pricePer": "{{price}} per {{unit}}",
+    "quantityIn": "Quantity ({{unit}})",
+    "amountWorth": "Or amount worth (₹)",
+    "priceOverride": "Price per {{unit}} (₹)",
+    "lineDiscount": "Discount on this item (₹)",
+    "saveLine": "Update",
+    "removeItem": "Remove item",
+    "units": {
+      "pc": "pc",
+      "kg": "kg",
+      "g": "g",
+      "l": "L",
+      "ml": "ml",
+      "dozen": "dozen",
+      "pkt": "pkt",
+      "box": "box",
+      "m": "m"
+    },
+    "scan": {
+      "title": "Scan barcode",
+      "open": "Scan barcode",
+      "unknown": "No item has the barcode {{code}}.",
+      "create": "Create item with this barcode",
+      "again": "Scan again",
+      "permission": "Allow the camera to scan barcodes.",
+      "denied": "Camera access is off. Turn it on in phone settings to scan.",
+      "allow": "Allow camera"
+    },
+    "void": {
+      "button": "Void bill",
+      "title": "Void {{invoice}}?",
+      "body": "The bill stays in history marked as voided and stock is returned. This cannot be undone.",
+      "reason": "Reason",
+      "confirm": "Void bill"
     }
+  },
+  "sales": {
+    "today": "Today",
+    "week": "7 days",
+    "all": "All",
+    "search": "Bill no. or item",
+    "voidedOnly": "Voided only",
+    "empty": "No bills here yet.",
+    "items_one": "{{count}} item",
+    "items_other": "{{count}} items",
+    "voided": "Voided"
   }
 }

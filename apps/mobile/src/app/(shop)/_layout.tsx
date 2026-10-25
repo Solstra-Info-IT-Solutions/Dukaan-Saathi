@@ -19,6 +19,15 @@ export default function ShopLayout() {
         }}
       />
       <Tabs.Screen
+        name="sales"
+        options={{
+          title: t('tabs.sales'),
+          tabBarIcon: ({ color, size }) => (
+            <MaterialCommunityIcons name="receipt-text-outline" color={color as string} size={size} />
+          ),
+        }}
+      />
+      <Tabs.Screen
         name="home"
         options={{
           title: t('tabs.home'),

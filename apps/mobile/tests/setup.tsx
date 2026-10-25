@@ -16,3 +16,17 @@ jest.mock('react-native-qrcode-svg', () => {
   const QRCode = ({ value }: { value: string }) => <Text>{`qr:${value}`}</Text>;
   return { __esModule: true, default: QRCode };
 });
+
+// The camera is native; tests drive scanning through the ViewModel, so a granted, empty camera is enough.
+jest.mock('expo-camera', () => {
+  const { View } = require('react-native');
+  const permission = { granted: true, status: 'granted', canAskAgain: true, expires: 'never' };
+  return {
+    CameraView: (props: object) => <View testID="camera" {...props} />,
+    useCameraPermissions: () => [
+      permission,
+      jest.fn(async () => permission),
+      jest.fn(async () => permission),
+    ],
+  };
+});

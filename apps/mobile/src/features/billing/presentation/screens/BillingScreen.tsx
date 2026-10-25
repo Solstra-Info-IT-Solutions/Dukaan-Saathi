@@ -1,24 +1,14 @@
-import { formatPaise, paise } from '@ds/domain-core';
+import { formatPaise, formatQuantity, paise, quantityMilli } from '@ds/domain-core';
 import { ScrollView, StyleSheet, View } from 'react-native';
-import {
-  Button,
-  Card,
-  HelperText,
-  IconButton,
-  List,
-  Modal,
-  Portal,
-  SegmentedButtons,
-  Text,
-  TextInput,
-  useTheme,
-} from 'react-native-paper';
-import QRCode from 'react-native-qrcode-svg';
+import { Button, Card, HelperText, IconButton, List, Text, TextInput } from 'react-native-paper';
 import { useTranslation } from 'react-i18next';
 import { ErrorState, LoadingState } from '@/shared/components/ScreenState';
 import { spacing } from '@/shared/theme/theme';
-import type { KeypadKey } from '../../domain/billMath';
-import type { BillingContext } from '../../domain/entities/Bill';
+import { type KeypadKey, lineAmount } from '../../domain/billMath';
+import type { BillingContext, BillLine } from '../../domain/entities/Bill';
+import { LineEditorSheet } from '../components/LineEditorSheet';
+import { PaymentSheet } from '../components/PaymentSheet';
+import { ScannerSheet } from '../components/ScannerSheet';
 import { type BillingViewModelDeps, useBillingViewModel } from '../viewmodels/useBillingViewModel';
 
 const money = (value: number) => formatPaise(paise(value));
@@ -28,51 +18,104 @@ export function BillingScreen({
   deps,
   context,
   onCompleted,
+  onCreateProduct,
 }: {
   deps: BillingViewModelDeps;
   context: BillingContext;
   onCompleted: (saleId: string) => void;
+  onCreateProduct: (barcode: string) => void;
 }) {
   const { t } = useTranslation();
-  const theme = useTheme();
-  const { state, actions } = useBillingViewModel(deps, context, onCompleted);
+  const vm = useBillingViewModel(deps, context, onCompleted);
+  const { state, actions } = vm;
 
   if (state.loading) return <LoadingState />;
-  if (state.settingsErrorKey)
+  if (state.settingsErrorKey) {
     return <ErrorState messageKey={state.settingsErrorKey} onRetry={actions.reloadSettings} />;
+  }
 
-  const error = (
-    <HelperText type="error" visible={state.errorKey !== null}>
-      {state.errorKey ? t(state.errorKey, state.errorParams) : ''}
-    </HelperText>
-  );
   const total = state.totals?.totalPaise ?? 0;
+  const unit = (code: string) => t(`billing.units.${code}`, { defaultValue: code });
+  const describe = (line: BillLine, i: number) =>
+    line.kind === 'quick'
+      ? { title: line.label || t('billing.item', { number: i + 1 }), detail: undefined }
+      : {
+          title: line.name,
+          detail:
+            `${formatQuantity(quantityMilli(line.quantityMilli))} ${unit(line.unitCode)} × ${money(line.unitPricePaise)}` +
+            (line.unitPricePaise !== line.listPricePaise ? ` · ${t('billing.overridden')}` : '') +
+            (line.lineDiscountPaise > 0 ? ` · -${money(line.lineDiscountPaise)}` : ''),
+        };
 
   return (
     <View style={styles.flex}>
       <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
+        <View style={styles.row}>
+          <TextInput
+            mode="outlined"
+            dense
+            style={styles.flex}
+            left={<TextInput.Icon icon="magnify" />}
+            label={t('billing.searchItems')}
+            accessibilityLabel={t('billing.searchItems')}
+            value={state.searchText}
+            onChangeText={actions.setSearchText}
+          />
+          <IconButton
+            icon="barcode-scan"
+            mode="contained"
+            size={28}
+            accessibilityLabel={t('billing.scan.open')}
+            onPress={actions.openScanner}
+          />
+        </View>
+        {state.results.length > 0 ? (
+          <Card>
+            {state.results.slice(0, 6).map((p) => (
+              <List.Item
+                key={p.id}
+                title={p.name}
+                description={p.nameHi ?? undefined}
+                onPress={() => actions.pickResult(p)}
+                right={() => (
+                  <Text variant="titleSmall" style={styles.center}>
+                    {money(p.pricePaise)}/{unit(p.unitCode)}
+                  </Text>
+                )}
+              />
+            ))}
+          </Card>
+        ) : state.searchText.trim() && !state.searching ? (
+          <Text variant="bodySmall">{t('billing.noResults')}</Text>
+        ) : null}
+
         {state.lines.length === 0 ? (
           <Text variant="bodyMedium" style={styles.muted}>
             {t('billing.emptyHint')}
           </Text>
         ) : (
           <Card>
-            {state.lines.map((line, i) => (
-              <List.Item
-                key={line.key}
-                title={line.label || t('billing.item', { number: i + 1 })}
-                right={() => (
-                  <View style={styles.row}>
-                    <Text variant="titleMedium">{money(line.amountPaise)}</Text>
-                    <IconButton
-                      icon="close"
-                      accessibilityLabel={t('billing.removeLine', { number: i + 1 })}
-                      onPress={() => actions.removeLine(line.key)}
-                    />
-                  </View>
-                )}
-              />
-            ))}
+            {state.lines.map((line, i) => {
+              const { title, detail } = describe(line, i);
+              return (
+                <List.Item
+                  key={line.key}
+                  title={title}
+                  description={detail}
+                  onPress={line.kind === 'product' ? () => actions.openLine(line.key) : undefined}
+                  right={() => (
+                    <View style={styles.row}>
+                      <Text variant="titleMedium">{money(lineAmount(line))}</Text>
+                      <IconButton
+                        icon="close"
+                        accessibilityLabel={t('billing.removeLine', { number: i + 1 })}
+                        onPress={() => actions.removeLine(line.key)}
+                      />
+                    </View>
+                  )}
+                />
+              );
+            })}
           </Card>
         )}
 
@@ -81,6 +124,11 @@ export function BillingScreen({
             {state.totals.discountPaise > 0 ? (
               <Text variant="bodyMedium">
                 {t('billing.discount')}: -{money(state.totals.discountPaise)}
+              </Text>
+            ) : null}
+            {state.totals.taxPaise > 0 ? (
+              <Text variant="bodyMedium">
+                {t('billing.taxIncluded')}: {money(state.totals.taxPaise)}
               </Text>
             ) : null}
             {state.totals.roundOffPaise !== 0 ? (
@@ -152,7 +200,11 @@ export function BillingScreen({
             {t('billing.addLine')}
           </Button>
         </View>
-        {state.phase === 'editing' ? error : null}
+        {state.phase === 'editing' && state.editor === null ? (
+          <HelperText type="error" visible={state.errorKey !== null}>
+            {state.errorKey ? t(state.errorKey, state.errorParams) : ''}
+          </HelperText>
+        ) : null}
       </ScrollView>
 
       <Button
@@ -166,68 +218,9 @@ export function BillingScreen({
           : t('billing.payAmount', { amount: money(total) })}
       </Button>
 
-      <Portal>
-        <Modal
-          visible={state.phase !== 'editing'}
-          onDismiss={state.phase === 'submitting' ? undefined : actions.closePayment}
-          contentContainerStyle={[styles.sheet, { backgroundColor: theme.colors.surface }]}
-        >
-          <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={styles.sheetBody}>
-            <Text variant="headlineSmall" accessibilityRole="header">
-              {t('billing.total')}: {money(total)}
-            </Text>
-            <SegmentedButtons
-              value={state.method ?? ''}
-              onValueChange={(m) => actions.selectMethod(m as (typeof state.methods)[number])}
-              buttons={state.methods.map((m) => ({ value: m, label: t(`payments.${m}`) }))}
-            />
-            {state.method === 'cash' ? (
-              <>
-                <TextInput
-                  mode="outlined"
-                  keyboardType="decimal-pad"
-                  label={t('billing.cashTendered')}
-                  accessibilityLabel={t('billing.cashTendered')}
-                  value={state.tenderedText}
-                  onChangeText={actions.setTenderedText}
-                />
-                {state.change !== null ? (
-                  <Text variant="titleMedium">{t('billing.change', { amount: money(state.change) })}</Text>
-                ) : null}
-              </>
-            ) : null}
-            {state.method === 'upi' ? (
-              state.upiUri ? (
-                <View style={styles.qr}>
-                  <QRCode value={state.upiUri} size={200} />
-                  <Text variant="bodySmall" style={styles.center}>
-                    {t('billing.upiHint')}
-                  </Text>
-                </View>
-              ) : (
-                <Text variant="bodySmall">{t('billing.upiNoVpa')}</Text>
-              )
-            ) : null}
-            {error}
-            <Button
-              mode="contained"
-              onPress={actions.submit}
-              loading={state.phase === 'submitting'}
-              disabled={state.phase === 'submitting' || !state.method}
-              contentStyle={styles.payContent}
-            >
-              {state.method === 'upi'
-                ? t('billing.confirmUpi')
-                : state.method === 'cash'
-                  ? t('billing.confirmCash')
-                  : t('billing.confirm')}
-            </Button>
-            <Button mode="text" onPress={actions.closePayment} disabled={state.phase === 'submitting'}>
-              {t('common.back')}
-            </Button>
-          </ScrollView>
-        </Modal>
-      </Portal>
+      <PaymentSheet {...vm} />
+      <LineEditorSheet {...vm} />
+      <ScannerSheet {...vm} onCreateProduct={onCreateProduct} />
     </View>
   );
 }
@@ -236,7 +229,8 @@ const styles = StyleSheet.create({
   flex: { flex: 1 },
   container: { padding: spacing.md, gap: spacing.sm, paddingBottom: spacing.xl },
   muted: { opacity: 0.7 },
-  row: { flexDirection: 'row', alignItems: 'center' },
+  row: { flexDirection: 'row', alignItems: 'center', gap: spacing.xs },
+  center: { alignSelf: 'center' },
   totals: { alignItems: 'flex-end', gap: spacing.xs },
   entry: { textAlign: 'right' },
   keypad: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', rowGap: spacing.xs },
@@ -246,8 +240,4 @@ const styles = StyleSheet.create({
   keyLabel: { fontSize: 22 },
   pay: { margin: spacing.md },
   payContent: { minHeight: 56 },
-  sheet: { margin: spacing.md, borderRadius: 12, maxHeight: '90%' },
-  sheetBody: { padding: spacing.md, gap: spacing.sm },
-  qr: { alignItems: 'center', gap: spacing.sm, paddingVertical: spacing.sm },
-  center: { textAlign: 'center' },
 });

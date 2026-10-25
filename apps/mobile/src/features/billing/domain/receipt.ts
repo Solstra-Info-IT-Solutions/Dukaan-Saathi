@@ -1,4 +1,4 @@
-import { formatPaise, paise, splitCgstSgst } from '@ds/domain-core';
+import { formatPaise, formatQuantity, paise, quantityMilli, splitCgstSgst } from '@ds/domain-core';
 import type { Sale } from './entities/Bill';
 
 /**
@@ -19,7 +19,11 @@ export interface ReceiptLabels {
   item: string;
   thanks: string;
   upiConfirmedByShop: string;
+  taxInvoice: string;
+  hsn: string;
+  voided: string;
   method: (method: string) => string;
+  unit: (code: string) => string;
   formatDate: (iso: string) => string;
 }
 
@@ -29,6 +33,10 @@ export interface ReceiptLine {
 }
 
 export interface ReceiptModel {
+  /** "Tax invoice" for GST-registered shops. */
+  title: string | null;
+  /** "VOIDED: reason" for a voided bill. */
+  voided: string | null;
   shopName: string;
   shopAddress: string | null;
   shopPhone: string | null;
@@ -62,16 +70,23 @@ export function buildReceipt(sale: Sale, labels: ReceiptLabels): ReceiptModel {
   footer.push(labels.thanks);
 
   return {
+    title: sale.taxMode === 'gst_regular' ? labels.taxInvoice : null,
+    voided: sale.status === 'voided' ? `${labels.voided}: ${sale.voidReason ?? ''}`.trim() : null,
     shopName: sale.shop.name,
     shopAddress:
       [sale.shop.addressLine, sale.shop.city, sale.shop.pincode].filter(Boolean).join(', ') || null,
     shopPhone: sale.shop.phone,
     invoiceNumber: sale.invoiceNumber,
     date: labels.formatDate(sale.occurredAt),
-    lines: sale.lines.map((l) => ({
-      label: l.label ?? `${labels.item} ${l.lineNo}`,
-      amount: money(l.grossPaise - l.lineDiscountPaise),
-    })),
+    lines: sale.lines.map((l) => {
+      const name = l.label ?? `${labels.item} ${l.lineNo}`;
+      const detail =
+        l.kind === 'product'
+          ? ` (${formatQuantity(quantityMilli(l.quantityMilli))} ${labels.unit(l.unitCode ?? '')} × ${money(l.unitPricePaise)})`
+          : '';
+      const hsn = sale.taxMode === 'gst_regular' && l.hsnCode ? ` ${labels.hsn} ${l.hsnCode}` : '';
+      return { label: `${name}${detail}${hsn}`, amount: money(l.grossPaise - l.lineDiscountPaise) };
+    }),
     totals,
     total: money(t.totalPaise),
     payments: sale.payments.map(
@@ -85,7 +100,9 @@ export function buildReceipt(sale: Sale, labels: ReceiptLabels): ReceiptModel {
 
 export function receiptText(r: ReceiptModel, labels: Pick<ReceiptLabels, 'bill' | 'total' | 'paid'>): string {
   return [
+    ...(r.voided ? [`*${r.voided}*`] : []),
     `*${r.shopName}*`,
+    ...(r.title ? [r.title] : []),
     ...(r.shopAddress ? [r.shopAddress] : []),
     ...(r.shopPhone ? [r.shopPhone] : []),
     `${labels.bill}: ${r.invoiceNumber}`,
@@ -112,7 +129,9 @@ export function receiptHtml(r: ReceiptModel, labels: Pick<ReceiptLabels, 'bill' 
 <style>body{font-family:sans-serif;max-width:320px;margin:0 auto;padding:12px;font-size:13px}h1{font-size:17px;margin:0;text-align:center}
 .c{text-align:center}table{width:100%;border-collapse:collapse}td{padding:2px 0}.r{text-align:right}
 hr{border:none;border-top:1px dashed #000}.t td{font-weight:bold;font-size:15px}</style></head><body>
+${r.voided ? `<div class="c"><b>${escapeHtml(r.voided)}</b></div>` : ''}
 <h1>${escapeHtml(r.shopName)}</h1>
+${r.title ? `<div class="c">${escapeHtml(r.title)}</div>` : ''}
 ${r.shopAddress ? `<div class="c">${escapeHtml(r.shopAddress)}</div>` : ''}
 ${r.shopPhone ? `<div class="c">${escapeHtml(r.shopPhone)}</div>` : ''}
 <hr><div>${escapeHtml(labels.bill)}: ${escapeHtml(r.invoiceNumber)}</div><div>${escapeHtml(r.date)}</div><hr>

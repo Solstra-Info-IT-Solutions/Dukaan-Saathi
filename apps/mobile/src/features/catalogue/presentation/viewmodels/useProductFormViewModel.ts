@@ -30,6 +30,8 @@ export function useProductFormViewModel(
   shopId: string,
   productId: string | null,
   onDone: () => void,
+  /** Prefills the barcode of a new product (e.g. an unknown code scanned while billing). */
+  initialBarcode?: string,
 ) {
   const queryClient = useQueryClient();
   const [newId] = useState(() => deps.newId());
@@ -48,9 +50,9 @@ export function useProductFormViewModel(
       existing.data
         ? productToDraft(existing.data)
         : productId === null
-          ? { ...emptyProductDraft, id: newId }
+          ? { ...emptyProductDraft, id: newId, barcodesText: initialBarcode ?? '' }
           : undefined,
-    [existing.data, productId, newId],
+    [existing.data, productId, newId, initialBarcode],
   );
   const form = useForm<ProductDraft>({ values, defaultValues: { ...emptyProductDraft, id: newId } });
   const [errorKey, setErrorKey] = useState<string | null>(null);

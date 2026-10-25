@@ -16,6 +16,8 @@ export default function BillRoute() {
         shopName: shop.shopName,
         role: shop.role,
         canDiscount: hasPermission(shop, 'sale.discount'),
+        canOverridePrice: hasPermission(shop, 'sale.price_override'),
+        canManageProducts: hasPermission(shop, 'product.manage'),
         deviceId: shop.deviceId,
         fy: shop.fy,
         lastSeq: shop.lastSeq,
@@ -29,6 +31,7 @@ export default function BillRoute() {
         deps={features.billing}
         context={context}
         onCompleted={(saleId) => router.push({ pathname: '/receipt', params: { saleId } })}
+        onCreateProduct={(barcode) => router.push({ pathname: '/product', params: { barcode } })}
       />
     </RequirePermission>
   );

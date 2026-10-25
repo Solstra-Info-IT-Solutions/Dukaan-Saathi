@@ -7,14 +7,14 @@ import { RequirePermission } from '@/shared/components/RequirePermission';
 export default function ProductRoute() {
   const { features } = useDependencies();
   const router = useRouter();
-  const { id } = useLocalSearchParams<{ id?: string }>();
+  const { id, barcode } = useLocalSearchParams<{ id?: string; barcode?: string }>();
   const shopId = useSessionStore((s) => s.activeShop?.shopId);
   if (!features || !shopId) return null;
   const c = features.catalogue;
   return (
     <RequirePermission permission="product.manage">
       <ProductFormScreen
-        key={id ?? 'new'}
+        key={id ?? `new-${barcode ?? ''}`}
         deps={{
           getProduct: c.getProduct,
           saveProduct: c.saveProduct,
@@ -24,6 +24,7 @@ export default function ProductRoute() {
         }}
         shopId={shopId}
         productId={id ?? null}
+        initialBarcode={barcode}
         onDone={() => router.back()}
       />
     </RequirePermission>
