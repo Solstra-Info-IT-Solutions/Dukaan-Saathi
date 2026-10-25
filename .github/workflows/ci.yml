@@ -57,7 +57,13 @@ jobs:
       - name: Start Supabase (database, auth, storage)
         run: npx supabase start --exclude studio,imgproxy,mailpit,realtime,edge-runtime,logflare,vector,supavisor,postgres-meta
       - name: pgTAP
-        run: npx supabase test db
+        # Failing lines are also emitted as annotations, which are readable without log access.
+        run: |
+          set -o pipefail
+          npx supabase test db 2>&1 | tee /tmp/pgtap.log || {
+            grep -E "not ok|Failed|# +(Failed|got|expected|Looks)|ERROR|Result: FAIL" /tmp/pgtap.log | head -30               | while IFS= read -r line; do echo "::error title=pgTAP::$line"; done
+            exit 1
+          }
       - name: Concurrency checks (create_sale)
         run: bash supabase/tests/concurrency/invoice-sequence.sh
       - name: Generated DB types are current
