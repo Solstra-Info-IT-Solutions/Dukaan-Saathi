@@ -244,8 +244,9 @@ describe('ProductsScreen', () => {
 
     await fireEvent.changeText(screen.getByLabelText('Search by name, Hindi name or barcode'), 'salt');
     await act(() => new Promise((resolve) => setTimeout(resolve, 400)));
-    await waitFor(() => expect(screen.queryByText('Sugar 1kg')).toBeNull());
-    expect(screen.getByText('Salt')).toBeOnTheScreen();
+    // The list may be empty for a moment between the two results, so wait for the new one.
+    expect(await screen.findByText('Salt')).toBeOnTheScreen();
+    expect(screen.queryByText('Sugar 1kg')).toBeNull();
     expect(repo.queries.at(-1)).toMatchObject({ query: 'salt', offset: 0 });
   });
 

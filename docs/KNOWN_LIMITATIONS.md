@@ -2,8 +2,11 @@
 
 Deliberate gaps. Each has a reason and, where relevant, a backlog item.
 
-## Current state (end of Phase 03)
-- Mobile: sign-in, shops, staff, settings (Phase 02) and catalogue, categories, CSV import (Phase 03). No billing yet (Phase 04+).
+## Current state (end of Phase 04)
+- Mobile: sign-in, shops, staff, settings (Phase 02); catalogue, categories, CSV import (Phase 03); quick bills with cash/UPI/card/other, UPI QR and receipts (Phase 04).
+- Billing: quick (amount) lines only, one payment method per bill in the UI, online only; no history or void yet (Phase 05). Receipt PDF sharing not yet tried on a device.
+- If a save times out and the bill is then changed, the first bill may already exist and the changed one is saved as another bill (visible/voidable from Phase 05).
+- Intermittent screen-test timing failures seen on the dev PC (BL-406).
 - Sign-in on a device needs the Supabase Auth settings listed in PHASE_02 (email template with `{{ .Token }}`, SMS provider).
 - Import accepts CSV only; XLSX arrives with the Phase 11 admin workbench (ADR-032). Opening stock from import is ignored until Phase 07.
 - Product search timing measured only in PGlite (51–54 ms typical, 121 ms worst case for 5,000 products); hosted-DB measurement in Phase 13.

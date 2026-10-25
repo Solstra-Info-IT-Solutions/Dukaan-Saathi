@@ -413,8 +413,8 @@ describe('BillingScreen', () => {
     await fireEvent.press(await screen.findByText('5'));
     await fireEvent.press(screen.getByText('0'));
     await fireEvent.press(screen.getByText('Pay'));
-    await fireEvent.changeText(screen.getByLabelText('Cash received from customer (₹)'), '100');
-    expect(screen.getByText('Give back ₹50.00')).toBeTruthy();
+    await fireEvent.changeText(await screen.findByLabelText('Cash received from customer (₹)'), '100');
+    expect(await screen.findByText('Give back ₹50.00')).toBeTruthy();
     await fireEvent.press(screen.getByText('Cash received – save bill'));
     await waitFor(() => expect(onCompleted).toHaveBeenCalledWith(expect.any(String)));
     expect(repo.calls[0]?.lines).toEqual([{ kind: 'quick', amountPaise: 5000 }]);
@@ -426,8 +426,8 @@ describe('BillingScreen', () => {
     await renderWithProviders(<BillingScreen deps={deps} context={context()} onCompleted={jest.fn()} />);
     await fireEvent.press(await screen.findByText('2'));
     await fireEvent.press(screen.getByText('Pay'));
-    await fireEvent.press(screen.getByText('UPI'));
-    expect(screen.getByText(/qr:upi:\/\/pay\?pa=sharma%40okaxis.*am=2\.00/)).toBeTruthy();
+    await fireEvent.press(await screen.findByText('UPI'));
+    expect(await screen.findByText(/qr:upi:\/\/pay\?pa=sharma%40okaxis.*am=2\.00/)).toBeTruthy();
   });
 });
 

@@ -103,7 +103,8 @@ Legend: Ph = phase; Idem = idempotent via client_operation_id.
 | `create_sale(p_input)` | R | billing | 04–05 | `sale.create` (+ `sale.discount`, `sale.price_override`, `udhaar.grant` as needed) | yes | See §5.1. Covers logical `create_quick_sale` and `complete_product_sale` |
 | `void_sale(p_input)` | R | billing | 05 | `sale.void` within window; owner always | yes | Reverses stock + ledger; audits |
 | `create_sale_return(p_input)` | R | billing | 06 | `sale.return` | yes | Partial returns, refund method, stock back |
-| `get_sale(p_shop_id, p_sale_id)` | R | billing | 04 | member (cashier: own sales only, configurable) | — | Lines, payments, snapshots |
+| `get_sale(p_shop_id, p_sale_id)` | R | billing | 04 | member (cashier: own sales only unless `cashierSeesAllSales` or `sale.view_all`) | — | Receipt data: totals, lines, payments, shop header; other users' bills → `DS_NOT_FOUND` |
+| `sales`, `sale_items`, `sale_payments` | T (read only) | billing | 04 | `rls.can_view_sale` | — | No client writes; only `create_sale` inserts |
 | `list_sales(p_shop_id, p_filter, p_cursor, p_limit)` | R | billing | 05 | member (cashier scope) | — | Keyset pagination |
 | `get_dashboard_snapshot(p_shop_id, p_business_date)` | R | reports | 06 | `report.view_sales` | — | Today totals, split, udhaar given/collected |
 | `get_sales_report(p_shop_id, p_from, p_to, p_group_by)` | R | reports | 06 | `report.view_sales`; profit fields need `report.view_profit` | — | Entitlement `reports.advanced` for > 7 days / group-by product |
@@ -139,6 +140,14 @@ Legend: Ph = phase; Idem = idempotent via client_operation_id.
 ## 5. Detailed contracts (core financial operations)
 
 ### 5.1 `create_sale`
+
+> **As built in Phase 04 (ADR-037):** keys are camelCase (`clientOperationId`, `shopId`, `deviceId`, `invoice {fy, seq}`,
+> `occurredAt`, `origin: "online"`, `source`, `lines[{kind:"quick", label?, amountPaise}]`, `billDiscountPaise?`,
+> `payments[{method, amountPaise, reference?}]` (≤ 10), `clientTotals`, `note?`); see `CreateSaleInputSchema` in
+> `@ds/contracts`. Output `{ saleId, invoiceNumber, seq, status, reviewReasons, totals, replayed }`. Only `last_seq + 1` is
+> accepted as `invoice.seq` (`DS_INVOICE_SEQUENCE_CONFLICT` carries `expectedSeq`). Product lines (Phase 05), udhaar and
+> customers (Phase 08) and `offline_sync` (Phase 09) are refused with `DS_VALIDATION_FAILED` until then. The full design below
+> remains the target.
 
 **Input** (`CreateSaleInputSchema`):
 

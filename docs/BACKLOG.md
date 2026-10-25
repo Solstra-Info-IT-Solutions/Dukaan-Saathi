@@ -61,8 +61,15 @@ Phase order may shift for dependencies; nothing is removed without a note in PRO
 | BL-311 | category reorder UI, import template download | ⬜ backlog |
 
 ## Phase 04 — Quick billing
-BL-401 `invoice_series`, `sales`, `sale_items`, `sale_payments`, idempotency table · BL-402 `create_sale` (quick lines, cash/UPI/card/other) ·
-BL-403 device invoice counter · BL-404 billing screen keypad, payment sheet, UPI QR, receipt screen + share · BL-405 tests incl. idempotency/concurrency.
+| ID | Item | Status |
+|---|---|---|
+| BL-401 | `invoice_series`, `sales`, `sale_items`, `sale_payments`, idempotency | ✅ |
+| BL-402 | `create_sale` (quick lines, cash/UPI/card/other) + `get_sale` | ✅ |
+| BL-403 | device invoice counter (SecureStore; server accepts `last_seq + 1`) | ✅ |
+| BL-404 | billing keypad, payment sheet, UPI QR, receipt screen + share | ✅ (PDF share not yet tried on a device) |
+| BL-405 | tests incl. idempotency/concurrency | ✅ (concurrency script runs in CI) |
+| BL-406 | intermittent screen-test timing failures (2 races fixed in Phase 04; SelectShopScreen watched) | 🟨 |
+| BL-407 | split payment UI (RPC already accepts several payments) | ⬜ Phase 05 |
 
 ## Phase 05 — Product billing, barcode, history, void
 BL-501 product lines + loose quantity/amount entry · BL-502 discounts/overrides per role · BL-503 barcode scanning (`expo-camera`) ·

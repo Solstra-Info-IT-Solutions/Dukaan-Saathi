@@ -1,6 +1,6 @@
 # Feature: Billing (Quick, Product, Barcode), Payments, Receipts, Voids
 
-Status: Planned · Phase: 04 (quick + payments + receipt), 05 (product, barcode, history, void), 06 (returns) ·
+Status: Quick billing implemented (Phase 04, see [../phases/PHASE_04_QUICK_BILLING.md](../phases/PHASE_04_QUICK_BILLING.md)) · Phase: 04 (quick + payments + receipt), 05 (product, barcode, history, void), 06 (returns) ·
 Requirements: FR-03, FR-05, FR-06, FR-07, FR-08
 
 ## Purpose

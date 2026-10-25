@@ -1,6 +1,6 @@
 # Project Status
 
-Last updated: 2026-10-24 · Current phase: **03 complete, awaiting approval for Phase 04**
+Last updated: 2026-10-25 · Current phase: **04 complete, awaiting approval for Phase 05**
 Repository: https://github.com/Solstra-Info-IT-Solutions/Dukaan-Saathi (`main`)
 
 ## 1. Phase overview
@@ -11,8 +11,8 @@ Repository: https://github.com/Solstra-Info-IT-Solutions/Dukaan-Saathi (`main`)
 | 01 | Monorepo foundation, tooling, contracts, Supabase, CI | ✅ Complete — see [phases/PHASE_01_FOUNDATION.md](phases/PHASE_01_FOUNDATION.md) |
 | 02 | Auth, tenancy, shop setup, foundational RLS | ✅ Complete — see [phases/PHASE_02_AUTH_TENANCY.md](phases/PHASE_02_AUTH_TENANCY.md) |
 | 03 | Catalogue, categories, units, import | ✅ Complete — see [phases/PHASE_03_CATALOGUE.md](phases/PHASE_03_CATALOGUE.md) |
-| 04 | Quick billing, transaction-safe sale creation | ⬜ Next |
-| 05 | Product billing, barcode, payments, receipts, void | ⬜ |
+| 04 | Quick billing, transaction-safe sale creation | ✅ Complete — see [phases/PHASE_04_QUICK_BILLING.md](phases/PHASE_04_QUICK_BILLING.md) |
+| 05 | Product billing, barcode, payments, receipts, void | ⬜ Next |
 | 06 | Reports, expenses, returns, reconciliation | ⬜ |
 | 07 | Inventory, suppliers, purchases | ⬜ |
 | 08 | Customers, udhaar, ledger | ⬜ |
@@ -28,12 +28,13 @@ Repository: https://github.com/Solstra-Info-IT-Solutions/Dukaan-Saathi (`main`)
 
 | Item | Verified by |
 |---|---|
-| Shared packages `@ds/domain-core`, `@ds/contracts` | 70 + 26 unit tests |
+| Shared packages `@ds/domain-core`, `@ds/contracts` | 77 + 29 unit tests |
 | Mobile foundation + diagnostics reference feature | 40 Jest/RNTL tests, typecheck, boundary lint, Android Metro bundle |
 | Admin shell + operator guard | 11 Vitest tests, `next build`, local runtime smoke test |
-| Supabase schema (baseline + tenancy + catalogue) on `dukaan-saathi-dev` | 139/139 assertions in the PGlite pre-check; pgTAP on real Supabase in CI (§3); security advisor reviewed |
+| Supabase schema (baseline + tenancy + catalogue + sales) on `dukaan-saathi-dev` | 175/175 assertions in the PGlite pre-check; pgTAP on real Supabase in CI (§3); security advisor reviewed |
 | Mobile auth, shops, staff, settings, navigation guards | 87 Jest/RNTL tests (Phase 01 + 02) |
 | Mobile catalogue, categories, CSV import | 103 Jest/RNTL tests in total (Phase 01–03) |
+| Mobile quick billing, payment sheet, receipts | 119 Jest/RNTL tests in total (Phase 01–04) |
 | CI workflow | GitHub Actions run on `main` (§3) |
 
 ## 3. CI
@@ -53,7 +54,8 @@ The generated-types comparison step stays advisory (`continue-on-error`): the co
 |---|---|
 | Supabase dashboard (dev): Email template "Magic Link" must contain `{{ .Token }}` | Trying the app with email OTP |
 | SMS provider for phone OTP (OD-02) + test phone numbers | Phone login (default flow) |
-| Approve Phase 04 | Quick billing |
+| Approve Phase 05 | Product billing, barcode, history, void |
+| Sign in to Supabase in the app's built-in browser (or set the template yourself) | Email template `{{ .Token }}` |
 | Free space on C: | Recommended; npm is redirected to D: |
 | Docker Desktop (OD-13) | Optional; local `supabase start` |
 
