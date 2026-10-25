@@ -83,7 +83,7 @@ Verified on the hosted project: bucket private with the size and type limits, bo
 | @ds/contracts | **30 / 30** |
 | @ds/domain-core | **77 / 77** |
 | DB pre-check (PGlite) | **239 / 239** assertions, 12 files (new `012_reports_expenses` 34); `013_expense_storage` skipped locally (needs Supabase storage) |
-| DB pgTAP + storage + concurrency on real Supabase (CI) | see PROJECT_STATUS.md §3 |
+| DB pgTAP + storage + concurrency on real Supabase (CI) | ✅ passed on `3616ade` ([run 40158573141](https://github.com/Solstra-Info-IT-Solutions/Dukaan-Saathi/actions/runs/40158573141)), including `013_expense_storage` |
 
 **The seeded day** (same numbers in pgTAP and in the app's fake repository): bills ₹90 (2 sugar, cash), ₹50 (UPI), ₹20
 (cash, voided), ₹10 (cashier, cash); 1 sugar returned (₹45 cash); expenses ₹3 tea (cash), ₹100 rent (UPI), ₹5 (voided).
@@ -103,6 +103,10 @@ Found while testing: on real Postgres one report assertion sorted rows by name, 
 "Sugar" (locale collation) while PGlite uses byte order; the test now sorts by amount. Dashboard payments were declared as a full record of all methods (Zod 4 requires every key), so a
 real day with only cash and UPI would have failed to parse — now a partial record, with a contract test; two report screens
 imported the domain layer directly (boundary lint) — now through their ViewModels.
+
+**CI history this phase:** `279c63f` failed one pgTAP assertion (the sort-order issue above); `4cd3bf3` failed the unit-test
+step once with no code change to the app since a green run — the intermittent screen-test timing problem (BL-406). CI now
+prints failing pgTAP lines and unit test names as annotations so the cause is visible next time; `3616ade` is green.
 
 ## Acceptance criteria
 - [x] Dashboard and reports match fixture totals exactly (seeded day, pgTAP + app tests).
