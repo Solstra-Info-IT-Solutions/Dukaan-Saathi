@@ -42,7 +42,7 @@ Repository: https://github.com/Solstra-Info-IT-Solutions/Dukaan-Saathi (`main`)
 
 ## 3. CI
 
-Run [40158573141](https://github.com/Solstra-Info-IT-Solutions/Dukaan-Saathi/actions/runs/40158573141) on commit `3616ade` (Phase 06):
+Run [40169970071](https://github.com/Solstra-Info-IT-Solutions/Dukaan-Saathi/actions/runs/40169970071) on commit `b1fdf29` (Phase 07):
 
 | Job | Result |
 |---|---|

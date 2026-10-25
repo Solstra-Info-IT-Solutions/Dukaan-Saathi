@@ -81,7 +81,7 @@ SECURITY DEFINER RPCs with `search_path = ''`.
 | @ds/contracts | **30 / 30** |
 | @ds/domain-core | **77 / 77** |
 | DB pre-check (PGlite) | **269 / 269** assertions (new `014_inventory_purchases` 30) |
-| DB pgTAP + storage + concurrency on real Supabase (CI) | see PROJECT_STATUS.md §3 |
+| DB pgTAP + storage + concurrency on real Supabase (CI) | ✅ passed on `b1fdf29` ([run 40169970071](https://github.com/Solstra-Info-IT-Solutions/Dukaan-Saathi/actions/runs/40169970071)); `03a6aba` failed only the flaky sales-history test (fixed) |
 
 Database tests: opening stock as an `opening` movement; untracked items and fractional pieces refused; adjustment replay;
 count adjusts by counted − on hand; low-stock list; stock list shows only tracked items; supplier opening balance; edits never
