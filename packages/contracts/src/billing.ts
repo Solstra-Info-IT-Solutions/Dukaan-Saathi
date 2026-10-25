@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { PaiseSchema, SignedPaiseSchema, UuidSchema } from './common';
+import { SaleReturnSummarySchema } from './reports';
 
 /** Phase 04 sale contracts (API_AND_RPC_CONTRACTS.md §5.1, features/billing.md). */
 
@@ -101,6 +102,7 @@ export const SaleLineSchema = z.object({
   taxPaise: PaiseSchema,
   hsnCode: z.string().nullable().optional(),
   priceOverridden: z.boolean().optional(),
+  returnedQuantityMilli: z.number().int().optional(),
 });
 
 export const SalePaymentSchema = z.object({
@@ -131,6 +133,8 @@ export const SaleSchema = z.object({
   voidedByName: z.string().nullable().optional(),
   lines: z.array(SaleLineSchema),
   payments: z.array(SalePaymentSchema),
+  returns: z.array(SaleReturnSummarySchema).optional(),
+  businessDate: z.string().optional(),
   shop: z.object({
     name: z.string(),
     addressLine: z.string().nullable(),

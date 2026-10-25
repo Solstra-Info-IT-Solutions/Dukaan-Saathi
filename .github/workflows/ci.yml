@@ -54,8 +54,8 @@ jobs:
           node-version: 24
           cache: npm
       - run: npm ci
-      - name: Start Supabase (database + auth only)
-        run: npx supabase start --exclude studio,imgproxy,mailpit,realtime,storage-api,edge-runtime,logflare,vector,supavisor,postgres-meta
+      - name: Start Supabase (database, auth, storage)
+        run: npx supabase start --exclude studio,imgproxy,mailpit,realtime,edge-runtime,logflare,vector,supavisor,postgres-meta
       - name: pgTAP
         run: npx supabase test db
       - name: Concurrency checks (create_sale)

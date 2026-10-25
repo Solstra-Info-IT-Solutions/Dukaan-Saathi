@@ -139,6 +139,91 @@ export type Database = {
         Update: never
         Relationships: []
       }
+      day_closures: {
+        Row: {
+          breakdown: Json
+          business_date: string
+          client_operation_id: string
+          closed_at: string
+          closed_by: string
+          counted_cash_paise: number
+          device_id: string
+          difference_paise: number
+          expected_cash_paise: number
+          id: string
+          note: string | null
+          opening_cash_paise: number
+          shop_id: string
+        }
+        Insert: never
+        Update: never
+        Relationships: []
+      }
+      expenses: {
+        Row: {
+          amount_paise: number
+          attachment_path: string | null
+          business_date: string
+          category: string
+          created_at: string
+          created_by: string
+          device_id: string | null
+          id: string
+          method: string
+          note: string | null
+          shop_id: string
+          void_reason: string | null
+          voided_at: string | null
+          voided_by: string | null
+        }
+        Insert: never
+        Update: never
+        Relationships: []
+      }
+      report_exports: {
+        Row: {
+          created_at: string
+          created_by: string
+          id: string
+          kind: string
+          shop_id: string
+        }
+        Insert: never
+        Update: never
+        Relationships: []
+      }
+      sale_return_items: {
+        Row: {
+          id: string
+          line_no: number
+          quantity_milli: number
+          refund_paise: number
+          return_id: string
+          sale_id: string
+          shop_id: string
+        }
+        Insert: never
+        Update: never
+        Relationships: []
+      }
+      sale_returns: {
+        Row: {
+          business_date: string
+          client_operation_id: string
+          created_at: string
+          created_by: string
+          device_id: string
+          id: string
+          reason: string
+          refund_method: string
+          refund_paise: number
+          sale_id: string
+          shop_id: string
+        }
+        Insert: never
+        Update: never
+        Relationships: []
+      }
       sale_items: {
         Row: {
           bill_discount_share_paise: number
@@ -184,6 +269,7 @@ export type Database = {
       sales: {
         Row: {
           bill_discount_paise: number
+          business_date: string
           client_operation_id: string
           created_at: string
           created_by: string
@@ -224,6 +310,7 @@ export type Database = {
           kind: string
           product_id: string
           quantity_milli: number
+          return_id: string | null
           sale_id: string | null
           shop_id: string
         }
@@ -877,7 +964,21 @@ export type Database = {
         Args: { p_client_operation_id: string; p_file_name: string; p_shop_id: string }
         Returns: Json
       }
+      begin_report_export: { Args: { p_shop_id: string }; Returns: Json }
+      close_day: { Args: { p_input: Json }; Returns: Json }
       create_sale: { Args: { p_input: Json }; Returns: Json }
+      create_sale_return: { Args: { p_input: Json }; Returns: Json }
+      get_dashboard_snapshot: { Args: { p_business_date?: string; p_shop_id: string }; Returns: Json }
+      get_day_close: {
+        Args: { p_business_date?: string; p_device_id: string; p_shop_id: string }
+        Returns: Json
+      }
+      get_sales_report: {
+        Args: { p_from: string; p_group_by?: string; p_shop_id: string; p_to: string }
+        Returns: Json
+      }
+      record_expense: { Args: { p_input: Json }; Returns: Json }
+      void_expense: { Args: { p_expense_id: string; p_reason: string; p_shop_id: string }; Returns: Json }
       get_sale: { Args: { p_sale_id: string; p_shop_id: string }; Returns: Json }
       list_sales: {
         Args: {

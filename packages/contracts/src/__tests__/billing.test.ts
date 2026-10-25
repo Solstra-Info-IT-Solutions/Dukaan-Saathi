@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { CreateSaleInputSchema, CreateSaleOutputSchema } from '../index';
+import { CreateSaleInputSchema, CreateSaleOutputSchema, DashboardSnapshotSchema } from '../index';
 
 const valid = {
   clientOperationId: '0190f0f0-0000-7000-8000-000000000001',
@@ -38,5 +38,26 @@ describe('create_sale contract', () => {
       replayed: false,
     };
     expect(CreateSaleOutputSchema.parse(out).totals.roundOffPaise).toBe(-49);
+  });
+});
+
+describe('dashboard contract', () => {
+  it('accepts payments for only the methods used that day', () => {
+    const parsed = DashboardSnapshotSchema.parse({
+      scope: 'shop',
+      businessDate: '2026-10-25',
+      salesPaise: 15000,
+      bills: 3,
+      voidedBills: 1,
+      discountPaise: 0,
+      taxPaise: 0,
+      udhaarGivenPaise: 0,
+      returnsPaise: 4500,
+      netSalesPaise: 10500,
+      expensesPaise: 10300,
+      payments: { cash: 10000, upi: 5000 },
+      refunds: {},
+    });
+    expect(parsed.scope === 'shop' && parsed.payments.card).toBeUndefined();
   });
 });

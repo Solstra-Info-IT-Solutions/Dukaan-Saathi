@@ -95,6 +95,11 @@ await db.exec('set search_path = public, tap, extensions');
 let failed = 0;
 let total = 0;
 for (const t of sqlFiles('supabase/tests/database', '.test.sql')) {
+  // Tests that need Supabase services PGlite does not have (e.g. storage) run only in CI.
+  if (/^-- requires: storage/m.test(t.sql)) {
+    console.log(`test skip      ${t.name} (needs Supabase storage; runs in CI)`);
+    continue;
+  }
   // The shim replaces the pgtap extension; results must survive the test's final rollback.
   const sql = t.sql
     .replace(/create extension if not exists pgtap[^;]*;/i, '')

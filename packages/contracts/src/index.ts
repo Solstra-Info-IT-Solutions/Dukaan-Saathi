@@ -7,3 +7,4 @@ export type { Database, Json } from './database.types';
 export * from './shops';
 export * from './catalogue';
 export * from './billing';
+export * from './reports';
