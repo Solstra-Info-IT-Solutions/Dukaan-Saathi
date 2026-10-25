@@ -39,12 +39,12 @@ Repository: https://github.com/Solstra-Info-IT-Solutions/Dukaan-Saathi (`main`)
 
 ## 3. CI
 
-Run [40115573002](https://github.com/Solstra-Info-IT-Solutions/Dukaan-Saathi/actions/runs/40115573002) on commit `f8559d3` (Phase 03 mobile; schema run on `2029ff5` also green):
+Run [40153331228](https://github.com/Solstra-Info-IT-Solutions/Dukaan-Saathi/actions/runs/40153331228) on commit `684e86a` (Phase 04):
 
 | Job | Result |
 |---|---|
 | Typecheck, lint, unit tests, builds (format, typecheck, lint, unit tests, SQL fixture freshness, PGlite pre-check, admin build, mobile Metro export) | ✅ success |
-| Supabase migrations + pgTAP (real Supabase Postgres + Auth, `supabase test db`) | ✅ success |
+| Supabase migrations + pgTAP (real Supabase Postgres + Auth, `supabase test db`) + `create_sale` concurrency script | ✅ success |
 
 The generated-types comparison step stays advisory (`continue-on-error`): the committed types are narrowed by hand (KNOWN_LIMITATIONS.md).
 

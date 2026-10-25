@@ -77,7 +77,7 @@ Security advisor after the migration: only the expected findings (RPC-only table
 | @ds/contracts | **29 / 29** |
 | @ds/domain-core | **77 / 77** |
 | DB pre-check (PGlite) | **175 / 175** assertions, 10 files (new `010_sales` 28; money fixtures 24 → 32) |
-| DB pgTAP + concurrency on real Supabase (CI `database` job) | see PROJECT_STATUS.md §3 |
+| DB pgTAP + concurrency on real Supabase (CI `database` job) | ✅ passed on `684e86a` ([run 40153331228](https://github.com/Solstra-Info-IT-Solutions/Dukaan-Saathi/actions/runs/40153331228)): race for one number → 1 saved + 1 conflict; same bill twice at once → 1 sale; no gaps. Two script bugs fixed on the way (psql printed only the last statement; a conflict was counted twice) — the database behaved correctly in both runs. |
 
 New tests cover:
 - **Idempotency:** a replay returns the same sale; the same operation id with another bill is a conflict; ViewModel double
