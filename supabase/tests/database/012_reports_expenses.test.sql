@@ -144,7 +144,7 @@ select is((select (r -> 'rows' -> 0) - 'key' - 'label' from public.get_sales_rep
              pg_temp.ctx('today')::date, pg_temp.ctx('today')::date) r),
           '{"salesPaise": 15000, "bills": 3, "returnsPaise": 4500, "netPaise": 10500, "profitPaise": 1000}'::jsonb,
           'the daily report row equals the dashboard');
-select is((select jsonb_agg(x - 'key' order by x ->> 'label')
+select is((select jsonb_agg(x - 'key' order by (x ->> 'salesPaise')::bigint desc)
              from jsonb_array_elements(public.get_sales_report(pg_temp.ctx('shopA')::uuid, pg_temp.ctx('today')::date,
                                                                pg_temp.ctx('today')::date, 'product') -> 'rows') x),
           '[{"label": "Sugar 1kg", "salesPaise": 9000, "quantityMilli": 2000, "bills": 1, "profitPaise": 1000},

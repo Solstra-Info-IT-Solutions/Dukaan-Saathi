@@ -85,8 +85,17 @@ Phase order may shift for dependencies; nothing is removed without a note in PRO
 | BL-509 | tests + Maestro J-01/J-04 | 🟨 unit/component/pgTAP ✅; Maestro needs a device |
 
 ## Phase 06 — Reports, expenses, reconciliation
-BL-601 dashboard snapshot · BL-602 sales report + entitlement gating · BL-603 export Edge Function · BL-604 expenses + attachments ·
-BL-605 day close · BL-606 `create_sale_return` · BL-607 push token + daily summary notification · BL-608 tests.
+| ID | Item | Status |
+|---|---|---|
+| BL-601 | dashboard snapshot | ✅ |
+| BL-602 | sales report + entitlement gating | ✅ |
+| BL-603 | export | ✅ CSV built on the phone after `begin_report_export` (quota); no Edge Function (ADR-044) |
+| BL-604 | expenses + attachments | ✅ private bucket + storage policies |
+| BL-605 | day close | ✅ per phone per day |
+| BL-606 | `create_sale_return` | ✅ |
+| BL-607 | push token + daily summary notification | ⬜ blocked: FCM / Expo push credentials and a device |
+| BL-608 | tests | ✅ (seeded-day fixture in pgTAP and app tests) |
+| BL-609 | shop-wide cash-up across phones; profit net of returns | ⬜ backlog |
 
 ## Phase 07 — Inventory & purchases
 BL-701 stock screens, adjustments, stock count · BL-702 low-stock list + digest · BL-703 suppliers + ledger · BL-704 `receive_purchase` ·

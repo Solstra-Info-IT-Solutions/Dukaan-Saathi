@@ -1,6 +1,6 @@
 # Feature: Dashboard, Reports, Expenses, Day Close
 
-Status: Planned · Phase: 06 · Requirements: FR-09, FR-10, FR-11
+Status: Implemented (Phase 06, see [../phases/PHASE_06_REPORTS_EXPENSES.md](../phases/PHASE_06_REPORTS_EXPENSES.md); push summary pending credentials) · Phase: 06 · Requirements: FR-09, FR-10, FR-11
 
 ## Purpose
 Answer "how much did I sell and earn today / this month, and where did the cash go?" with numbers that reconcile.

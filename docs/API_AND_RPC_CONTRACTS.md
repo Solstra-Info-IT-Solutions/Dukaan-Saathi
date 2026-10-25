@@ -102,16 +102,20 @@ Legend: Ph = phase; Idem = idempotent via client_operation_id.
 | `import-preview` | E | imports | 11 | operator / `product.manage` | — | XLSX parsing for the admin workbench (ADR-032); CSV is parsed on the phone |
 | `create_sale(p_input)` | R | billing | 04–05 | `sale.create` (+ `sale.discount`, `sale.price_override`, `udhaar.grant` as needed) | yes | See §5.1. Covers logical `create_quick_sale` and `complete_product_sale` |
 | `void_sale(p_input)` | R | billing | 05 | `sale.void` within window; owner always | yes | Reverses stock + ledger; audits |
-| `create_sale_return(p_input)` | R | billing | 06 | `sale.return` | yes | Partial returns, refund method, stock back |
+| `create_sale_return(p_input)` | R | billing | 06 | `sale.return` | yes | `{clientOperationId, shopId, deviceId, saleId, lines[{lineNo, quantityMilli}], refundMethod, reason}` → `{returnId, saleId, refundPaise, refundMethod}`; refund rule ADR-043; stock back for tracked products |
 | `get_sale(p_shop_id, p_sale_id)` | R | billing | 04 | member (cashier: own sales only unless `cashierSeesAllSales` or `sale.view_all`) | — | Receipt data: totals, lines, payments, shop header; other users' bills → `DS_NOT_FOUND` |
 | `sales`, `sale_items`, `sale_payments` | T (read only) | billing | 04 | `rls.can_view_sale` | — | No client writes; only `create_sale` inserts |
 | `list_sales(p_shop_id, p_from?, p_to?, p_status?, p_query?, p_cursor?, p_limit?)` | R | billing | 05 | member (cashier scope as `get_sale`) | — | Newest first; cursor `createdAt` + `saleId`; search bill number or item name; returns `{ items, nextCursor }` |
 | `stock_movements` | T (read only) | inventory | 05 | `stock.view` | — | `sale` / `sale_void` from Phase 05; purchases and adjustments in Phase 07 |
-| `get_dashboard_snapshot(p_shop_id, p_business_date)` | R | reports | 06 | `report.view_sales` | — | Today totals, split, udhaar given/collected |
-| `get_sales_report(p_shop_id, p_from, p_to, p_group_by)` | R | reports | 06 | `report.view_sales`; profit fields need `report.view_profit` | — | Entitlement `reports.advanced` for > 7 days / group-by product |
-| `export-report` | E | reports | 06 | `report.export`, entitlement `reports.export` | — | CSV/PDF to private bucket, signed URL |
-| `record_expense(p_input)` | R | expenses | 06 | `expense.create` | yes | |
-| `close_day(p_input)` | R | reports | 06 | `day.close` | yes | Stores expected vs counted cash |
+| `get_dashboard_snapshot(p_shop_id, p_business_date?)` | R | reports | 06 | member; full numbers need `report.view_sales`, profit `report.view_profit` | — | `scope: own` for cashiers (their sales/bills); `scope: shop`: sales, bills, voided, returns, net, expenses, payments/refunds by method, profit estimate |
+| `get_sales_report(p_shop_id, p_from, p_to, p_group_by)` | R | reports | 06 | `report.view_sales`; profit fields need `report.view_profit` | — | group by day / payment / product / category / staff; `reports.advanced` for > 7 days or product / category / staff |
+| `begin_report_export(p_shop_id)` | R | reports | 06 | `report.export`, entitlement `reports.export`, quota `exports.monthly` | — | Counts the export; the phone then builds the CSV (ADR-044). The planned `export-report` Edge Function is not needed |
+| `record_expense(p_input)` | R | expenses | 06 | `expense.create` | by expense id | `{id, shopId, deviceId?, businessDate?, category, amountPaise, method, note?, attachmentPath?}`; date within the last 31 days |
+| `void_expense(p_shop_id, p_expense_id, p_reason)` | R | expenses | 06 | owner | — | Reason 3–200 chars |
+| `expenses` | T (read only) | expenses | 06 | `expense.view` | — | |
+| storage `expense-attachments` | S | expenses | 06 | upload `expense.create`, read `expense.view` (first path segment = shop) | — | Private, 5 MB, JPEG/PNG/WebP; read through signed URLs |
+| `get_day_close(p_shop_id, p_device_id, p_business_date?)` | R | reports | 06 | `day.close` | — | Breakdown for the phone, or the stored closing |
+| `close_day(p_input)` | R | reports | 06 | `day.close` | yes | `{clientOperationId, shopId, deviceId, businessDate?, openingCashPaise, countedCashPaise, note?}`; once per phone per day (`DS_CONFLICT`) |
 | `adjust_stock(p_input)` | R | inventory | 07 | `stock.adjust` | yes | Movement + projection; audits |
 | `submit_stock_count(p_input)` | R | inventory | 07 | `stock.adjust` | yes | Many adjustments in one txn |
 | `suppliers` | T | purchases | 07 | read: `purchase.view`; write: `purchase.manage` | — | Opening balance via RPC below |

@@ -2,14 +2,14 @@
 
 Deliberate gaps. Each has a reason and, where relevant, a backlog item.
 
-## Current state (end of Phase 05)
-- Mobile: sign-in, shops, staff, settings (02); catalogue and CSV import (03); quick and product bills with search, barcode scan, line edits, discounts, overrides, split payment, UPI QR, receipts, sales history and void (04–05).
-- Not yet tried on a device: the whole app, camera scanning, PDF sharing. Sign-in on a device needs the Supabase Auth settings (email template with `{{ .Token }}`, SMS provider).
-- Billing is online only (offline queue in Phase 09); no udhaar until customers (Phase 08); split payment UI is two methods.
-- Stock moves only for products with `trackStock`; there is no stock-tracking UI until inventory (Phase 07).
-- If a save times out and the bill is then changed, the first bill may already exist; it can be found in Sales and voided.
-- Import accepts CSV only (XLSX in Phase 11); opening stock from import ignored until Phase 07.
-- Thermal printing: not built; see docs/spikes/THERMAL_PRINTING.md (OD-08).
+## Current state (end of Phase 06)
+- Mobile: sign-in, shops, staff, settings (02); catalogue and CSV import (03); quick and product bills, scan, discounts, overrides, split payment, UPI QR, receipts, history, void (04–05); today & reports with CSV export, expenses with receipt photos, returns, day close (06).
+- Not yet tried on a device: the whole app, camera scanning, photo upload, PDF/CSV sharing. Sign-in on a device needs the Supabase Auth settings (email template with `{{ .Token }}`, SMS provider).
+- No push notifications yet (daily summary needs FCM / Expo push credentials and a device).
+- Billing is online only (Phase 09); no udhaar until customers (Phase 08); split payment UI is two methods.
+- Profit is an estimate (lines without cost are left out; returns not subtracted). Day close is per phone, not shop-wide.
+- Stock moves only for products with `trackStock`; no stock-tracking UI until inventory (Phase 07).
+- Import accepts CSV only (XLSX in Phase 11). Thermal printing not built (docs/spikes/THERMAL_PRINTING.md, OD-08).
 - Intermittent screen-test timing failures were seen on the dev PC (BL-406).
 - The admin panel has a login page and a guarded placeholder dashboard. Operator MFA enrolment is Phase 11, so a real operator will see "MFA required" until then (by design: deny by default).
 - External services: only the Supabase dev project (`dukaan-saathi-dev`) exists. No SMS provider, Sentry, Expo/EAS account, payment provider or Play account yet.

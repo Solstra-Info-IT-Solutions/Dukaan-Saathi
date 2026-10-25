@@ -47,6 +47,11 @@ input; each has a recommended default that the plan assumes until you say otherw
 | ADR-039 | `stock_movements` is created in Phase 05 (not 07); sales move stock only for products with `track_stock`; `negative_stock_policy` block / warn / allow | Voids must return stock, so movements must exist from the first product sale | 2026-10-25 |
 | ADR-040 | Billing reads the catalogue through a `ProductFinder` port adapted in the composition root | Features stay independent (no cross-feature imports, lint rule) | 2026-10-25 |
 | ADR-041 | Void: owner any time, manager within `void_window_minutes`, cashier never; reason 3–200 chars; sale kept and marked voided; stock returned with `sale_void` movements | Nothing financial is deleted, and late voids need the owner | 2026-10-25 |
+| ADR-042 | `sales.business_date` (the shop's local date) is stored on every sale by a trigger; reports and day close group by it | Day totals must not shift at UTC midnight (05:30 IST) | 2026-10-25 |
+| ADR-043 | A return refunds the line's net amount for the returned share (half up); the last return of a line refunds exactly what is left | A line's refunds always add up to what the customer paid for it, including discounts | 2026-10-25 |
+| ADR-044 | CSV export is built on the phone from the report it already shows, after `begin_report_export` checks the entitlement and monthly quota on the server | No Edge Function or export bucket needed; the data is the same the user can already see, and the commercial limit stays server-side | 2026-10-25 |
+| ADR-045 | An expense's id is generated on the phone and is its idempotency key; a receipt photo is uploaded first (`<shop>/<expense>/receipt.jpg`, upsert) and the expense then points to it | Retries never duplicate an expense or leave it pointing to a missing file | 2026-10-25 |
+| ADR-046 | Day close is per phone per business date: expected = opening + cash sales − cash refunds − cash expenses recorded on that phone | Each phone has its own drawer/cashier; a shop-wide cash-up comes later (BL-609) | 2026-10-25 |
 | ADR-017 | Voice parsing is deterministic (grammar + fuzzy match) in v1; LLM parsing is an optional, flag-gated later addition | Predictable, offline-capable, no per-request cost, no customer data leaving device. | 2026-10-24 |
 
 ## Open decisions (recommended defaults assumed)
