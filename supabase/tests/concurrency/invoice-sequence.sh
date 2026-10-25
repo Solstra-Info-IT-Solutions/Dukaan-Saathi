@@ -9,12 +9,21 @@ set -euo pipefail
 
 DB_URL="${DB_URL:-postgresql://postgres:postgres@127.0.0.1:54322/postgres}"
 USER_ID=00000000-0000-0000-0000-00000000f0a1
-AS_USER="select set_config('request.jwt.claims', '{\"sub\":\"$USER_ID\",\"role\":\"authenticated\"}', false); set role authenticated;"
+CLAIMS="select set_config('request.jwt.claims', '{\"sub\":\"$USER_ID\",\"role\":\"authenticated\"}', false)"
+AS_USER="$CLAIMS; set role authenticated;"
 TMP_DIR="$(mktemp -d)"
 trap 'rm -rf "$TMP_DIR"' EXIT
 
 q() { psql "$DB_URL" -v ON_ERROR_STOP=1 -qtAX -c "$1" | tail -n 1; }
-fail() { echo "FAIL: $1"; for f in "$TMP_DIR"/*.out; do echo "--- $f"; cat "$f"; done; exit 1; }
+# On failure: full output in the log, and a short GitHub annotation (readable without log access).
+fail() {
+  echo "FAIL: $1"
+  for f in "$TMP_DIR"/*.out; do echo "--- $f"; cat "$f"; done
+  echo "::error title=create_sale concurrency::$1 | $(cat "$TMP_DIR"/*.out 2>/dev/null | tr '
+' ' ' | cut -c1-900)"
+  exit 1
+}
+trap 'echo "::error title=create_sale concurrency::setup failed at line $LINENO"' ERR
 
 q "insert into auth.users (id, phone, phone_confirmed_at, aud, role)
    values ('$USER_ID', '919500000001', now(), 'authenticated', 'authenticated') on conflict do nothing" >/dev/null
@@ -26,9 +35,10 @@ NOW=$(date -u +%Y-%m-%dT%H:%M:%SZ)
 bill() { # seq, operation id
   echo "{\"clientOperationId\":\"$2\",\"shopId\":\"$SHOP\",\"deviceId\":\"$DEVICE\",\"invoice\":{\"fy\":\"$FY\",\"seq\":$1},\"occurredAt\":\"$NOW\",\"origin\":\"online\",\"lines\":[{\"kind\":\"quick\",\"amountPaise\":1000}],\"payments\":[{\"method\":\"cash\",\"amountPaise\":1000}],\"clientTotals\":{\"subtotalPaise\":1000,\"discountPaise\":0,\"taxPaise\":0,\"roundOffPaise\":0,\"totalPaise\":1000}}"
 }
-# Holds its transaction open for a second after create_sale so the two sessions overlap.
+# Holds its transaction open for a second after create_sale so the two sessions overlap. One -c per statement:
+# older psql clients print only the last result of a multi-statement -c string.
 submit() { # json, output file
-  psql "$DB_URL" -qtAX -c "begin; $AS_USER select public.create_sale('$1')::text; select pg_sleep(1); commit;" >"$2" 2>&1 || true
+  psql "$DB_URL" -qtAX -c "begin" -c "$CLAIMS" -c "set role authenticated"     -c "select public.create_sale('$1')::text" -c "select pg_sleep(1)" -c "commit" >"$2" 2>&1 || true
 }
 
 # 1. Same invoice number, different bills
