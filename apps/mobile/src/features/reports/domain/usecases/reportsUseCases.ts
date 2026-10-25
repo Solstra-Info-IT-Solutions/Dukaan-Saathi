@@ -105,7 +105,13 @@ export class CloseDay {
 
 /** Expected cash for a typed opening amount (the server stores the same sum). */
 export function expectedCash(breakdown: DayClose['breakdown'], openingPaise: number): number {
-  return openingPaise + breakdown.cashSalesPaise - breakdown.cashRefundsPaise - breakdown.cashExpensesPaise;
+  return (
+    openingPaise +
+    breakdown.cashSalesPaise -
+    breakdown.cashRefundsPaise -
+    breakdown.cashExpensesPaise -
+    breakdown.cashSupplierPaymentsPaise
+  );
 }
 
 export const money = (p: number) => formatPaise(paise(p));

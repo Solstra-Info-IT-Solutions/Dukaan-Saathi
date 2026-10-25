@@ -1,5 +1,5 @@
 import { SaveProductInputSchema, type SaveProductInput } from '@ds/contracts';
-import { parseRupeesToPaise } from '@ds/domain-core';
+import { formatQuantity, parseQuantity, parseRupeesToPaise, quantityMilli } from '@ds/domain-core';
 import type {
   CatalogueReference,
   Product,
@@ -46,6 +46,9 @@ export function productToDraft(p: Product): ProductDraft {
     hsnCode: p.hsnCode ?? '',
     barcodesText: p.barcodes.join(', '),
     aliasesText: p.aliases.join(', '),
+    trackStock: p.trackStock,
+    lowStockText:
+      p.lowStockThresholdMilli === null ? '' : formatQuantity(quantityMilli(p.lowStockThresholdMilli)),
   };
 }
 
@@ -57,6 +60,8 @@ export function draftToInput(draft: ProductDraft, newId: () => string): SaveProd
   else if (price === null) fields.priceText = 'INVALID_PRICE';
   const mrp = draft.mrpText.trim() === '' ? null : parseRupeesToPaise(draft.mrpText);
   if (draft.mrpText.trim() !== '' && mrp === null) fields.mrpText = 'INVALID_PRICE';
+  const lowStock = draft.lowStockText.trim() === '' ? null : parseQuantity(draft.lowStockText);
+  if (draft.lowStockText.trim() !== '' && lowStock === null) fields.lowStockText = 'INVALID_QUANTITY';
   if (Object.keys(fields).length > 0) throw new CatalogueInputError(fields);
 
   const candidate = {
@@ -71,6 +76,8 @@ export function draftToInput(draft: ProductDraft, newId: () => string): SaveProd
     hsnCode: draft.hsnCode.trim() || null,
     barcodes: splitList(draft.barcodesText),
     aliases: splitList(draft.aliasesText),
+    trackStock: draft.trackStock,
+    lowStockThresholdMilli: draft.trackStock ? lowStock : null,
   };
   const parsed = SaveProductInputSchema.safeParse(candidate);
   if (!parsed.success) {

@@ -1,6 +1,6 @@
 import { Controller } from 'react-hook-form';
 import { ScrollView, StyleSheet, View } from 'react-native';
-import { Button, Chip, Dialog, HelperText, Portal, Text, TextInput } from 'react-native-paper';
+import { Button, Chip, Dialog, HelperText, Portal, Switch, Text, TextInput } from 'react-native-paper';
 import { useTranslation } from 'react-i18next';
 import { ErrorState, LoadingState } from '@/shared/components/ScreenState';
 import { spacing } from '@/shared/theme/theme';
@@ -10,7 +10,7 @@ import {
   useProductFormViewModel,
 } from '../viewmodels/useProductFormViewModel';
 
-type TextField = Exclude<keyof ProductDraft, 'id' | 'categoryId' | 'unitCode' | 'taxRateCode'>;
+type TextField = Exclude<keyof ProductDraft, 'id' | 'categoryId' | 'unitCode' | 'taxRateCode' | 'trackStock'>;
 
 export function ProductFormScreen({
   deps,
@@ -156,6 +156,27 @@ export function ProductFormScreen({
         {textInput('hsnCode', t('catalogue.form.hsn'), { keyboardType: 'number-pad' })}
       </View>
 
+      <Controller
+        control={form.control}
+        name="trackStock"
+        render={({ field }) => (
+          <View style={styles.switchRow}>
+            <View style={styles.flex}>
+              <Text variant="bodyLarge">{t('catalogue.form.trackStock')}</Text>
+              <Text variant="bodySmall">{t('catalogue.form.trackStockHint')}</Text>
+            </View>
+            <Switch
+              value={field.value}
+              onValueChange={field.onChange}
+              accessibilityLabel={t('catalogue.form.trackStock')}
+            />
+          </View>
+        )}
+      />
+      {form.watch('trackStock')
+        ? textInput('lowStockText', t('catalogue.form.lowStock'), { keyboardType: 'decimal-pad' })
+        : null}
+
       <HelperText type="error" visible={state.errorKey !== null}>
         {state.errorKey ? t(state.errorKey) : ''}
       </HelperText>
@@ -191,6 +212,8 @@ export function ProductFormScreen({
 }
 
 const styles = StyleSheet.create({
+  switchRow: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm },
+  flex: { flex: 1 },
   container: { padding: spacing.md, gap: spacing.xs, paddingBottom: spacing.xl },
   row: { flexDirection: 'row', gap: spacing.sm },
   half: { flex: 1 },

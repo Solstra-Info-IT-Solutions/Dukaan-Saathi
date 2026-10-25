@@ -95,6 +95,31 @@ import {
   ReportsRepositoryImpl,
   SupabaseReportsDataSource,
 } from '@/features/reports';
+import {
+  AdjustStock,
+  CheckStockDrift,
+  GetStockMovements,
+  InventoryRepositoryImpl,
+  ListStock,
+  type StockCountViewModelDeps,
+  type StockItemViewModelDeps,
+  type StockViewModelDeps,
+  SubmitStockCount,
+  SupabaseInventoryDataSource,
+} from '@/features/inventory';
+import {
+  GetSupplierLedger,
+  ListSuppliers,
+  type PurchaseFormViewModelDeps,
+  PurchaseRepositoryImpl,
+  ReceivePurchase,
+  RecordSupplierPayment,
+  SaveSupplier,
+  SupabasePurchaseDataSource,
+  type SupplierDetailViewModelDeps,
+  type SupplierFormViewModelDeps,
+  type SuppliersViewModelDeps,
+} from '@/features/purchases';
 import { InviteMember, LoadStaff, StaffRepositoryImpl, SupabaseStaffDataSource } from '@/features/staff';
 import type { StaffViewModelDeps } from '@/features/staff';
 
@@ -139,6 +164,11 @@ export interface AppFeatures {
   billing: BillingViewModelDeps & ReceiptViewModelDeps & SalesHistoryViewModelDeps;
   reports: ReportsViewModelDeps & DayCloseViewModelDeps;
   expenses: ExpensesViewModelDeps & ExpenseFormViewModelDeps;
+  inventory: StockViewModelDeps & StockItemViewModelDeps & StockCountViewModelDeps;
+  purchases: SuppliersViewModelDeps &
+    SupplierFormViewModelDeps &
+    SupplierDetailViewModelDeps &
+    PurchaseFormViewModelDeps;
 }
 
 export interface Container {
@@ -191,7 +221,11 @@ function createFeatures(supabase: TypedSupabaseClient, storage: KeyValueStorage)
   const getSettings = new GetShopSettings(shopRepository);
   const searchProducts = new SearchProducts(catalogueRepository);
   const loadReference = new LoadCatalogueReference(catalogueRepository);
-  // Billing sees the catalogue only through this port (features stay independent).
+  const inventoryRepository = new InventoryRepositoryImpl(new SupabaseInventoryDataSource(supabase));
+  const purchaseRepository = new PurchaseRepositoryImpl(new SupabasePurchaseDataSource(supabase));
+  const listStock = new ListStock(inventoryRepository);
+  const listSuppliers = new ListSuppliers(purchaseRepository);
+  // Billing and purchases see the catalogue only through this port (features stay independent).
   const productFinder: ProductFinder = {
     search: async (shopId, text) =>
       (await searchProducts.execute(shopId, { query: text, categoryId: null, offset: 0, limit: 10 })).items,
@@ -271,6 +305,23 @@ function createFeatures(supabase: TypedSupabaseClient, storage: KeyValueStorage)
       openUrl: (url) => Linking.openURL(url),
       recordExpense: new RecordExpense(expenseRepository),
       photos: receiptPhotoPicker,
+      newId: newOperationId,
+    },
+    inventory: {
+      listStock,
+      checkDrift: new CheckStockDrift(inventoryRepository),
+      getMovements: new GetStockMovements(inventoryRepository),
+      adjustStock: new AdjustStock(inventoryRepository),
+      submitCount: new SubmitStockCount(inventoryRepository),
+      newId: newOperationId,
+    },
+    purchases: {
+      listSuppliers,
+      saveSupplier: new SaveSupplier(purchaseRepository),
+      getLedger: new GetSupplierLedger(purchaseRepository),
+      paySupplier: new RecordSupplierPayment(purchaseRepository),
+      receivePurchase: new ReceivePurchase(purchaseRepository),
+      products: productFinder,
       newId: newOperationId,
     },
   };

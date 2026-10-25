@@ -98,8 +98,16 @@ Phase order may shift for dependencies; nothing is removed without a note in PRO
 | BL-609 | shop-wide cash-up across phones; profit net of returns | ⬜ backlog |
 
 ## Phase 07 — Inventory & purchases
-BL-701 stock screens, adjustments, stock count · BL-702 low-stock list + digest · BL-703 suppliers + ledger · BL-704 `receive_purchase` ·
-BL-705 supplier payments · BL-706 rebuild functions + drift check · BL-707 tests.
+| ID | Item | Status |
+|---|---|---|
+| BL-701 | stock screens, adjustments, stock count | ✅ |
+| BL-702 | low-stock list + digest | 🟨 list ✅; push digest needs notification credentials (with BL-607) |
+| BL-703 | suppliers + ledger | ✅ |
+| BL-704 | `receive_purchase` | ✅ (stock, cost, optional new price, ledger, payments in one transaction) |
+| BL-705 | supplier payments | ✅ |
+| BL-706 | rebuild functions + drift check | ✅ `private.stock_from_movements`, `check_stock_drift` |
+| BL-707 | tests | ✅ |
+| BL-708 | purchase history list, supplier edit/archive screens, returns to supplier | ⬜ backlog |
 
 ## Phase 08 — Customers & udhaar
 BL-801 customers + ledger tables, RPCs · BL-802 udhaar on billing (enable payment method) · BL-803 udhaar list, ledger screen, repayment ·

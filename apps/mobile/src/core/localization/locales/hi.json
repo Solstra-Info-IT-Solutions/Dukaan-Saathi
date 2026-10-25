@@ -216,7 +216,9 @@
     "signOut": "लॉग आउट",
     "reports": "आज और रिपोर्ट",
     "expenses": "ख़र्च",
-    "dayClose": "दिन बंद करें"
+    "dayClose": "दिन बंद करें",
+    "stock": "स्टॉक",
+    "suppliers": "सप्लायर और ख़रीद"
   },
   "catalogue": {
     "search": "नाम, हिंदी नाम या बारकोड से खोजें",
@@ -247,7 +249,10 @@
       "hsn": "HSN कोड (वैकल्पिक)",
       "save": "सामान सेव करें",
       "archive": "सामान हटाएँ",
-      "archiveConfirm": "सामान खोज और बिलिंग से हट जाएगा। पुराने बिल नहीं बदलेंगे।"
+      "archiveConfirm": "सामान खोज और बिलिंग से हट जाएगा। पुराने बिल नहीं बदलेंगे।",
+      "trackStock": "स्टॉक गिनें",
+      "trackStockHint": "इस सामान का स्टॉक रखें; बिक्री और ख़रीद से बदलेगा।",
+      "lowStock": "कम स्टॉक की चेतावनी (मात्रा)"
     },
     "errors": {
       "NAME_REQUIRED": "सामान का नाम लिखें।",
@@ -257,7 +262,8 @@
       "PRICE_TOO_HIGH": "दाम बहुत ज़्यादा है।",
       "INVALID_HSN": "HSN 4 से 8 अंकों का होता है।",
       "INVALID_BARCODE": "बारकोड में सिर्फ़ अक्षर और अंक हों।",
-      "CATEGORY_NAME": "श्रेणी का नाम 1 से 80 अक्षरों का हो।"
+      "CATEGORY_NAME": "श्रेणी का नाम 1 से 80 अक्षरों का हो।",
+      "INVALID_QUANTITY": "5 या 2.5 जैसी मात्रा लिखें।"
     }
   },
   "imports": {
@@ -494,7 +500,8 @@
     "errors": {
       "COUNTED_REQUIRED": "नकद गिनकर रकम लिखें।",
       "INVALID_OPENING": "सही शुरुआती रकम लिखें।"
-    }
+    },
+    "cashSuppliers": "सप्लायर को नकद भुगतान"
   },
   "expenses": {
     "total": "कुल: {{amount}}",
@@ -527,6 +534,110 @@
       "AMOUNT_TOO_HIGH": "रकम बहुत बड़ी है।",
       "REASON_REQUIRED": "कारण लिखें (कम से कम 3 अक्षर)।",
       "PHOTO_FAILED": "फ़ोटो नहीं मिल सकी। फिर कोशिश करें।"
+    }
+  },
+  "inventory": {
+    "lowOnly": "कम स्टॉक",
+    "low": "कम",
+    "empty": "अभी किसी सामान का स्टॉक नहीं गिना जाता। सामान में \"स्टॉक गिनें\" चालू करें।",
+    "noneLow": "कुछ भी कम नहीं है।",
+    "alertAt": "{{qty}} {{unit}} पर चेतावनी",
+    "onHand": "स्टॉक में: {{qty}} {{unit}}",
+    "history": "स्टॉक का हिसाब",
+    "noHistory": "अभी कोई बदलाव नहीं।",
+    "adjust": {
+      "title": "स्टॉक बदलें",
+      "add": "जोड़ें",
+      "remove": "घटाएँ",
+      "quantity": "मात्रा ({{unit}})",
+      "save": "सेव करें"
+    },
+    "reasons": {
+      "damage": "ख़राब",
+      "expiry": "एक्सपायर",
+      "count_correction": "गिनती सुधार",
+      "opening": "शुरुआती स्टॉक",
+      "other": "अन्य"
+    },
+    "kinds": {
+      "sale": "बिका",
+      "sale_void": "बिल रद्द",
+      "sale_return": "ग्राहक ने लौटाया",
+      "purchase": "ख़रीदा",
+      "adjustment": "बदला",
+      "opening": "शुरुआती स्टॉक",
+      "import": "इम्पोर्ट"
+    },
+    "count": {
+      "open": "स्टॉक गिनें",
+      "hint": "जो सामान गिनें उसकी मात्रा लिखें; बाकी ख़ाली छोड़ें।",
+      "system": "रिकॉर्ड: {{qty}} {{unit}}",
+      "counted": "गिना",
+      "countedFor": "{{name}} गिना",
+      "submit": "गिनती सेव करें",
+      "done_one": "{{count}} सामान गिना",
+      "done_other": "{{count}} सामान गिने",
+      "noChanges": "सब रिकॉर्ड से मिल गया।",
+      "change": "{{name}}: {{from}} → {{to}}"
+    },
+    "drift": {
+      "check": "स्टॉक रिकॉर्ड जाँचें",
+      "ok": "स्टॉक रिकॉर्ड सही हैं।",
+      "item": "{{name}}: दिख रहा {{onHand}}, हिसाब से {{movements}}"
+    },
+    "errors": {
+      "INVALID_QUANTITY": "5 या 2.5 जैसी मात्रा लिखें।",
+      "WHOLE_UNITS": "यह सामान पूरे नग में गिना जाता है।",
+      "NOTHING_COUNTED": "कम से कम एक गिनी हुई मात्रा लिखें।"
+    }
+  },
+  "purchases": {
+    "totalOwed": "सप्लायरों का बाकी: {{amount}}",
+    "noSuppliers": "अभी कोई सप्लायर नहीं।",
+    "owe": "आपको देना है {{amount}}",
+    "advance": "पहले से दिया {{amount}}",
+    "settled": "हिसाब बराबर",
+    "newPurchase": "माल आया",
+    "addSupplier": "सप्लायर जोड़ें",
+    "ledger": "खाता",
+    "saved": "सेव हुआ: {{total}}, दिया {{paid}}",
+    "kinds": {
+      "opening": "पुराना बाकी",
+      "purchase": "ख़रीद",
+      "payment": "भुगतान"
+    },
+    "pay": {
+      "title": "सप्लायर को भुगतान",
+      "amount": "भुगतान रकम",
+      "confirm": "भुगतान सेव करें"
+    },
+    "form": {
+      "name": "सप्लायर का नाम",
+      "phone": "फ़ोन (वैकल्पिक)",
+      "opening": "पहले से बाकी रकम (₹, वैकल्पिक)",
+      "save": "सेव करें",
+      "supplier": "सप्लायर",
+      "noSupplier": "नकद ख़रीद (बिना सप्लायर)",
+      "invoiceNo": "सप्लायर बिल नं. (वैकल्पिक)",
+      "removeLine": "{{name}} हटाएँ",
+      "quantity": "मात्रा ({{unit}})",
+      "quantityFor": "{{name}} की मात्रा",
+      "cost": "लागत/{{unit}} ₹",
+      "costFor": "{{name}} की लागत",
+      "newPrice": "नया दाम (अभी {{current}})",
+      "newPriceFor": "{{name}} का नया बिक्री दाम",
+      "total": "कुल: {{amount}}",
+      "paidNow": "अभी दिया (₹)",
+      "paidFull": "अभी दिया (₹, ख़ाली = पूरा)"
+    },
+    "errors": {
+      "NAME_REQUIRED": "सप्लायर का नाम लिखें।",
+      "INVALID_PHONE": "10 अंकों का मोबाइल नंबर लिखें।",
+      "INVALID_AMOUNT": "सही रकम लिखें।",
+      "NO_LINES": "कम से कम एक सामान जोड़ें।",
+      "INVALID_LINE": "चिह्नित सामान की मात्रा और लागत देखें।",
+      "PAID_MORE_THAN_TOTAL": "दी गई रकम कुल से ज़्यादा है।",
+      "UNPAID_NEEDS_SUPPLIER": "रकम बाकी रखने के लिए सप्लायर चुनें।"
     }
   }
 }

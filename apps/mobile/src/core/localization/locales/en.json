@@ -216,7 +216,9 @@
     "signOut": "Sign out",
     "reports": "Today & reports",
     "expenses": "Expenses",
-    "dayClose": "Close the day"
+    "dayClose": "Close the day",
+    "stock": "Stock",
+    "suppliers": "Suppliers & purchases"
   },
   "catalogue": {
     "search": "Search by name, Hindi name or barcode",
@@ -247,7 +249,10 @@
       "hsn": "HSN code (optional)",
       "save": "Save item",
       "archive": "Remove item",
-      "archiveConfirm": "The item disappears from search and billing. Past bills are not changed."
+      "archiveConfirm": "The item disappears from search and billing. Past bills are not changed.",
+      "trackStock": "Track stock",
+      "trackStockHint": "Count this item's stock; sales and purchases change it.",
+      "lowStock": "Low-stock alert at (quantity)"
     },
     "errors": {
       "NAME_REQUIRED": "Enter the item name.",
@@ -257,7 +262,8 @@
       "PRICE_TOO_HIGH": "Price is too high.",
       "INVALID_HSN": "HSN is 4 to 8 digits.",
       "INVALID_BARCODE": "Barcodes use letters and digits only.",
-      "CATEGORY_NAME": "Category name must be 1 to 80 characters."
+      "CATEGORY_NAME": "Category name must be 1 to 80 characters.",
+      "INVALID_QUANTITY": "Enter a quantity like 5 or 2.5."
     }
   },
   "imports": {
@@ -494,7 +500,8 @@
     "errors": {
       "COUNTED_REQUIRED": "Count the cash and enter the amount.",
       "INVALID_OPENING": "Enter a valid opening amount."
-    }
+    },
+    "cashSuppliers": "Cash paid to suppliers"
   },
   "expenses": {
     "total": "Total: {{amount}}",
@@ -527,6 +534,110 @@
       "AMOUNT_TOO_HIGH": "The amount is too large.",
       "REASON_REQUIRED": "Write a reason (at least 3 letters).",
       "PHOTO_FAILED": "Could not get the photo. Try again."
+    }
+  },
+  "inventory": {
+    "lowOnly": "Low stock",
+    "low": "Low",
+    "empty": "No items track stock yet. Turn on \"Track stock\" in an item.",
+    "noneLow": "Nothing is low on stock.",
+    "alertAt": "Alert at {{qty}} {{unit}}",
+    "onHand": "In stock: {{qty}} {{unit}}",
+    "history": "Stock history",
+    "noHistory": "No stock changes yet.",
+    "adjust": {
+      "title": "Change stock",
+      "add": "Add",
+      "remove": "Remove",
+      "quantity": "Quantity ({{unit}})",
+      "save": "Save"
+    },
+    "reasons": {
+      "damage": "Damaged",
+      "expiry": "Expired",
+      "count_correction": "Count correction",
+      "opening": "Opening stock",
+      "other": "Other"
+    },
+    "kinds": {
+      "sale": "Sold",
+      "sale_void": "Bill voided",
+      "sale_return": "Returned by customer",
+      "purchase": "Purchased",
+      "adjustment": "Adjusted",
+      "opening": "Opening stock",
+      "import": "Imported"
+    },
+    "count": {
+      "open": "Count stock",
+      "hint": "Type what is on the shelf for any items; leave the rest empty.",
+      "system": "Records: {{qty}} {{unit}}",
+      "counted": "Counted",
+      "countedFor": "Counted {{name}}",
+      "submit": "Save count",
+      "done_one": "{{count}} item counted",
+      "done_other": "{{count}} items counted",
+      "noChanges": "Everything matched the records.",
+      "change": "{{name}}: {{from}} → {{to}}"
+    },
+    "drift": {
+      "check": "Check stock records",
+      "ok": "Stock records are consistent.",
+      "item": "{{name}}: shows {{onHand}}, movements add up to {{movements}}"
+    },
+    "errors": {
+      "INVALID_QUANTITY": "Enter a quantity like 5 or 2.5.",
+      "WHOLE_UNITS": "This item is counted in whole units.",
+      "NOTHING_COUNTED": "Enter at least one counted quantity."
+    }
+  },
+  "purchases": {
+    "totalOwed": "You owe suppliers: {{amount}}",
+    "noSuppliers": "No suppliers yet.",
+    "owe": "You owe {{amount}}",
+    "advance": "Paid ahead {{amount}}",
+    "settled": "Settled",
+    "newPurchase": "Goods received",
+    "addSupplier": "Add supplier",
+    "ledger": "Account",
+    "saved": "Saved: {{total}}, paid {{paid}}",
+    "kinds": {
+      "opening": "Opening balance",
+      "purchase": "Purchase",
+      "payment": "Payment"
+    },
+    "pay": {
+      "title": "Pay supplier",
+      "amount": "Payment amount",
+      "confirm": "Save payment"
+    },
+    "form": {
+      "name": "Supplier name",
+      "phone": "Phone (optional)",
+      "opening": "Amount you already owe (₹, optional)",
+      "save": "Save",
+      "supplier": "Supplier",
+      "noSupplier": "Cash purchase (no supplier)",
+      "invoiceNo": "Supplier bill no. (optional)",
+      "removeLine": "Remove {{name}}",
+      "quantity": "Qty ({{unit}})",
+      "quantityFor": "Quantity of {{name}}",
+      "cost": "Cost/{{unit}} ₹",
+      "costFor": "Cost of {{name}}",
+      "newPrice": "New price (now {{current}})",
+      "newPriceFor": "New selling price of {{name}}",
+      "total": "Total: {{amount}}",
+      "paidNow": "Paid now (₹)",
+      "paidFull": "Paid now (₹, empty = full)"
+    },
+    "errors": {
+      "NAME_REQUIRED": "Enter the supplier's name.",
+      "INVALID_PHONE": "Enter a 10-digit mobile number.",
+      "INVALID_AMOUNT": "Enter a valid amount.",
+      "NO_LINES": "Add at least one item.",
+      "INVALID_LINE": "Check the quantity and cost of the highlighted item.",
+      "PAID_MORE_THAN_TOTAL": "Paid amount is more than the total.",
+      "UNPAID_NEEDS_SUPPLIER": "Choose a supplier to keep an amount unpaid."
     }
   }
 }

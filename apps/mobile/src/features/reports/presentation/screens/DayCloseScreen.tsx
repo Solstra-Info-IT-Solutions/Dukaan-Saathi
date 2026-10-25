@@ -53,6 +53,7 @@ export function DayCloseScreen({
           <Row label={t('dayClose.cashSales')} value={money(b.cashSalesPaise)} />
           <Row label={t('dayClose.cashRefunds')} value={`-${money(b.cashRefundsPaise)}`} />
           <Row label={t('dayClose.cashExpenses')} value={`-${money(b.cashExpensesPaise)}`} />
+          <Row label={t('dayClose.cashSuppliers')} value={`-${money(b.cashSupplierPaymentsPaise)}`} />
           {day.closed ? (
             <>
               <Row label={t('dayClose.expected')} value={money(b.expectedCashPaise)} strong />

@@ -80,6 +80,7 @@ class FakeReportsRepository implements ReportsRepository {
       cashSalesPaise: 9000,
       cashRefundsPaise: 4500,
       cashExpensesPaise: 300,
+      cashSupplierPaymentsPaise: 0,
       expectedCashPaise: 4200,
     },
     countedCashPaise: null,

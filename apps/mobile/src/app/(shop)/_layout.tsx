@@ -64,6 +64,13 @@ export default function ShopLayout() {
       <Tabs.Screen name="expenses" options={{ href: null, title: t('more.expenses') }} />
       <Tabs.Screen name="expense-new" options={{ href: null, title: t('expenses.add') }} />
       <Tabs.Screen name="day-close" options={{ href: null, title: t('more.dayClose') }} />
+      <Tabs.Screen name="stock" options={{ href: null, title: t('more.stock') }} />
+      <Tabs.Screen name="stock-item" options={{ href: null, title: t('more.stock') }} />
+      <Tabs.Screen name="stock-count" options={{ href: null, title: t('inventory.count.open') }} />
+      <Tabs.Screen name="suppliers" options={{ href: null, title: t('more.suppliers') }} />
+      <Tabs.Screen name="supplier" options={{ href: null, title: t('more.suppliers') }} />
+      <Tabs.Screen name="supplier-new" options={{ href: null, title: t('purchases.addSupplier') }} />
+      <Tabs.Screen name="purchase-new" options={{ href: null, title: t('purchases.newPurchase') }} />
     </Tabs>
   );
 }

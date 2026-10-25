@@ -35,6 +35,9 @@ export interface ProductDraft {
   hsnCode: string;
   barcodesText: string;
   aliasesText: string;
+  trackStock: boolean;
+  /** Low-stock alert level in the product's unit ("5" = 5 kg / 5 pieces); empty = no alert. */
+  lowStockText: string;
 }
 
 export const emptyProductDraft: ProductDraft = {
@@ -49,4 +52,6 @@ export const emptyProductDraft: ProductDraft = {
   hsnCode: '',
   barcodesText: '',
   aliasesText: '',
+  trackStock: false,
+  lowStockText: '',
 };

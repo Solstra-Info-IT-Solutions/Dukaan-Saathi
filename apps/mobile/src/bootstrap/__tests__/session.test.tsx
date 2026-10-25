@@ -85,15 +85,18 @@ describe('navigation gating', () => {
   it('lists only modules the role may open', () => {
     expect(visibleModules(DEFAULT_ROLE_PERMISSIONS.owner).map((m) => m.key)).toEqual([
       'reports',
+      'stock',
+      'suppliers',
       'expenses',
       'dayClose',
       'settings',
       'staff',
       'diagnostics',
     ]);
-    // Cashiers: today's own sales and closing their drawer, but not expenses, settings or staff.
+    // Cashiers: today's own sales, the stock list and closing their drawer — not suppliers, expenses, settings or staff.
     expect(visibleModules(DEFAULT_ROLE_PERMISSIONS.cashier).map((m) => m.key)).toEqual([
       'reports',
+      'stock',
       'dayClose',
       'diagnostics',
     ]);

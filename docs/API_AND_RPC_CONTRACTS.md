@@ -116,12 +116,14 @@ Legend: Ph = phase; Idem = idempotent via client_operation_id.
 | storage `expense-attachments` | S | expenses | 06 | upload `expense.create`, read `expense.view` (first path segment = shop) | — | Private, 5 MB, JPEG/PNG/WebP; read through signed URLs |
 | `get_day_close(p_shop_id, p_device_id, p_business_date?)` | R | reports | 06 | `day.close` | — | Breakdown for the phone, or the stored closing |
 | `close_day(p_input)` | R | reports | 06 | `day.close` | yes | `{clientOperationId, shopId, deviceId, businessDate?, openingCashPaise, countedCashPaise, note?}`; once per phone per day (`DS_CONFLICT`) |
-| `adjust_stock(p_input)` | R | inventory | 07 | `stock.adjust` | yes | Movement + projection; audits |
-| `submit_stock_count(p_input)` | R | inventory | 07 | `stock.adjust` | yes | Many adjustments in one txn |
-| `suppliers` | T | purchases | 07 | read: `purchase.view`; write: `purchase.manage` | — | Opening balance via RPC below |
-| `create_supplier(p_input)` | R | purchases | 07 | `purchase.manage` | yes | Supplier + opening balance ledger entry |
-| `receive_purchase(p_input)` | R | purchases | 07 | `purchase.receive` | yes | Purchase + items + stock movements + cost update + supplier ledger + payments |
-| `record_supplier_payment(p_input)` | R | purchases | 07 | `purchase.pay` | yes | |
+| `adjust_stock(p_input)` | R | inventory | 07 | `stock.adjust` | yes | `{clientOperationId, shopId, productId, deltaMilli ≠ 0, reason, note?}` → `{movementId, stockOnHandMilli}`; tracked products only; `opening` reason = opening movement |
+| `submit_stock_count(p_input)` | R | inventory | 07 | `stock.adjust` | yes | `{counts[{productId, countedMilli}] (1–500), note?}` → `{items[{productId, previousMilli, countedMilli, deltaMilli}]}`; locks in product-id order |
+| `list_stock(p_shop_id, p_low_only?, p_query?)` | R | inventory | 07 | `stock.view` | — | Tracked products with on-hand, threshold, `isLow`; low first |
+| `check_stock_drift(p_shop_id)` | R | inventory | 07 | `stock.adjust` | — | Products whose on-hand ≠ sum of movements (should be empty) |
+| `suppliers`, `supplier_ledger_entries`, `purchases`, `purchase_items`, `purchase_payments` | T (read only) | purchases | 07 | `purchase.view` | — | No client writes |
+| `save_supplier(p_input)` | R | purchases | 07 | `purchase.manage`, entitlement `purchases.enabled` | by supplier id | `{id, shopId, name, phone?, gstin?, note?, openingBalancePaise?}` (opening only on create); names unique per shop → `DS_CONFLICT` |
+| `receive_purchase(p_input)` | R | purchases | 07 | `purchase.receive`, entitlement `purchases.enabled` | yes | See §5.4 as built: `{deviceId?, supplierId?, supplierInvoiceNo?, lines[{productId, quantityMilli, unitCostPaise}], payments[], priceUpdates?[]}` → `{purchaseId, totalPaise, paidPaise, supplierBalancePaise}`; no supplier ⇒ paid in full |
+| `record_supplier_payment(p_input)` | R | purchases | 07 | `purchase.pay` | yes | `{supplierId, deviceId?, amountPaise, method, note?}` → `{supplierId, balancePaise}` |
 | `create_customer(p_input)` | R | customers | 08 | `customer.manage` (cashier: quick-create allowed) | yes | Customer + opening balance entry |
 | `customers` (update name/phone/notes) | T | customers | 08 | `customer.manage` | — | Balance columns not writable (column grants) |
 | `record_customer_repayment(p_input)` | R | udhaar | 08 | `udhaar.collect` | yes | Ledger credit entry; payment method |
