@@ -68,7 +68,7 @@ Phase order may shift for dependencies; nothing is removed without a note in PRO
 | BL-403 | device invoice counter (SecureStore; server accepts `last_seq + 1`) | ✅ |
 | BL-404 | billing keypad, payment sheet, UPI QR, receipt screen + share | ✅ (PDF share not yet tried on a device) |
 | BL-405 | tests incl. idempotency/concurrency | ✅ (concurrency script runs in CI) |
-| BL-406 | intermittent screen-test timing failures (2 races fixed in Phase 04; recurred once in CI on `4cd3bf3`; failing names now annotated in CI) | 🟨 |
+| BL-406 | intermittent screen-test timing failures (2 races fixed in Phase 04; recurred once in CI on `4cd3bf3`; sales-history race found via annotations and fixed in Phase 07) | 🟨 |
 | BL-407 | split payment UI (RPC already accepts several payments) | ✅ Phase 05 (two methods) |
 
 ## Phase 05 — Product billing, barcode, history, void

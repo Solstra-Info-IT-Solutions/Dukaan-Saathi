@@ -156,7 +156,11 @@ describe('stock screens', () => {
     expect(await screen.findByText('9.5 kg')).toBeTruthy();
     expect(screen.getByText('Low')).toBeTruthy();
     await fireEvent.press(screen.getByText('Low stock'));
-    await waitFor(() => expect(screen.queryByText('Atta')).toBeNull());
+    // Wait for the filtered list itself (it is briefly empty while loading): Soap shown, Atta gone.
+    await waitFor(() => {
+      expect(screen.getByText('Soap')).toBeTruthy();
+      expect(screen.queryByText('Atta')).toBeNull();
+    });
     await fireEvent.press(screen.getByText('Check stock records'));
     expect(await screen.findByText('Stock records are consistent.')).toBeTruthy();
     await fireEvent.press(screen.getByText('Soap'));

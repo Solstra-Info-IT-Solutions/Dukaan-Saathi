@@ -1,6 +1,6 @@
 # Feature: Inventory, Stock Movements, Suppliers, Purchases
 
-Status: Planned · Phase: 07 · Requirements: FR-12, FR-13
+Status: Implemented (Phase 07, see [../phases/PHASE_07_INVENTORY_PURCHASES.md](../phases/PHASE_07_INVENTORY_PURCHASES.md); low-stock digest pending push credentials) · Phase: 07 · Requirements: FR-12, FR-13
 
 ## Purpose
 Know what is in stock, why it changed, what needs reordering, and what is owed to suppliers.

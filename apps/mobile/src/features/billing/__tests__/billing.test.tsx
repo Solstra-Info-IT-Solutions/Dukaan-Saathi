@@ -871,8 +871,9 @@ describe('sales history', () => {
     expect(await screen.findByText('DS/2627/A-000007')).toBeTruthy();
     expect(repo.listCalls[0]).toMatchObject({ from: '2026-10-24T18:30:00.000Z', status: null });
     await fireEvent.press(screen.getByText('Voided only'));
-    await waitFor(() => expect(screen.queryByText('DS/2627/A-000007')).toBeNull());
-    await fireEvent.press(screen.getByText('DS/2627/A-000008'));
+    // The list is briefly empty while the filtered page loads: wait for the voided bill, then check the other is gone.
+    await fireEvent.press(await screen.findByText('DS/2627/A-000008'));
+    expect(screen.queryByText('DS/2627/A-000007')).toBeNull();
     expect(onOpenSale).toHaveBeenCalledWith('0190f0f0-0000-7000-8000-000000000102');
   });
 });
