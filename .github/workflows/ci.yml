@@ -28,7 +28,13 @@ jobs:
       - name: Lint (includes architecture boundary rules)
         run: npm run lint
       - name: Unit tests
-        run: npm test
+        # Failing test names are also emitted as annotations (readable without log access).
+        run: |
+          set -o pipefail
+          npm test 2>&1 | tee /tmp/unit.log || {
+            grep -E "●|FAIL |Unable to find|Expected|Received|Timeout" /tmp/unit.log | head -30               | while IFS= read -r line; do echo "::error title=unit tests::$line"; done
+            exit 1
+          }
       - name: Generated SQL tests (money fixtures, contract checks) are up to date
         run: npm run db:fixtures && git diff --exit-code supabase/tests/database/
       - name: Database pre-check (PGlite)
