@@ -25,7 +25,22 @@ export const QuickSaleLineSchema = z.object({
   kind: z.literal('quick'),
   label: z.string().trim().max(60).optional(),
   amountPaise: z.number().int().min(1).max(MAX_LINE_AMOUNT_PAISE),
+  lineDiscountPaise: PaiseSchema.optional(),
 });
+
+/** Product line: the server checks price, unit fractions, tax rate and stock (Phase 05). */
+export const ProductSaleLineSchema = z.object({
+  kind: z.literal('product'),
+  productId: UuidSchema,
+  quantityMilli: z.number().int().min(1).max(1_000_000_000),
+  unitPricePaise: z.number().int().min(0).max(MAX_LINE_AMOUNT_PAISE),
+  /** Set when the cashier deliberately changed the price; needs sale.price_override and the shop setting. */
+  priceOverride: z.boolean().optional(),
+  lineDiscountPaise: PaiseSchema.optional(),
+  entryMode: z.enum(['quantity', 'amount']).optional(),
+});
+
+export const SaleLineInputSchema = z.discriminatedUnion('kind', [QuickSaleLineSchema, ProductSaleLineSchema]);
 
 export const SalePaymentInputSchema = z.object({
   method: z.enum(SALE_PAYMENT_METHODS),
@@ -41,7 +56,7 @@ export const CreateSaleInputSchema = z.object({
   occurredAt: z.iso.datetime({ offset: true }),
   origin: z.literal('online'),
   source: z.enum(SALE_SOURCES).optional(),
-  lines: z.array(QuickSaleLineSchema).min(1).max(MAX_BILL_LINES),
+  lines: z.array(SaleLineInputSchema).min(1).max(MAX_BILL_LINES),
   billDiscountPaise: PaiseSchema.optional(),
   payments: z.array(SalePaymentInputSchema).max(10),
   clientTotals: BillTotalsSchema,
@@ -56,6 +71,16 @@ export const CreateSaleOutputSchema = z.object({
   status: z.enum(SALE_STATUSES),
   reviewReasons: z.array(z.string()),
   totals: BillTotalsSchema,
+  /** e.g. NEGATIVE_STOCK when the shop's policy is "warn". */
+  warnings: z
+    .array(
+      z.object({
+        code: z.string(),
+        productId: UuidSchema.optional(),
+        stockOnHandMilli: z.number().int().optional(),
+      }),
+    )
+    .optional(),
   replayed: z.boolean(),
 });
 export type CreateSaleOutputDto = z.infer<typeof CreateSaleOutputSchema>;
@@ -74,6 +99,8 @@ export const SaleLineSchema = z.object({
   netPaise: PaiseSchema,
   taxRateBp: z.number().int(),
   taxPaise: PaiseSchema,
+  hsnCode: z.string().nullable().optional(),
+  priceOverridden: z.boolean().optional(),
 });
 
 export const SalePaymentSchema = z.object({
@@ -101,6 +128,7 @@ export const SaleSchema = z.object({
   note: z.string().nullable(),
   voidedAt: z.string().nullable(),
   voidReason: z.string().nullable(),
+  voidedByName: z.string().nullable().optional(),
   lines: z.array(SaleLineSchema),
   payments: z.array(SalePaymentSchema),
   shop: z.object({
@@ -114,3 +142,29 @@ export const SaleSchema = z.object({
   }),
 });
 export type SaleDto = z.infer<typeof SaleSchema>;
+
+export const VoidSaleInputSchema = z.object({
+  clientOperationId: UuidSchema,
+  shopId: UuidSchema,
+  saleId: UuidSchema,
+  reason: z.string().trim().min(3, 'REASON_TOO_SHORT').max(200, 'REASON_TOO_LONG'),
+});
+export type VoidSaleInput = z.infer<typeof VoidSaleInputSchema>;
+
+export const SaleListItemSchema = z.object({
+  saleId: UuidSchema,
+  invoiceNumber: z.string(),
+  createdAt: z.string(),
+  status: z.enum(SALE_STATUSES),
+  totalPaise: PaiseSchema,
+  itemCount: z.number().int(),
+  methods: z.array(z.enum(SALE_PAYMENT_METHODS)),
+  createdByName: z.string().nullable(),
+});
+export type SaleListItemDto = z.infer<typeof SaleListItemSchema>;
+
+export const SalePageSchema = z.object({
+  items: z.array(SaleListItemSchema),
+  nextCursor: z.string().nullable(),
+});
+export type SalePageDto = z.infer<typeof SalePageSchema>;

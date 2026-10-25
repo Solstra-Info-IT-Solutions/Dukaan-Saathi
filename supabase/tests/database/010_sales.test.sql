@@ -91,7 +91,7 @@ select throws_ok($$ select public.create_sale(jsonb_set(jsonb_set(pg_temp.bill('
                  'P0001', 'DS_CUSTOMER_REQUIRED', 'udhaar needs a customer');
 select throws_ok($$ select public.create_sale(jsonb_set(pg_temp.bill('shopA', 'devA', 3, '0190f0f0-0000-7000-8000-0000000e0009'),
                                                         '{lines,0,kind}', '"product"')) $$,
-                 'P0001', 'DS_VALIDATION_FAILED', 'product lines are not accepted before Phase 05');
+                 'P0001', 'DS_VALIDATION_FAILED', 'a product line without a product is refused');
 select throws_ok($$ select public.create_sale(jsonb_set(pg_temp.bill('shopA', 'devA', 3, '0190f0f0-0000-7000-8000-0000000e000a'),
                                                         '{occurredAt}', '"2020-01-01T00:00:00Z"')) $$,
                  'P0001', 'DS_VALIDATION_FAILED', 'a bill time far in the past is refused online');

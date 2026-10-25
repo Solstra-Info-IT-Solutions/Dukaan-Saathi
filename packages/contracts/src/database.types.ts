@@ -149,7 +149,9 @@ export type Database = {
           label: string | null
           line_discount_paise: number
           line_no: number
+          hsn_code: string | null
           net_paise: number
+          price_overridden: boolean
           product_id: string | null
           quantity_milli: number
           sale_id: string
@@ -157,6 +159,7 @@ export type Database = {
           tax_paise: number
           tax_rate_bp: number
           unit_code: string | null
+          unit_cost_paise: number | null
           unit_price_paise: number
         }
         Insert: never
@@ -208,6 +211,21 @@ export type Database = {
           void_reason: string | null
           voided_at: string | null
           voided_by: string | null
+        }
+        Insert: never
+        Update: never
+        Relationships: []
+      }
+      stock_movements: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          id: string
+          kind: string
+          product_id: string
+          quantity_milli: number
+          sale_id: string | null
+          shop_id: string
         }
         Insert: never
         Update: never
@@ -861,6 +879,19 @@ export type Database = {
       }
       create_sale: { Args: { p_input: Json }; Returns: Json }
       get_sale: { Args: { p_sale_id: string; p_shop_id: string }; Returns: Json }
+      list_sales: {
+        Args: {
+          p_cursor?: string
+          p_from?: string
+          p_limit?: number
+          p_query?: string
+          p_shop_id: string
+          p_status?: string
+          p_to?: string
+        }
+        Returns: Json
+      }
+      void_sale: { Args: { p_input: Json }; Returns: Json }
       get_catalogue_reference: { Args: { p_shop_id: string }; Returns: Json }
       get_product: { Args: { p_product_id: string; p_shop_id: string }; Returns: Json }
       save_category: {
