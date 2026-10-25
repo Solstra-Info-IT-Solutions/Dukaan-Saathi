@@ -69,12 +69,20 @@ Phase order may shift for dependencies; nothing is removed without a note in PRO
 | BL-404 | billing keypad, payment sheet, UPI QR, receipt screen + share | ✅ (PDF share not yet tried on a device) |
 | BL-405 | tests incl. idempotency/concurrency | ✅ (concurrency script runs in CI) |
 | BL-406 | intermittent screen-test timing failures (2 races fixed in Phase 04; SelectShopScreen watched) | 🟨 |
-| BL-407 | split payment UI (RPC already accepts several payments) | ⬜ Phase 05 |
+| BL-407 | split payment UI (RPC already accepts several payments) | ✅ Phase 05 (two methods) |
 
 ## Phase 05 — Product billing, barcode, history, void
-BL-501 product lines + loose quantity/amount entry · BL-502 discounts/overrides per role · BL-503 barcode scanning (`expo-camera`) ·
-BL-504 stock movement on sale (tables from Phase 03/07 prep) · BL-505 sales history + detail · BL-506 `void_sale` · BL-507 GST receipt variant ·
-BL-508 thermal printer spike (OD-08) · BL-509 tests + Maestro J-01/J-04.
+| ID | Item | Status |
+|---|---|---|
+| BL-501 | product lines + loose quantity/amount entry | ✅ |
+| BL-502 | discounts/overrides per role | ✅ |
+| BL-503 | barcode scanning (`expo-camera`) | ✅ (not yet tried with a real camera) |
+| BL-504 | stock movement on sale (`stock_movements` created now) | ✅ |
+| BL-505 | sales history + detail | ✅ |
+| BL-506 | `void_sale` | ✅ (ledger reversal with udhaar in Phase 08) |
+| BL-507 | GST receipt variant | ✅ |
+| BL-508 | thermal printer spike (OD-08) | 🟨 desk research ([spike](spikes/THERMAL_PRINTING.md)); needs pilot printers |
+| BL-509 | tests + Maestro J-01/J-04 | 🟨 unit/component/pgTAP ✅; Maestro needs a device |
 
 ## Phase 06 — Reports, expenses, reconciliation
 BL-601 dashboard snapshot · BL-602 sales report + entitlement gating · BL-603 export Edge Function · BL-604 expenses + attachments ·

@@ -105,7 +105,8 @@ Legend: Ph = phase; Idem = idempotent via client_operation_id.
 | `create_sale_return(p_input)` | R | billing | 06 | `sale.return` | yes | Partial returns, refund method, stock back |
 | `get_sale(p_shop_id, p_sale_id)` | R | billing | 04 | member (cashier: own sales only unless `cashierSeesAllSales` or `sale.view_all`) | — | Receipt data: totals, lines, payments, shop header; other users' bills → `DS_NOT_FOUND` |
 | `sales`, `sale_items`, `sale_payments` | T (read only) | billing | 04 | `rls.can_view_sale` | — | No client writes; only `create_sale` inserts |
-| `list_sales(p_shop_id, p_filter, p_cursor, p_limit)` | R | billing | 05 | member (cashier scope) | — | Keyset pagination |
+| `list_sales(p_shop_id, p_from?, p_to?, p_status?, p_query?, p_cursor?, p_limit?)` | R | billing | 05 | member (cashier scope as `get_sale`) | — | Newest first; cursor `createdAt` + `saleId`; search bill number or item name; returns `{ items, nextCursor }` |
+| `stock_movements` | T (read only) | inventory | 05 | `stock.view` | — | `sale` / `sale_void` from Phase 05; purchases and adjustments in Phase 07 |
 | `get_dashboard_snapshot(p_shop_id, p_business_date)` | R | reports | 06 | `report.view_sales` | — | Today totals, split, udhaar given/collected |
 | `get_sales_report(p_shop_id, p_from, p_to, p_group_by)` | R | reports | 06 | `report.view_sales`; profit fields need `report.view_profit` | — | Entitlement `reports.advanced` for > 7 days / group-by product |
 | `export-report` | E | reports | 06 | `report.export`, entitlement `reports.export` | — | CSV/PDF to private bucket, signed URL |
@@ -148,6 +149,10 @@ Legend: Ph = phase; Idem = idempotent via client_operation_id.
 > accepted as `invoice.seq` (`DS_INVOICE_SEQUENCE_CONFLICT` carries `expectedSeq`). Product lines (Phase 05), udhaar and
 > customers (Phase 08) and `offline_sync` (Phase 09) are refused with `DS_VALIDATION_FAILED` until then. The full design below
 > remains the target.
+>
+> **Phase 05:** product lines `{kind:"product", productId, quantityMilli, unitPricePaise, priceOverride?, lineDiscountPaise?,
+> entryMode?}` are accepted (ADR-038 for price rules); quick lines may carry `lineDiscountPaise`; the output adds
+> `warnings[]` (`NEGATIVE_STOCK`). Line ids remain server-generated.
 
 **Input** (`CreateSaleInputSchema`):
 
@@ -205,6 +210,10 @@ concurrent same seq from two transactions → one wins; stock and ledger rows cr
 `insert into sales`.
 
 ### 5.2 `void_sale`
+
+> **As built in Phase 05 (ADR-041):** input `{ clientOperationId, shopId, saleId, reason }` (camelCase); returns the voided
+> sale (same shape as `get_sale`). Owner any time, manager within `void_window_minutes`. Ledger credit arrives with udhaar
+> in Phase 08.
 
 Input: `{ client_operation_id, shop_id, sale_id, reason: string(3..200) }`.
 Steps: permission + window check → lock sale `for update` → status must be `completed`/`needs_review` →
