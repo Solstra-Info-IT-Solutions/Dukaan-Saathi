@@ -43,7 +43,8 @@
           "cameraPermission": "Dukaan Saathi uses the camera to photograph expense receipts and scan barcodes.",
           "microphonePermission": false
         }
-      ]
+      ],
+      "expo-sqlite"
     ],
     "experiments": {
       "typedRoutes": true
