@@ -1,6 +1,6 @@
 # Project Status
 
-Last updated: 2026-10-26 · Current phase: **08 complete, awaiting approval for Phase 09**
+Last updated: 2026-10-26 · Current phase: **09 complete, awaiting approval for Phase 10**
 Repository: https://github.com/Solstra-Info-IT-Solutions/Dukaan-Saathi (`main`)
 
 ## 1. Phase overview
@@ -16,8 +16,8 @@ Repository: https://github.com/Solstra-Info-IT-Solutions/Dukaan-Saathi (`main`)
 | 06 | Reports, expenses, returns, reconciliation | ✅ Complete — see [phases/PHASE_06_REPORTS_EXPENSES.md](phases/PHASE_06_REPORTS_EXPENSES.md) (push summary pending credentials) |
 | 07 | Inventory, suppliers, purchases | ✅ Complete — see [phases/PHASE_07_INVENTORY_PURCHASES.md](phases/PHASE_07_INVENTORY_PURCHASES.md) |
 | 08 | Customers, udhaar, ledger | ✅ Complete — see [phases/PHASE_08_CUSTOMERS_UDHAAR.md](phases/PHASE_08_CUSTOMERS_UDHAAR.md) |
-| 09 | Offline persistence and sync | ⬜ Next |
-| 10 | Voice billing | ⬜ |
+| 09 | Offline persistence and sync | ✅ Complete — see [phases/PHASE_09_OFFLINE.md](phases/PHASE_09_OFFLINE.md) |
+| 10 | Voice billing | ⬜ Next |
 | 11 | Managed onboarding + admin panel | ⬜ |
 | 12 | Subscriptions, plans, flags, entitlements | ⬜ |
 | 13 | Hardening | ⬜ |
@@ -31,7 +31,7 @@ Repository: https://github.com/Solstra-Info-IT-Solutions/Dukaan-Saathi (`main`)
 | Shared packages `@ds/domain-core`, `@ds/contracts` | 77 + 29 unit tests |
 | Mobile foundation + diagnostics reference feature | 40 Jest/RNTL tests, typecheck, boundary lint, Android Metro bundle |
 | Admin shell + operator guard | 11 Vitest tests, `next build`, local runtime smoke test |
-| Supabase schema (baseline … inventory/purchases + customers/udhaar) on `dukaan-saathi-dev` | 305/305 assertions in the PGlite pre-check; pgTAP on real Supabase in CI (§3); security advisor reviewed |
+| Supabase schema (baseline … customers/udhaar + offline sync) on `dukaan-saathi-dev` | 337/337 assertions in the PGlite pre-check; pgTAP on real Supabase in CI (§3); security advisor reviewed |
 | Mobile auth, shops, staff, settings, navigation guards | 87 Jest/RNTL tests (Phase 01 + 02) |
 | Mobile catalogue, categories, CSV import | 103 Jest/RNTL tests in total (Phase 01–03) |
 | Mobile quick billing, payment sheet, receipts | 119 Jest/RNTL tests in total (Phase 01–04) |
@@ -39,11 +39,12 @@ Repository: https://github.com/Solstra-Info-IT-Solutions/Dukaan-Saathi (`main`)
 | Mobile reports, expenses, returns, day close | 142 Jest/RNTL tests in total (Phase 01–06) |
 | Mobile stock, counts, suppliers, purchases | 154 Jest/RNTL tests in total (Phase 01–07) |
 | Mobile customers, udhaar billing, ledger, repayments, reminders | 165 Jest/RNTL tests in total (Phase 01–08) |
+| Mobile offline billing, outbox, sync, status UX (real SQL on Node's SQLite) | 177 Jest/RNTL tests in total (Phase 01–09) |
 | CI workflow | GitHub Actions run on `main` (§3) |
 
 ## 3. CI
 
-Run [40284535910](https://github.com/Solstra-Info-IT-Solutions/Dukaan-Saathi/actions/runs/40284535910) on commit `a2036f2` (Phase 08):
+Run [40291729698](https://github.com/Solstra-Info-IT-Solutions/Dukaan-Saathi/actions/runs/40291729698) on commit `9fc3cc3` (Phase 09):
 
 | Job | Result |
 |---|---|
@@ -58,7 +59,7 @@ The generated-types comparison step stays advisory (`continue-on-error`): the co
 |---|---|
 | Supabase dashboard (dev): Email template "Magic Link" must contain `{{ .Token }}` | Trying the app with email OTP |
 | SMS provider for phone OTP (OD-02) + test phone numbers | Phone login (default flow) |
-| Approve Phase 08 | Phase 09: offline persistence and sync |
+| Approve Phase 09 | Phase 10: voice billing |
 | FCM / Expo push credentials (EAS) | Daily summary notification (BL-607) |
 | Which thermal printers pilot shops use | OD-08 decision |
 | Sign in to Supabase in the app's built-in browser (or set the template yourself) | Email template `{{ .Token }}` |

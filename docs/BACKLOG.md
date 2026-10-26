@@ -122,8 +122,17 @@ Phase order may shift for dependencies; nothing is removed without a note in PRO
 | BL-808 | customer edit/archive screens, ledger "load more", repayment concurrency script | ⬜ backlog |
 
 ## Phase 09 — Offline
-BL-901 SQLite + migrations · BL-902 catalogue/customers/settings pull cache · BL-903 outbox + local sales · BL-904 `sync_push`/`sync_pull` ·
-BL-905 SyncService + status UX · BL-906 conflict/quarantine handling · BL-907 sign-out with unsynced data · BL-908 tests + Maestro J-05.
+| ID | Item | Status |
+|---|---|---|
+| BL-901 | SQLite + migrations | ✅ expo-sqlite; real SQL in tests (ADR-058) |
+| BL-902 | catalogue/customers/settings pull cache | ✅ (categories pulled, not yet used offline) |
+| BL-903 | outbox + local sales | ✅ bills, new customers, udhaar payments; expenses stay online (ADR-059) |
+| BL-904 | `sync_push`/`sync_pull` | ✅ |
+| BL-905 | SyncService + status UX | ✅ chip, Sync status screen, retry |
+| BL-906 | conflict/quarantine handling | ✅ needs_review rules, quarantine, customer merge (ADR-056) |
+| BL-907 | sign-out with unsynced data | ✅ confirmation; kept per user (ADR-057) |
+| BL-908 | tests + Maestro J-05 | 🟨 pgTAP + app tests ✅; Maestro needs a device |
+| BL-909 | offline expenses, unsynced bills in sales history, "refresh everything" pull, void/return after sync from the receipt | ⬜ backlog |
 
 ## Phase 10 — Voice billing
 BL-1001 recognition spike + benchmark · BL-1002 normalizer/parser/matcher · BL-1003 voice screen + confirm flow · BL-1004 alias learning · BL-1005 tests.

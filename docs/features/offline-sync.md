@@ -1,6 +1,6 @@
 # Feature: Offline Sync (feature view)
 
-Status: Planned · Phase: 09 · Requirements: FR-18. Design: [../OFFLINE_SYNC_DESIGN.md](../OFFLINE_SYNC_DESIGN.md)
+Status: Implemented (Phase 09, see [../phases/PHASE_09_OFFLINE.md](../phases/PHASE_09_OFFLINE.md)) · Phase: 09 · Requirements: FR-18. Design: [../OFFLINE_SYNC_DESIGN.md](../OFFLINE_SYNC_DESIGN.md)
 
 ## Components
 | Piece | Location |
@@ -15,7 +15,7 @@ Status: Planned · Phase: 09 · Requirements: FR-18. Design: [../OFFLINE_SYNC_DE
 ViewModels never contain sync algorithms; they read `syncStore` and call `SyncService.retryNow()`.
 
 ## Acceptance criteria
-- [ ] 50 bills created in airplane mode survive an app kill and sync exactly once when online.
-- [ ] Two devices offline create bills; both sync with distinct invoice series and no collisions.
-- [ ] A deactivated cashier's offline bills are quarantined and visible to the owner, not lost.
-- [ ] Sync status always shows an accurate pending count.
+- [~] 50 bills created in airplane mode survive an app kill and sync exactly once when online (tests; device run pending).
+- [x] Two devices offline create bills; both sync with distinct invoice series and no collisions.
+- [x] A deactivated cashier's offline bills are quarantined and visible to the owner, not lost.
+- [x] Sync status always shows an accurate pending count.

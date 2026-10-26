@@ -51,7 +51,8 @@ sequenceDiagram
 
 Online fast path: the repository writes locally first, then pushes immediately; if the push returns within
 the timeout the UI shows `completed`. One code path for online and offline (no "two ways to create a sale").
-Decision on whether to keep the direct `create_sale` call for online-only shops is recorded in Phase 09.
+Phase 09 decision (ADR-055): online bills still call `create_sale` directly; the outbox is used offline, when the
+server gives no answer, or while earlier bills wait. Expenses stay online-only for now (ADR-059).
 
 ## 4. Sync protocol
 

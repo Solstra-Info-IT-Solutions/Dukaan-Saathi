@@ -132,8 +132,8 @@ Legend: Ph = phase; Idem = idempotent via client_operation_id.
 | `get_customer_ledger(p_shop_id, p_customer_id, p_limit)` | R | udhaar | 08 | `customer.view` | — | Customer + entries newest first with `balanceAfterPaise` |
 | `list_customers(p_shop_id, p_query, p_sort, p_udhaar_only, p_limit)` | R | udhaar | 08 | `customer.view` | — | Sort name / highest / oldest; shop total outstanding (replaces `list_udhaar`) |
 | `check_customer_drift(p_shop_id)` | R | udhaar | 08 | `customer.manage` | — | Customers whose balance ≠ sum of entries (always empty) |
-| `sync_push(p_input)` | R | offline-sync | 09 | member + device | per-op | Batch of outbox ops; per-op result; see OFFLINE_SYNC_DESIGN.md |
-| `sync_pull(p_shop_id, p_device_id, p_cursors)` | R | offline-sync | 09 | member + device | — | Changed catalogue/customers/settings since cursor, tombstones |
+| `sync_push(p_input)` | R | offline-sync | 09 | signed in; each op runs its own RPC checks | per-op | `{ shopId, deviceId, operations: [{ clientOperationId, operation: create_sale \| create_customer \| record_customer_repayment, payload }] }` (≤ 50) → `{ results: [{ clientOperationId, status: applied \| replayed \| needs_review \| quarantined \| retry, result?, code?, details? }] }`; each op in its own savepoint |
+| `sync_pull(p_shop_id, p_device_id, p_cursors, p_limit)` | R | offline-sync | 09 | member + active device; `customer.view` for customers | — | `{ serverTime, products, categories, customers: { rows, cursor, more }, customerAliases, settings }`; keyset `updatedAt\|id`, archived rows included, no item cost |
 | `voice-parse` *(optional, flag `voice.cloud_parse`)* | E | voice-billing | 10 | `sale.create`, entitlement `voice.billing` | — | Only if deterministic parser insufficient (ADR-017) |
 | `create_onboarding_request(p_input)` | R | onboarding | 11 | owner | yes | Upload paths in private bucket |
 | `create_support_ticket(p_input)` / `add_ticket_message(p_input)` | R | support | 11 | member | yes | |
