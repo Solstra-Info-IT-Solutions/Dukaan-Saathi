@@ -124,12 +124,14 @@ Legend: Ph = phase; Idem = idempotent via client_operation_id.
 | `save_supplier(p_input)` | R | purchases | 07 | `purchase.manage`, entitlement `purchases.enabled` | by supplier id | `{id, shopId, name, phone?, gstin?, note?, openingBalancePaise?}` (opening only on create); names unique per shop → `DS_CONFLICT` |
 | `receive_purchase(p_input)` | R | purchases | 07 | `purchase.receive`, entitlement `purchases.enabled` | yes | See §5.4 as built: `{deviceId?, supplierId?, supplierInvoiceNo?, lines[{productId, quantityMilli, unitCostPaise}], payments[], priceUpdates?[]}` → `{purchaseId, totalPaise, paidPaise, supplierBalancePaise}`; no supplier ⇒ paid in full |
 | `record_supplier_payment(p_input)` | R | purchases | 07 | `purchase.pay` | yes | `{supplierId, deviceId?, amountPaise, method, note?}` → `{supplierId, balancePaise}` |
-| `create_customer(p_input)` | R | customers | 08 | `customer.manage` (cashier: quick-create allowed) | yes | Customer + opening balance entry |
-| `customers` (update name/phone/notes) | T | customers | 08 | `customer.manage` | — | Balance columns not writable (column grants) |
+| `save_customer(p_input)` | R | customers | 08 | `customer.manage` (cashier: `customer.quick_create`, name + phone only) | client id | Create (opening balance entry, `customers.max`) or edit; phone unique per shop (ADR-051) |
+| `archive_customer(p_shop_id, p_customer_id)` | R | customers | 08 | `customer.manage` | — | Only at zero balance |
+| `customers`, `customer_ledger_entries` | T | customers | 08 | `customer.view` | — | Read-only (RLS); all writes through RPCs |
 | `record_customer_repayment(p_input)` | R | udhaar | 08 | `udhaar.collect` | yes | Ledger credit entry; payment method |
 | `adjust_customer_balance(p_input)` | R | udhaar | 08 | `udhaar.adjust` (owner) | yes | Reason required; audits |
-| `get_customer_ledger(p_shop_id, p_customer_id, p_cursor, p_limit)` | R | udhaar | 08 | `customer.view` | — | Running balance |
-| `list_udhaar(p_shop_id, p_sort, p_cursor, p_limit)` | R | udhaar | 08 | `customer.view` | — | Balances > 0 |
+| `get_customer_ledger(p_shop_id, p_customer_id, p_limit)` | R | udhaar | 08 | `customer.view` | — | Customer + entries newest first with `balanceAfterPaise` |
+| `list_customers(p_shop_id, p_query, p_sort, p_udhaar_only, p_limit)` | R | udhaar | 08 | `customer.view` | — | Sort name / highest / oldest; shop total outstanding (replaces `list_udhaar`) |
+| `check_customer_drift(p_shop_id)` | R | udhaar | 08 | `customer.manage` | — | Customers whose balance ≠ sum of entries (always empty) |
 | `sync_push(p_input)` | R | offline-sync | 09 | member + device | per-op | Batch of outbox ops; per-op result; see OFFLINE_SYNC_DESIGN.md |
 | `sync_pull(p_shop_id, p_device_id, p_cursors)` | R | offline-sync | 09 | member + device | — | Changed catalogue/customers/settings since cursor, tombstones |
 | `voice-parse` *(optional, flag `voice.cloud_parse`)* | E | voice-billing | 10 | `sale.create`, entitlement `voice.billing` | — | Only if deterministic parser insufficient (ADR-017) |
@@ -231,8 +233,8 @@ Errors: `DS_SALE_ALREADY_VOIDED`, `DS_VOID_WINDOW_EXPIRED`, `DS_PERMISSION_DENIE
 
 Input: `{ client_operation_id, shop_id, device_id, customer_id, amount_paise > 0, method, reference?, occurred_at, note? }`.
 Steps: permission `udhaar.collect` → lock customer `for update` → insert ledger entry (`repayment`, credit) →
-update balance → output `{ entry_id, balance_paise }`. Overpayment allowed (balance may go negative =
-advance), flagged in output `advance: true`.
+update balance → output `{ customerId, balancePaise, replayed }` (camelCase, as implemented in Phase 08).
+Overpayment allowed (balance may go negative = advance). Cash repayments count in that phone's day close.
 
 ### 5.4 `receive_purchase`
 

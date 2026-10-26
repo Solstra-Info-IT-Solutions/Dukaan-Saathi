@@ -2,11 +2,12 @@
 
 Deliberate gaps. Each has a reason and, where relevant, a backlog item.
 
-## Current state (end of Phase 07)
-- Mobile: sign-in, shops, staff, settings (02); catalogue and CSV import (03); billing with scan, discounts, overrides, split payment, UPI QR, receipts, history, void, returns (04–06); today & reports, expenses, day close (06); stock tracking, adjustments, counts, suppliers, goods received, supplier payments (07).
+## Current state (end of Phase 08)
+- Mobile: sign-in, shops, staff, settings (02); catalogue and CSV import (03); billing with scan, discounts, overrides, split payment, UPI QR, receipts, history, void, returns (04–06); today & reports, expenses, day close (06); stock tracking, adjustments, counts, suppliers, goods received, supplier payments (07); customers, udhaar on bills, ledger, repayments, owner corrections, WhatsApp reminders (08).
 - Not yet tried on a device: the whole app, camera, photo upload, PDF/CSV sharing. Sign-in on a device needs the Supabase Auth settings (email template with `{{ .Token }}`, SMS provider).
 - No push notifications yet (daily summary, low-stock digest) — credentials and a device needed.
-- Billing is online only (Phase 09); no udhaar until customers (Phase 08); split payment UI is two methods.
+- Billing is online only (Phase 09); split payment UI is two methods.
+- No customer edit/archive screen, ledger "load more" or duplicate-customer merge yet (BL-808); no interest or automatic reminders.
 - No purchase history screen, supplier edit/archive screens or returns to suppliers (BL-708); no batch/expiry.
 - Profit is an estimate; day close is per phone.
 - Import accepts CSV only (XLSX in Phase 11). Thermal printing not built (OD-08).

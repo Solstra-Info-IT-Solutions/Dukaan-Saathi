@@ -1,6 +1,6 @@
 # Feature: Customers, Udhaar, Repayments, Ledger
 
-Status: Planned · Phase: 08 · Requirements: FR-14, FR-15
+Status: Implemented (Phase 08, see [../phases/PHASE_08_CUSTOMERS_UDHAAR.md](../phases/PHASE_08_CUSTOMERS_UDHAAR.md)) · Phase: 08 · Requirements: FR-14, FR-15
 
 ## Purpose
 Replace the udhaar notebook with a ledger that is always correct, explainable entry by entry, and easy to collect on.
@@ -39,9 +39,9 @@ Ledger fixture: opening → credit sale → partial repayment → void of credit
 concurrency: two repayments at once; RLS; cashier denied adjustment; reminder message builder (en/hi).
 
 ## Acceptance criteria
-- [ ] Credit sale increases balance; repayment decreases; void reverses — all visible as separate entries.
-- [ ] Rebuilt balance equals cached balance for all fixture customers.
-- [ ] Reminder opens WhatsApp with prefilled localized text; nothing sent automatically.
+- [x] Credit sale increases balance; repayment decreases; void reverses — all visible as separate entries.
+- [x] Rebuilt balance equals cached balance for all fixture customers.
+- [x] Reminder opens WhatsApp with prefilled localized text; nothing sent automatically.
 
 ## Limitations
 No interest/late fees. No automated SMS/WhatsApp reminders (no Business API in v1).

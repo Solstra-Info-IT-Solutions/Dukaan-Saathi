@@ -110,8 +110,16 @@ Phase order may shift for dependencies; nothing is removed without a note in PRO
 | BL-708 | purchase history list, supplier edit/archive screens, returns to supplier | ⬜ backlog |
 
 ## Phase 08 — Customers & udhaar
-BL-801 customers + ledger tables, RPCs · BL-802 udhaar on billing (enable payment method) · BL-803 udhaar list, ledger screen, repayment ·
-BL-804 owner adjustment · BL-805 WhatsApp reminder · BL-806 credit limit policy · BL-807 tests + Maestro J-02/J-03.
+| ID | Item | Status |
+|---|---|---|
+| BL-801 | customers + ledger tables, RPCs | ✅ (`save_customer`, `list_customers`, `get_customer_ledger`, drift check — ADR-051) |
+| BL-802 | udhaar on billing (enable payment method) | ✅ whole bill or split part; customer search and quick add |
+| BL-803 | udhaar list, ledger screen, repayment | ✅ |
+| BL-804 | owner adjustment | ✅ reason required, audited |
+| BL-805 | WhatsApp reminder | ✅ en/hi with UPI link; user sends it |
+| BL-806 | credit limit policy | ✅ block / warn / none (ADR-053) |
+| BL-807 | tests + Maestro J-02/J-03 | 🟨 pgTAP fixture + app tests ✅; Maestro needs a device |
+| BL-808 | customer edit/archive screens, ledger "load more", repayment concurrency script | ⬜ backlog |
 
 ## Phase 09 — Offline
 BL-901 SQLite + migrations · BL-902 catalogue/customers/settings pull cache · BL-903 outbox + local sales · BL-904 `sync_push`/`sync_pull` ·
