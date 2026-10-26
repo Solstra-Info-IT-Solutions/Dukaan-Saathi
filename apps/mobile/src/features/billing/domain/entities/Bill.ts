@@ -110,6 +110,9 @@ export interface BillingContext {
   canDiscount: boolean;
   canOverridePrice: boolean;
   canManageProducts: boolean;
+  /** For invoice numbers of bills saved offline (Phase 09). */
+  invoicePrefix?: string;
+  deviceCode?: string;
   /** udhaar.grant (Phase 08); absent = no credit bills. */
   canGiveUdhaar?: boolean;
   /** customer.quick_create. */
@@ -126,6 +129,8 @@ export interface BillingContext {
 export interface SaleAttempt {
   clientOperationId: string;
   occurredAt: string;
+  /** Chosen on the phone (Phase 09), so the receipt keeps its id when the bill is sent later. */
+  saleId?: string;
 }
 
 /** Where this phone's last used invoice number is remembered between bills and app restarts. */
@@ -140,6 +145,19 @@ export interface ReceiptSharer {
   shareText(text: string): Promise<void>;
 }
 
+/**
+ * The phone's queue for bills (Phase 09); the composition root adapts the sync feature to it. A bill is queued when
+ * the phone is offline or the server could not be reached, with the same operation id (OFFLINE_SYNC_DESIGN.md §3).
+ */
+export interface OfflineSales {
+  isOnline(): boolean;
+  /** Bills of this phone still waiting: new bills queue behind them so invoice numbers reach the server in order. */
+  hasWaitingSales(shopId: string): boolean;
+  queue(command: SaleCommand & { saleId: string }, receipt: Sale): Promise<void>;
+  /** A bill saved on this phone that the server has not confirmed yet. */
+  localSale(saleId: string): Sale | null;
+}
+
 /** Catalogue access billing needs; the composition root adapts the catalogue feature to it. */
 export interface ProductFinder {
   search(shopId: string, text: string): Promise<CatalogueProduct[]>;
@@ -151,7 +169,7 @@ export interface ProductFinder {
 export interface SaleFilter {
   from: string | null;
   to: string | null;
-  status: 'voided' | null;
+  status: 'voided' | 'needs_review' | null;
   query: string;
 }
 

@@ -23,6 +23,13 @@ export interface DeviceRepository {
 }
 
 /** Remembers which shop was open last so the app reopens it. */
+/** The last session restored online, kept so the shop opens without a connection (Phase 09). */
+export interface SessionSnapshotStore {
+  load(): Promise<string | null>;
+  save(json: string): Promise<void>;
+  clear(): Promise<void>;
+}
+
 export interface LastShopPreference {
   get(): Promise<string | null>;
   set(shopId: string): Promise<void>;

@@ -3,6 +3,7 @@ export type { Membership, MyContext, ShopActivation } from './domain/entities/Sh
 export type {
   DeviceRepository,
   LastShopPreference,
+  SessionSnapshotStore,
   ShopRepository,
 } from './domain/repositories/ShopRepository';
 export {

@@ -42,16 +42,21 @@ export function lineAmount(line: BillLine): number {
 }
 
 /** Totals of a bill, computed exactly like create_sale does. */
-export function draftTotals(
-  draft: BillDraft,
-  settings: Pick<BillingSettings, 'taxMode' | 'roundOffEnabled'>,
-): BillTotals {
-  const bill = computeBill({
+/** The whole bill with per-line results (same rules as create_sale). */
+export function draftBill(draft: BillDraft, settings: Pick<BillingSettings, 'taxMode' | 'roundOffEnabled'>) {
+  return computeBill({
     taxMode: settings.taxMode,
     roundOffEnabled: settings.roundOffEnabled,
     billDiscountPaise: paise(draft.billDiscountPaise),
     lines: draft.lines.map(lineInput),
   });
+}
+
+export function draftTotals(
+  draft: BillDraft,
+  settings: Pick<BillingSettings, 'taxMode' | 'roundOffEnabled'>,
+): BillTotals {
+  const bill = draftBill(draft, settings);
   return {
     subtotalPaise: bill.subtotalPaise,
     discountPaise: bill.discountPaise,

@@ -83,12 +83,26 @@ export function ReceiptScreen({
   }
   const r = buildReceipt(state.sale, labels);
   const voided = state.sale.status === 'voided';
+  // Saved on this phone only: no void or return until the server has the bill.
+  const local = state.sale.local ?? null;
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
       {voided ? (
         <Banner visible icon="cancel">
           {r.voided}
+        </Banner>
+      ) : null}
+      {local ? (
+        <Banner visible icon={local.state === 'pending' ? 'cloud-upload-outline' : 'alert-circle-outline'}>
+          {local.state === 'pending' ? t('billing.receipt.savedOnPhone') : t('billing.receipt.notSynced')}
+        </Banner>
+      ) : null}
+      {state.sale.status === 'needs_review' ? (
+        <Banner visible icon="flag-outline">
+          {t('billing.receipt.needsReview', {
+            reasons: state.sale.reviewReasons.map((x) => t(`sync.review.${x}`)).join(', '),
+          })}
         </Banner>
       ) : null}
       <Card>
@@ -180,12 +194,12 @@ export function ReceiptScreen({
       <Button mode="contained-tonal" icon="plus" onPress={onNewBill} contentStyle={styles.button}>
         {t('billing.receipt.newBill')}
       </Button>
-      {canReturn && !voided && state.returnable.length > 0 ? (
+      {canReturn && !voided && !local && state.returnable.length > 0 ? (
         <Button mode="text" icon="keyboard-return" onPress={actions.openReturn} contentStyle={styles.button}>
           {t('billing.returns.button')}
         </Button>
       ) : null}
-      {canVoid && !voided ? (
+      {canVoid && !voided && !local ? (
         <Button mode="text" icon="cancel" onPress={actions.openVoid} contentStyle={styles.button}>
           {t('billing.void.button')}
         </Button>

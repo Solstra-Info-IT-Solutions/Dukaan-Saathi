@@ -22,10 +22,14 @@ export function startOfIstDay(now: Date): Date {
 
 export const PAGE_SIZE = 30;
 
-/** Bills of the shop, newest first: today / last 7 days / all, voided only, search by bill number or item. */
+/**
+ * Bills of the shop, newest first: today / last 7 days / all, voided only or flagged for review (offline bills,
+ * Phase 09), search by bill number or item.
+ */
 export function useSalesHistoryViewModel(deps: SalesHistoryViewModelDeps, shopId: string) {
   const [range, setRange] = useState<SalesRange>('today');
   const [voidedOnly, setVoidedOnly] = useState(false);
+  const [reviewOnly, setReviewOnly] = useState(false);
   const [query, setQuery] = useState('');
   const [debounced, setDebounced] = useState('');
 
@@ -40,10 +44,10 @@ export function useSalesHistoryViewModel(deps: SalesHistoryViewModelDeps, shopId
     return {
       from: from?.toISOString() ?? null,
       to: null,
-      status: voidedOnly ? 'voided' : null,
+      status: voidedOnly ? 'voided' : reviewOnly ? 'needs_review' : null,
       query: debounced,
     };
-  }, [debounced, deps, range, voidedOnly]);
+  }, [debounced, deps, range, reviewOnly, voidedOnly]);
 
   const list = useInfiniteQuery({
     queryKey: billingKeys.sales(shopId, filter),
@@ -58,6 +62,7 @@ export function useSalesHistoryViewModel(deps: SalesHistoryViewModelDeps, shopId
     state: {
       range,
       voidedOnly,
+      reviewOnly,
       query,
       items,
       loading: list.isPending,
@@ -67,7 +72,14 @@ export function useSalesHistoryViewModel(deps: SalesHistoryViewModelDeps, shopId
     },
     actions: {
       setRange,
-      toggleVoided: () => setVoidedOnly((v) => !v),
+      toggleVoided: () => {
+        setVoidedOnly((v) => !v);
+        setReviewOnly(false);
+      },
+      toggleReview: () => {
+        setReviewOnly((v) => !v);
+        setVoidedOnly(false);
+      },
       setQuery,
       loadMore: () => {
         if (list.hasNextPage && !list.isFetchingNextPage) void list.fetchNextPage();

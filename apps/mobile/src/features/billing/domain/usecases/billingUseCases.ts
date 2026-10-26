@@ -1,12 +1,14 @@
 import { financialYear } from '@ds/domain-core';
 import { draftTotals, isPriceOverride } from '../billMath';
 import {
+  type BillCustomer,
   type BillDraft,
   type BillingContext,
   type BillingSettings,
   type BillLine,
   type CreatedSale,
   type InvoiceCounterStore,
+  type OfflineSales,
   InvoiceSequenceConflict,
   type PaymentPart,
   type ReceiptSharer,
@@ -18,6 +20,7 @@ import {
   type SaleFilter,
 } from '../entities/Bill';
 import type { BillingRepository, SalePage } from '../repositories/BillingRepository';
+import { offlineReceipt } from '../offlineReceipt';
 import { buildReceipt, type ReceiptLabels, receiptHtml, receiptText } from '../receipt';
 
 export class BillInputError extends Error {
@@ -63,12 +66,15 @@ function toCommandLine(line: BillLine): SaleCommand['lines'][number] {
  *  - if the server reports another number as next (e.g. the phone lost its counter), the counter is
  *    moved there first and the bill is sent once more with the same operation id;
  *  - the caller keeps `attempt` for retries, so a repeated tap or a retry after a timeout returns
- *    the bill already saved instead of creating a second one.
+ *    the bill already saved instead of creating a second one;
+ *  - Phase 09: offline, when the server cannot be reached, or while earlier bills are still waiting, the bill is
+ *    saved on the phone and queued with the same operation id and sale id (ADR-055); the receipt is built locally.
  */
 export class CreateSale {
   constructor(
     private readonly billing: BillingRepository,
     private readonly counter: InvoiceCounterStore,
+    private readonly offline?: OfflineSales,
   ) {}
 
   async execute(input: {
@@ -79,6 +85,8 @@ export class CreateSale {
     /** Part of the total on credit for `customerId` (Phase 08). */
     udhaarPaise?: number;
     customerId?: string | null;
+    /** For the offline receipt. */
+    customer?: BillCustomer | null;
     attempt: SaleAttempt;
     source?: SaleCommand['source'];
   }): Promise<CreatedSale> {
@@ -102,8 +110,10 @@ export class CreateSale {
     const stored = (await this.counter.last(key)) ?? 0;
     const base = Math.max(stored, fy === context.fy ? context.lastSeq : 0);
 
-    const command = (seq: number): SaleCommand => ({
+    const saleId = attempt.saleId ?? attempt.clientOperationId;
+    const command = (seq: number): SaleCommand & { saleId: string } => ({
       clientOperationId: attempt.clientOperationId,
+      saleId,
       shopId: context.shopId,
       deviceId: context.deviceId,
       invoice: { fy, seq },
@@ -118,10 +128,31 @@ export class CreateSale {
       clientTotals: totals,
     });
 
+    const offline = this.offline;
+    const queue = async (seq: number): Promise<CreatedSale> => {
+      const queued = { ...command(seq), origin: 'offline_sync' as const };
+      const receipt = offlineReceipt({ command: queued, draft, context, settings, customer: input.customer });
+      await offline!.queue(queued, receipt);
+      await this.counter.save(key, seq);
+      return {
+        saleId,
+        invoiceNumber: receipt.invoiceNumber,
+        seq,
+        status: 'completed',
+        reviewReasons: [],
+        totals,
+        replayed: false,
+        queued: true,
+      };
+    };
+    if (offline && (!offline.isOnline() || offline.hasWaitingSales(context.shopId))) return queue(base + 1);
+
     let created: CreatedSale;
     try {
       created = await this.billing.createSale(command(base + 1));
     } catch (error) {
+      // No answer from the server: the bill may or may not be saved there; the queued copy settles it.
+      if (offline && isUnreachable(error)) return queue(base + 1);
       if (!(error instanceof InvoiceSequenceConflict)) throw error;
       // Remember the server's number first: a retry of this attempt then sends the same payload.
       await this.counter.save(key, error.expectedSeq - 1);
@@ -132,10 +163,19 @@ export class CreateSale {
   }
 }
 
+const isUnreachable = (error: unknown) => {
+  const code = (error as { code?: string } | null)?.code;
+  return code === 'NETWORK_OFFLINE' || code === 'NETWORK_TIMEOUT';
+};
+
+/** A bill: the phone's own copy while it is waiting to be sent, otherwise the server's. */
 export class GetSale {
-  constructor(private readonly billing: BillingRepository) {}
-  execute(shopId: string, saleId: string): Promise<Sale> {
-    return this.billing.getSale(shopId, saleId);
+  constructor(
+    private readonly billing: BillingRepository,
+    private readonly offline?: Pick<OfflineSales, 'localSale'>,
+  ) {}
+  async execute(shopId: string, saleId: string): Promise<Sale> {
+    return this.offline?.localSale(saleId) ?? this.billing.getSale(shopId, saleId);
   }
 }
 

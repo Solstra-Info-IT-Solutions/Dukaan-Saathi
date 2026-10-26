@@ -20,6 +20,12 @@ export type AdjustmentCommand = BalanceAdjustmentInput;
 export type RepaymentMethod = RepaymentInput['method'];
 export type { CustomerSort };
 
+/** The phone's queue for repayments (Phase 09); the composition root adapts the sync feature to it. */
+export interface OfflineRepayments {
+  isOnline(): boolean;
+  queue(command: RepaymentCommand, label: string | null): Promise<void>;
+}
+
 export interface CustomerQuery {
   query: string;
   sort: CustomerSort;

@@ -219,7 +219,14 @@
     "dayClose": "Close the day",
     "stock": "Stock",
     "suppliers": "Suppliers & purchases",
-    "udhaar": "Udhaar (customers)"
+    "udhaar": "Udhaar (customers)",
+    "sync": "Sync status",
+    "unsent": {
+      "title": "Not sent yet",
+      "body_one": "{{count}} bill or payment on this phone is not sent yet. It stays here and is sent when you sign in again.",
+      "body_other": "{{count}} bills or payments on this phone are not sent yet. They stay here and are sent when you sign in again.",
+      "signOutAnyway": "Sign out anyway"
+    }
   },
   "catalogue": {
     "search": "Search by name, Hindi name or barcode",
@@ -385,7 +392,10 @@
       "voided": "VOIDED",
       "returned": "Returned",
       "onUdhaar": "On udhaar",
-      "customer": "Customer"
+      "customer": "Customer",
+      "savedOnPhone": "Saved on this phone. It will be sent when the internet is back.",
+      "notSynced": "This bill could not be saved on the server. See Sync status.",
+      "needsReview": "Saved offline and flagged: {{reasons}}."
     },
     "searchItems": "Search item",
     "noResults": "No item found",
@@ -459,7 +469,9 @@
     "empty": "No bills here yet.",
     "items_one": "{{count}} item",
     "items_other": "{{count}} items",
-    "voided": "Voided"
+    "voided": "Voided",
+    "reviewOnly": "Needs review",
+    "needsReview": "Check"
   },
   "reports": {
     "today": "Today",
@@ -696,7 +708,8 @@
     "repay": {
       "title": "Payment received",
       "amount": "Amount received",
-      "confirm": "Save payment"
+      "confirm": "Save payment",
+      "queued": "Saved on this phone; the balance updates after sync."
     },
     "adjust": {
       "title": "Correct the balance (owner)",
@@ -711,6 +724,47 @@
       "INVALID_PHONE": "Enter a 10-digit Indian mobile number.",
       "INVALID_AMOUNT": "Enter an amount like 250 or 99.50.",
       "REASON_REQUIRED": "Write a reason of at least 3 letters."
+    }
+  },
+  "sync": {
+    "title": "Sync status",
+    "chip": {
+      "synced": "Synced",
+      "offline": "Offline",
+      "syncing": "Syncing…",
+      "waiting": "{{count}} waiting",
+      "offlineWaiting": "Offline · {{count}} waiting",
+      "attention": "Attention: {{count}}"
+    },
+    "lastSynced": "Last synced: {{time}}",
+    "neverSynced": "Not synced yet on this phone.",
+    "syncNow": "Sync now",
+    "waiting": "Waiting to be sent ({{count}})",
+    "nothingWaiting": "Nothing is waiting.",
+    "attention": "Needs attention",
+    "nothingAttention": "Nothing needs attention.",
+    "notSaved": "Not saved on the server",
+    "savedFlagged": "Saved, please check",
+    "retry": "Try again",
+    "ops": {
+      "create_sale": "Bill",
+      "create_customer": "New customer",
+      "record_customer_repayment": "Udhaar payment"
+    },
+    "reasons": {
+      "CUSTOMER_NOT_SAVED": "the customer could not be saved",
+      "TRY_AGAIN_LATER": "will try again shortly"
+    },
+    "review": {
+      "sequence_gap": "a bill number in between is missing",
+      "price_changed": "price differs from the item list",
+      "product_archived": "item was removed from the list",
+      "negative_stock": "stock went below zero",
+      "credit_limit": "over the customer's credit limit",
+      "clock_skew": "phone clock was wrong",
+      "discount_limit": "discount above the allowed limit",
+      "price_override": "price changed without permission",
+      "method_disabled": "payment method switched off"
     }
   }
 }

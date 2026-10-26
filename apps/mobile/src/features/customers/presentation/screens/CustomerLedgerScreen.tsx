@@ -94,6 +94,7 @@ export function CustomerLedgerScreen({
             <HelperText type="error" visible={state.payErrorKey !== null}>
               {state.payErrorKey ? t(state.payErrorKey) : ''}
             </HelperText>
+            {state.payQueued ? <HelperText type="info">{t('customers.repay.queued')}</HelperText> : null}
             <Button mode="contained" onPress={actions.pay} loading={state.paying} disabled={state.paying}>
               {t('customers.repay.confirm')}
             </Button>

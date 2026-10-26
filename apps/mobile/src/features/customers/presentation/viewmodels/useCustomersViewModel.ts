@@ -162,6 +162,8 @@ export function useCustomerLedgerViewModel(
   const [note, setNote] = useState('');
   const [paying, setPaying] = useState(false);
   const [payErrorKey, setPayErrorKey] = useState<string | null>(null);
+  /** The last payment was saved on this phone and will be sent when online. */
+  const [payQueued, setPayQueued] = useState(false);
   const [adjustDirection, setAdjustDirection] = useState<'add' | 'reduce'>('reduce');
   const [adjustText, setAdjustText] = useState('');
   const [reason, setReason] = useState('');
@@ -181,8 +183,9 @@ export function useCustomerLedgerViewModel(
     busy.current = true;
     setPaying(true);
     setPayErrorKey(null);
+    setPayQueued(false);
     try {
-      await deps.recordRepayment.execute({
+      const saved = await deps.recordRepayment.execute({
         clientOperationId: payOp.for(`${amountText}|${method}|${note.trim()}`),
         shopId: shop.shopId,
         deviceId: shop.deviceId,
@@ -190,8 +193,10 @@ export function useCustomerLedgerViewModel(
         amountText,
         method,
         note,
+        label: ledger.data?.customer.name ?? null,
       });
       payOp.done();
+      setPayQueued(saved.queued === true);
       setAmountText('');
       setNote('');
       await refresh();
@@ -201,7 +206,7 @@ export function useCustomerLedgerViewModel(
       busy.current = false;
       setPaying(false);
     }
-  }, [amountText, customerId, deps, method, note, payOp, refresh, shop]);
+  }, [amountText, customerId, deps, ledger.data, method, note, payOp, refresh, shop]);
 
   const adjust = useCallback(async () => {
     if (busy.current) return;
@@ -259,6 +264,7 @@ export function useCustomerLedgerViewModel(
       note,
       paying,
       payErrorKey,
+      payQueued,
       adjustDirection,
       adjustText,
       reason,

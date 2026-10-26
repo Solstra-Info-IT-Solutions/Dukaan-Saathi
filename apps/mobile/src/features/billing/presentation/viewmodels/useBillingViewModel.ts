@@ -455,6 +455,7 @@ export function useBillingViewModel(
     busy.current = true;
     attempt.current ??= {
       clientOperationId: deps.newId(),
+      saleId: deps.newId(),
       occurredAt: (deps.now?.() ?? new Date()).toISOString(),
     };
     setErrorKey(null);
@@ -467,6 +468,7 @@ export function useBillingViewModel(
         payments,
         udhaarPaise,
         customerId: customer?.id ?? null,
+        customer,
         attempt: attempt.current,
         source: source.current,
       });

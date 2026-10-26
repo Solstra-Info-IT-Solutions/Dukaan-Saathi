@@ -92,6 +92,7 @@ describe('navigation gating', () => {
       'dayClose',
       'settings',
       'staff',
+      'sync',
       'diagnostics',
     ]);
     // Cashiers: today's own sales, udhaar, the stock list and closing their drawer — not suppliers, expenses,
@@ -101,6 +102,7 @@ describe('navigation gating', () => {
       'udhaar',
       'stock',
       'dayClose',
+      'sync',
       'diagnostics',
     ]);
   });

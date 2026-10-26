@@ -51,6 +51,9 @@ export function SalesHistoryScreen({
         <Chip selected={state.voidedOnly} onPress={actions.toggleVoided} showSelectedCheck>
           {t('sales.voidedOnly')}
         </Chip>
+        <Chip selected={state.reviewOnly} onPress={actions.toggleReview} showSelectedCheck>
+          {t('sales.reviewOnly')}
+        </Chip>
       </View>
     </View>
   );
@@ -92,6 +95,9 @@ export function SalesHistoryScreen({
                 {formatPaise(paise(item.totalPaise))}
               </Text>
               {item.status === 'voided' ? <Text variant="labelSmall">{t('sales.voided')}</Text> : null}
+              {item.status === 'needs_review' ? (
+                <Text variant="labelSmall">{t('sales.needsReview')}</Text>
+              ) : null}
             </View>
           )}
         />

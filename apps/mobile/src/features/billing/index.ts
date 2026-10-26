@@ -5,6 +5,8 @@ export type {
   BillingContext,
   CustomerFinder,
   InvoiceCounterStore,
+  OfflineSales,
+  Sale,
   ProductFinder,
   ReceiptSharer,
 } from './domain/entities/Bill';

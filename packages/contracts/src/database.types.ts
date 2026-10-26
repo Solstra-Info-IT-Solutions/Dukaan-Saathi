@@ -1097,6 +1097,11 @@ export type Database = {
         Returns: Json
       }
       adjust_customer_balance: { Args: { p_input: Json }; Returns: Json }
+      sync_pull: {
+        Args: { p_cursors?: Json; p_device_id: string; p_limit?: number; p_shop_id: string }
+        Returns: Json
+      }
+      sync_push: { Args: { p_input: Json }; Returns: Json }
       archive_customer: { Args: { p_customer_id: string; p_shop_id: string }; Returns: Json }
       check_customer_drift: { Args: { p_shop_id: string }; Returns: Json }
       get_customer_ledger: { Args: { p_customer_id: string; p_limit?: number; p_shop_id: string }; Returns: Json }

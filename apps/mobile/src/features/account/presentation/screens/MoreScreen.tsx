@@ -1,5 +1,5 @@
 import { ScrollView, StyleSheet } from 'react-native';
-import { Button, HelperText, List, Text } from 'react-native-paper';
+import { Button, Dialog, HelperText, List, Portal, Text } from 'react-native-paper';
 import { useTranslation } from 'react-i18next';
 import type { ModuleEntry } from '@/shared/navigation/modules';
 import { spacing } from '@/shared/theme/theme';
@@ -52,6 +52,18 @@ export function MoreScreen({
       >
         {t('more.signOut')}
       </Button>
+      <Portal>
+        <Dialog visible={state.unsent !== null} onDismiss={actions.cancelSignOut}>
+          <Dialog.Title>{t('more.unsent.title')}</Dialog.Title>
+          <Dialog.Content>
+            <Text variant="bodyMedium">{t('more.unsent.body', { count: state.unsent ?? 0 })}</Text>
+          </Dialog.Content>
+          <Dialog.Actions>
+            <Button onPress={actions.cancelSignOut}>{t('common.cancel')}</Button>
+            <Button onPress={actions.confirmSignOut}>{t('more.unsent.signOutAnyway')}</Button>
+          </Dialog.Actions>
+        </Dialog>
+      </Portal>
     </ScrollView>
   );
 }

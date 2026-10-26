@@ -51,11 +51,14 @@ export const SalePaymentInputSchema = z.object({
 
 export const CreateSaleInputSchema = z.object({
   clientOperationId: UuidSchema,
+  /** Phase 09: chosen on the phone so an offline receipt keeps its id after sync. */
+  saleId: UuidSchema.optional(),
   shopId: UuidSchema,
   deviceId: UuidSchema,
   invoice: z.object({ fy: z.string().regex(/^\d{4}$/), seq: z.number().int().min(1) }),
   occurredAt: z.iso.datetime({ offset: true }),
-  origin: z.literal('online'),
+  /** offline_sync is set by sync_push for bills sent from the phone's queue. */
+  origin: z.enum(['online', 'offline_sync']),
   source: z.enum(SALE_SOURCES).optional(),
   lines: z.array(SaleLineInputSchema).min(1).max(MAX_BILL_LINES),
   billDiscountPaise: PaiseSchema.optional(),
@@ -91,6 +94,8 @@ export const CreateSaleOutputSchema = z.object({
   /** Customer's balance after a credit bill. */
   customerBalancePaise: SignedPaiseSchema.nullable().optional(),
   replayed: z.boolean(),
+  /** Phase 09: saved on the phone only; it will be sent when online. */
+  queued: z.boolean().optional(),
 });
 export type CreateSaleOutputDto = z.infer<typeof CreateSaleOutputSchema>;
 
@@ -142,6 +147,8 @@ export const SaleSchema = z.object({
   lines: z.array(SaleLineSchema),
   payments: z.array(SalePaymentSchema),
   returns: z.array(SaleReturnSummarySchema).optional(),
+  /** Phase 09: a bill that exists only on this phone so far (not part of get_sale). */
+  local: z.object({ state: z.enum(['pending', 'quarantined']), code: z.string().nullable() }).optional(),
   customer: z
     .object({
       id: UuidSchema,

@@ -10,7 +10,12 @@ import type {
   ShopSettingsPatch,
 } from '../entities/Shop';
 import { ShopInputError } from '../errors';
-import type { DeviceRepository, LastShopPreference, ShopRepository } from '../repositories/ShopRepository';
+import type {
+  DeviceRepository,
+  LastShopPreference,
+  SessionSnapshotStore,
+  ShopRepository,
+} from '../repositories/ShopRepository';
 
 function fieldIssues(error: z.ZodError): Record<string, string> {
   const fields: Record<string, string> = {};
@@ -63,7 +68,14 @@ export class ActivateShop {
 export interface RestoredSession {
   context: MyContext;
   activation: ShopActivation | null;
+  /** True when the server could not be reached and the last saved session was used (Phase 09). */
+  offline?: boolean;
 }
+
+const unreachable = (error: unknown) => {
+  const code = (error as { code?: string } | null)?.code;
+  return code === 'NETWORK_OFFLINE' || code === 'NETWORK_TIMEOUT';
+};
 
 /** After sign-in or app start: load memberships and reopen the right shop if it is obvious. */
 export class RestoreSession {
@@ -71,12 +83,22 @@ export class RestoreSession {
     private readonly loadContext: LoadMyContext,
     private readonly activateShop: ActivateShop,
     private readonly lastShop: LastShopPreference,
+    private readonly snapshot?: SessionSnapshotStore,
   ) {}
 
+  /** Online: memberships + device registration, saved for later. No connection: the last saved session. */
   async execute(): Promise<RestoredSession> {
-    const [context, lastShopId] = await Promise.all([this.loadContext.execute(), this.lastShop.get()]);
-    const initial = pickInitialShop(context, lastShopId);
-    return { context, activation: initial ? await this.activateShop.execute(initial) : null };
+    try {
+      const [context, lastShopId] = await Promise.all([this.loadContext.execute(), this.lastShop.get()]);
+      const initial = pickInitialShop(context, lastShopId);
+      const restored = { context, activation: initial ? await this.activateShop.execute(initial) : null };
+      if (restored.activation) await this.snapshot?.save(JSON.stringify(restored));
+      return restored;
+    } catch (error) {
+      const saved = unreachable(error) ? await this.snapshot?.load() : null;
+      if (!saved) throw error;
+      return { ...(JSON.parse(saved) as RestoredSession), offline: true };
+    }
   }
 }
 

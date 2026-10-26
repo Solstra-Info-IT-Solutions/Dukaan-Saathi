@@ -5,6 +5,8 @@ import type {
   CustomerLedger,
   CustomerList,
   CustomerQuery,
+  OfflineRepayments,
+  RepaymentCommand,
   RepaymentMethod,
 } from '../entities/Customers';
 import type { CustomerRepository } from '../repositories/CustomerRepository';
@@ -68,9 +70,15 @@ export class GetCustomerLedger {
   }
 }
 
-/** Money received against udhaar. Paying more than owed is allowed and becomes an advance. */
+/**
+ * Money received against udhaar. Paying more than owed is allowed and becomes an advance. Without a connection the
+ * payment is queued on the phone with the same operation id (Phase 09) and `queued` is true.
+ */
 export class RecordRepayment {
-  constructor(private readonly customers: CustomerRepository) {}
+  constructor(
+    private readonly customers: CustomerRepository,
+    private readonly offline?: OfflineRepayments,
+  ) {}
   async execute(input: {
     clientOperationId: string;
     shopId: string;
@@ -79,10 +87,12 @@ export class RecordRepayment {
     amountText: string;
     method: RepaymentMethod;
     note: string;
-  }): Promise<{ balancePaise: number }> {
+    /** Shown in the sync status list, e.g. the customer's name. */
+    label?: string | null;
+  }): Promise<{ balancePaise: number | null; queued?: boolean }> {
     const amount = parseRupeesToPaise(input.amountText);
     if (amount === null || amount < 1) throw new CustomerInputError('INVALID_AMOUNT');
-    return this.customers.recordRepayment({
+    const command: RepaymentCommand = {
       clientOperationId: input.clientOperationId,
       shopId: input.shopId,
       deviceId: input.deviceId,
@@ -90,7 +100,19 @@ export class RecordRepayment {
       amountPaise: amount,
       method: input.method,
       ...(input.note.trim() ? { note: input.note.trim() } : {}),
-    });
+    };
+    const queue = async () => {
+      await this.offline!.queue(command, input.label ?? null);
+      return { balancePaise: null, queued: true };
+    };
+    if (this.offline && !this.offline.isOnline()) return queue();
+    try {
+      return await this.customers.recordRepayment(command);
+    } catch (error) {
+      const code = (error as { code?: string } | null)?.code;
+      if (this.offline && (code === 'NETWORK_OFFLINE' || code === 'NETWORK_TIMEOUT')) return queue();
+      throw error;
+    }
   }
 }
 
