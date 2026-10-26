@@ -65,6 +65,31 @@ export interface PaymentPart {
   amountPaise: number;
 }
 
+/** What the payment sheet offers: money methods, plus udhaar (credit) for a chosen customer. */
+export type BillMethod = PaymentMethod | 'udhaar';
+/** A return can go back to the customer's udhaar account when the bill has a customer. */
+export type RefundMethod = PaymentMethod | 'udhaar';
+export interface BillPart {
+  method: BillMethod;
+  amountPaise: number;
+}
+
+/** A customer as billing needs it (picker, quick add, credit limit hint). */
+export interface BillCustomer {
+  id: string;
+  name: string;
+  phone: string | null;
+  balancePaise: number;
+  creditLimitPaise: number | null;
+}
+
+/** Customer access billing needs; the composition root adapts the customers feature to it. */
+export interface CustomerFinder {
+  search(shopId: string, text: string): Promise<BillCustomer[]>;
+  /** Name + phone only (cashiers may quick-add); safe to repeat with the same id. */
+  quickAdd(input: { id: string; shopId: string; name: string; phoneText: string }): Promise<BillCustomer>;
+}
+
 /** Shop settings that change how a bill is computed and paid. */
 export interface BillingSettings {
   timezone: string;
@@ -85,6 +110,10 @@ export interface BillingContext {
   canDiscount: boolean;
   canOverridePrice: boolean;
   canManageProducts: boolean;
+  /** udhaar.grant (Phase 08); absent = no credit bills. */
+  canGiveUdhaar?: boolean;
+  /** customer.quick_create. */
+  canAddCustomer?: boolean;
   deviceId: string;
   fy: string;
   lastSeq: number;

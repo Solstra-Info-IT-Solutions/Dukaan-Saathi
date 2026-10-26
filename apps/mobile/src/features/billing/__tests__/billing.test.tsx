@@ -1,4 +1,5 @@
 import { act, fireEvent, screen, waitFor } from '@testing-library/react-native';
+import { formatPaise, paise } from '@ds/domain-core';
 import { AppError } from '@/core/errors/AppError';
 import { baseSettings, SHOP_A } from '../../../../tests/fakes/shops';
 import { renderHookWithQuery, renderWithProviders } from '../../../../tests/renderWithProviders';
@@ -16,9 +17,11 @@ import {
   upiPaymentUri,
 } from '../domain/billMath';
 import {
+  type BillCustomer,
   type BillingContext,
   type BillLine,
   type CatalogueProduct,
+  type CustomerFinder,
   type CatalogueReference,
   type CreatedSale,
   type InvoiceCounterStore,
@@ -46,7 +49,10 @@ import {
 import { BillingScreen } from '../presentation/screens/BillingScreen';
 import { ReceiptScreen } from '../presentation/screens/ReceiptScreen';
 import { SalesHistoryScreen } from '../presentation/screens/SalesHistoryScreen';
-import { useBillingViewModel } from '../presentation/viewmodels/useBillingViewModel';
+import {
+  type BillingViewModelDeps,
+  useBillingViewModel,
+} from '../presentation/viewmodels/useBillingViewModel';
 import { startOfIstDay } from '../presentation/viewmodels/useSalesHistoryViewModel';
 
 const DEVICE = '0190f0f0-0000-7000-8000-0000000000d1';
@@ -232,6 +238,28 @@ const context = (over: Partial<BillingContext> = {}): BillingContext => ({
   lastSeq: 0,
   ...over,
 });
+
+const RAMESH: BillCustomer = {
+  id: '0190f0f0-0000-7000-8000-0000000009e1',
+  name: 'Ramesh',
+  phone: '+919822222222',
+  balancePaise: 50000,
+  creditLimitPaise: 55000,
+};
+/** Customers for the udhaar picker; quick add returns the new customer. */
+const customerFinder = (): CustomerFinder & { added: unknown[] } => {
+  const added: unknown[] = [];
+  return {
+    added,
+    search: async (_shopId, text) =>
+      [RAMESH].filter((c) => c.name.toLowerCase().includes(text.toLowerCase())),
+    quickAdd: async (input) => {
+      added.push(input);
+      return { id: input.id, name: input.name, phone: null, balancePaise: 0, creditLimitPaise: null };
+    },
+  };
+};
+const udhaarContext = () => context({ canGiveUdhaar: true, canAddCustomer: true });
 
 let idCounter = 0;
 const newId = () => `0190f0f0-0000-7000-8000-${String(++idCounter).padStart(12, '0')}`;
@@ -552,6 +580,22 @@ describe('receipt', () => {
     expect(text).not.toContain('HSN');
   });
 
+  it('credit bills show the udhaar part and the customer', () => {
+    const credit: Sale = {
+      ...SALE,
+      paidPaise: 0,
+      udhaarPaise: SALE.totals.totalPaise,
+      payments: [],
+      customer: { id: RAMESH.id, name: 'Ramesh', phone: null, balancePaise: 80000 },
+    };
+    const text = receiptText(
+      buildReceipt(credit, { ...LABELS, onUdhaar: 'On udhaar', customer: 'Customer' }),
+      LABELS,
+    );
+    expect(text).toContain(`On udhaar ${formatPaise(paise(SALE.totals.totalPaise))}`);
+    expect(text).toContain('Customer: Ramesh');
+  });
+
   it('escapes shop and line text in the PDF HTML', () => {
     const html = receiptHtml(buildReceipt(SALE, LABELS), LABELS);
     expect(html).toContain('Doodh &lt;b&gt;');
@@ -573,7 +617,7 @@ describe('receipt', () => {
 });
 
 describe('useBillingViewModel', () => {
-  async function ready(deps: ReturnType<typeof setup>['deps'], ctx = context(), onCompleted = jest.fn()) {
+  async function ready(deps: BillingViewModelDeps, ctx = context(), onCompleted = jest.fn()) {
     const hook = await renderHookWithQuery(() => useBillingViewModel(deps, ctx, onCompleted));
     await waitFor(() => expect(hook.result.current.state.loading).toBe(false));
     return hook;
@@ -690,6 +734,38 @@ describe('useBillingViewModel', () => {
       { method: 'upi', amountPaise: 6000 },
     ]);
   });
+  it('udhaar for part of the bill needs a customer and sends the rest as cash', async () => {
+    const { repo, deps } = setup();
+    const withCustomers = { ...deps, customers: customerFinder() };
+    const { result } = await ready(withCustomers, udhaarContext());
+    expect(result.current.state.methods).toEqual(['cash', 'upi', 'udhaar']);
+    await act(async () => {
+      result.current.actions.press('1');
+      result.current.actions.press('0');
+      result.current.actions.press('0');
+    });
+    await act(async () => result.current.actions.openPayment());
+    await act(async () => result.current.actions.toggleSplit());
+    await act(async () => result.current.actions.setSplitMethod('udhaar'));
+    await act(async () => result.current.actions.setSplitAmount('60'));
+    await act(async () => result.current.actions.submit());
+    expect(result.current.state.errorKey).toBe('billing.errors.CUSTOMER_REQUIRED');
+    expect(repo.calls).toHaveLength(0);
+    await act(async () => result.current.actions.pickCustomer(RAMESH));
+    expect(result.current.state.overLimit).toBe(true); // owes ₹500 + ₹60 > limit ₹550 (the server decides)
+    await act(async () => result.current.actions.submit());
+    expect(repo.calls[0]).toMatchObject({
+      payments: [{ method: 'cash', amountPaise: 4000 }],
+      udhaarPaise: 6000,
+      customerId: RAMESH.id,
+    });
+  });
+
+  it('udhaar is not offered without the permission', async () => {
+    const { deps } = setup();
+    const { result } = await ready({ ...deps, customers: customerFinder() }, context());
+    expect(result.current.state.methods).toEqual(['cash', 'upi']);
+  });
 });
 
 describe('BillingScreen', () => {
@@ -707,6 +783,35 @@ describe('BillingScreen', () => {
     await fireEvent.press(screen.getByText('Cash received – save bill'));
     await waitFor(() => expect(onCompleted).toHaveBeenCalledWith(expect.any(String)));
     expect(repo.calls[0]?.lines).toEqual([{ kind: 'quick', amountPaise: 5000 }]);
+  });
+
+  it('a whole bill on udhaar for a customer added from the bill', async () => {
+    const { repo, deps } = setup();
+    const customers = customerFinder();
+    const onCompleted = jest.fn();
+    await renderWithProviders(
+      <BillingScreen
+        deps={{ ...deps, customers }}
+        context={udhaarContext()}
+        onCompleted={onCompleted}
+        onCreateProduct={jest.fn()}
+      />,
+    );
+    await fireEvent.press(await screen.findByText('3'));
+    await fireEvent.press(screen.getByText('0'));
+    await fireEvent.press(screen.getByText('0'));
+    await fireEvent.press(screen.getByText('Pay'));
+    await fireEvent.press(await screen.findByText('Udhaar'));
+    expect(await screen.findByText('On udhaar: ₹300.00')).toBeTruthy();
+    await fireEvent.changeText(screen.getByLabelText('Customer name or phone'), 'Sita');
+    await fireEvent.press(screen.getByText('New customer'));
+    await fireEvent.press(screen.getByText('Add customer'));
+    await waitFor(() => expect(customers.added).toHaveLength(1));
+    expect(customers.added[0]).toMatchObject({ name: 'Sita', shopId: SHOP_A });
+    expect(await screen.findByText('Sita')).toBeTruthy();
+    await fireEvent.press(screen.getByText('Save on udhaar'));
+    await waitFor(() => expect(onCompleted).toHaveBeenCalled());
+    expect(repo.calls[0]).toMatchObject({ payments: [], udhaarPaise: 30000 });
   });
 
   it('search adds an item; the UPI QR carries the bill amount', async () => {

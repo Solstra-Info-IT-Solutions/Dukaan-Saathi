@@ -80,6 +80,8 @@ export function ReportsScreen({
               <Stat label={t('reports.returns')} value={money(d.returnsPaise)} />
               <Stat label={t('reports.net')} value={money(d.netSalesPaise)} />
               <Stat label={t('reports.expenses')} value={money(d.expensesPaise)} />
+              <Stat label={t('reports.udhaarGiven')} value={money(d.udhaarGivenPaise)} />
+              <Stat label={t('reports.udhaarCollected')} value={money(d.udhaarCollectedPaise)} />
               <Stat label={t('reports.voided')} value={String(d.voidedBills)} />
               {(['cash', 'upi', 'card', 'other'] as const)
                 .filter((m) => (d.payments[m] ?? 0) > 0)

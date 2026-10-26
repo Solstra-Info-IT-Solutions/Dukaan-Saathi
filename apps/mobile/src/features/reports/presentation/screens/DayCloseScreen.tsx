@@ -51,6 +51,9 @@ export function DayCloseScreen({
         <Card.Content style={styles.gap}>
           {day.closed ? <Row label={t('dayClose.opening')} value={money(b.openingCashPaise)} /> : null}
           <Row label={t('dayClose.cashSales')} value={money(b.cashSalesPaise)} />
+          {b.cashRepaymentsPaise > 0 ? (
+            <Row label={t('dayClose.cashRepayments')} value={money(b.cashRepaymentsPaise)} />
+          ) : null}
           <Row label={t('dayClose.cashRefunds')} value={`-${money(b.cashRefundsPaise)}`} />
           <Row label={t('dayClose.cashExpenses')} value={`-${money(b.cashExpensesPaise)}`} />
           <Row label={t('dayClose.cashSuppliers')} value={`-${money(b.cashSupplierPaymentsPaise)}`} />

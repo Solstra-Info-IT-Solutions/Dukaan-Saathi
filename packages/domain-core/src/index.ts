@@ -6,3 +6,4 @@ export * from './invoice';
 export * from './ids';
 export * from './csv';
 export * from './productImport';
+export * from './upi';

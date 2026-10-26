@@ -1,7 +1,9 @@
 // Public API of the billing feature.
 export type { BillingRepository } from './domain/repositories/BillingRepository';
 export type {
+  BillCustomer,
   BillingContext,
+  CustomerFinder,
   InvoiceCounterStore,
   ProductFinder,
   ReceiptSharer,

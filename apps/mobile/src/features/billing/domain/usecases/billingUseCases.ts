@@ -9,8 +9,8 @@ import {
   type InvoiceCounterStore,
   InvoiceSequenceConflict,
   type PaymentPart,
-  type PaymentMethod,
   type ReceiptSharer,
+  type RefundMethod,
   type SaleReturnResult,
   type Sale,
   type SaleAttempt,
@@ -23,7 +23,12 @@ import { buildReceipt, type ReceiptLabels, receiptHtml, receiptText } from '../r
 export class BillInputError extends Error {
   constructor(
     readonly reason:
-      'EMPTY_BILL' | 'METHOD_NOT_ENABLED' | 'PAYMENTS_DO_NOT_MATCH' | 'REASON_REQUIRED' | 'NOTHING_TO_RETURN',
+      | 'EMPTY_BILL'
+      | 'METHOD_NOT_ENABLED'
+      | 'PAYMENTS_DO_NOT_MATCH'
+      | 'REASON_REQUIRED'
+      | 'NOTHING_TO_RETURN'
+      | 'CUSTOMER_REQUIRED',
   ) {
     super(reason);
     this.name = 'BillInputError';
@@ -71,16 +76,24 @@ export class CreateSale {
     settings: BillingSettings;
     draft: BillDraft;
     payments: PaymentPart[];
+    /** Part of the total on credit for `customerId` (Phase 08). */
+    udhaarPaise?: number;
+    customerId?: string | null;
     attempt: SaleAttempt;
     source?: SaleCommand['source'];
   }): Promise<CreatedSale> {
     const { context, settings, draft, payments, attempt } = input;
+    const udhaar = input.udhaarPaise ?? 0;
     if (draft.lines.length === 0) throw new BillInputError('EMPTY_BILL');
     if (payments.some((p) => !settings.enabledPaymentMethods.includes(p.method))) {
       throw new BillInputError('METHOD_NOT_ENABLED');
     }
     const totals = draftTotals(draft, settings);
-    if (payments.reduce((sum, p) => sum + p.amountPaise, 0) !== totals.totalPaise) {
+    if (udhaar > 0 && !settings.enabledPaymentMethods.includes('udhaar')) {
+      throw new BillInputError('METHOD_NOT_ENABLED');
+    }
+    if (udhaar > 0 && !input.customerId) throw new BillInputError('CUSTOMER_REQUIRED');
+    if (payments.reduce((sum, p) => sum + p.amountPaise, 0) + udhaar !== totals.totalPaise) {
       throw new BillInputError('PAYMENTS_DO_NOT_MATCH');
     }
 
@@ -100,6 +113,8 @@ export class CreateSale {
       lines: draft.lines.map(toCommandLine),
       ...(draft.billDiscountPaise > 0 ? { billDiscountPaise: draft.billDiscountPaise } : {}),
       payments,
+      ...(udhaar > 0 ? { udhaarPaise: udhaar } : {}),
+      ...(input.customerId ? { customerId: input.customerId } : {}),
       clientTotals: totals,
     });
 
@@ -155,7 +170,7 @@ export class CreateSaleReturn {
     deviceId: string;
     saleId: string;
     lines: { lineNo: number; quantityMilli: number }[];
-    refundMethod: PaymentMethod;
+    refundMethod: RefundMethod;
     reason: string;
   }): Promise<SaleReturnResult> {
     const lines = input.lines.filter((l) => l.quantityMilli > 0);

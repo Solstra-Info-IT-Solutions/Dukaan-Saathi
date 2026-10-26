@@ -218,7 +218,8 @@
     "expenses": "Expenses",
     "dayClose": "Close the day",
     "stock": "Stock",
-    "suppliers": "Suppliers & purchases"
+    "suppliers": "Suppliers & purchases",
+    "udhaar": "Udhaar (customers)"
   },
   "catalogue": {
     "search": "Search by name, Hindi name or barcode",
@@ -358,7 +359,9 @@
       "WHOLE_QUANTITY": "This item is sold in whole units.",
       "INVALID_SPLIT": "The second payment must be less than the total and use another method.",
       "PRICE_CHANGED": "A price was changed in the catalogue. The bill now shows the new price — check the total and pay again.",
-      "NOTHING_TO_RETURN": "Choose at least one item to return."
+      "NOTHING_TO_RETURN": "Choose at least one item to return.",
+      "CUSTOMER_REQUIRED": "Choose a customer for udhaar.",
+      "CUSTOMER_NAME_REQUIRED": "Enter the customer's name."
     },
     "receipt": {
       "title": "Receipt",
@@ -380,7 +383,9 @@
       "taxInvoice": "Tax invoice",
       "hsn": "HSN",
       "voided": "VOIDED",
-      "returned": "Returned"
+      "returned": "Returned",
+      "onUdhaar": "On udhaar",
+      "customer": "Customer"
     },
     "searchItems": "Search item",
     "noResults": "No item found",
@@ -435,7 +440,15 @@
       "reason": "Reason for return",
       "confirm": "Refund",
       "invalidQuantity": "A quantity is more than what is left to return."
-    }
+    },
+    "udhaarFor": "On udhaar: {{amount}}",
+    "customerBalance": "Owes {{amount}}",
+    "changeCustomer": "Change",
+    "overLimit": "Over the credit limit of {{amount}}.",
+    "addCustomer": "Add customer",
+    "findCustomer": "Customer name or phone",
+    "newCustomer": "New customer",
+    "confirmUdhaar": "Save on udhaar"
   },
   "sales": {
     "today": "Today",
@@ -479,7 +492,9 @@
       "product": "Item",
       "category": "Category",
       "staff": "Staff"
-    }
+    },
+    "udhaarGiven": "Udhaar given",
+    "udhaarCollected": "Udhaar collected"
   },
   "dayClose": {
     "title": "Close the day ({{date}})",
@@ -501,7 +516,8 @@
       "COUNTED_REQUIRED": "Count the cash and enter the amount.",
       "INVALID_OPENING": "Enter a valid opening amount."
     },
-    "cashSuppliers": "Cash paid to suppliers"
+    "cashSuppliers": "Cash paid to suppliers",
+    "cashRepayments": "Udhaar collected in cash"
   },
   "expenses": {
     "total": "Total: {{amount}}",
@@ -638,6 +654,63 @@
       "INVALID_LINE": "Check the quantity and cost of the highlighted item.",
       "PAID_MORE_THAN_TOTAL": "Paid amount is more than the total.",
       "UNPAID_NEEDS_SUPPLIER": "Choose a supplier to keep an amount unpaid."
+    }
+  },
+  "customers": {
+    "totalOutstanding": "Udhaar outstanding: {{amount}}",
+    "withUdhaar": "Customers with udhaar: {{count}}",
+    "search": "Search name or phone",
+    "showAll": "Show all customers",
+    "sort": {
+      "highest": "Highest",
+      "oldest": "Oldest",
+      "name": "Name"
+    },
+    "noUdhaar": "Nobody owes you anything.",
+    "noCustomers": "No customers yet.",
+    "owes": "Owes {{amount}}",
+    "advance": "Advance {{amount}}",
+    "settled": "Settled",
+    "add": "Add customer",
+    "limit": "Credit limit: {{amount}}",
+    "remind": "Send WhatsApp reminder",
+    "ledger": "Account",
+    "noEntries": "No entries yet.",
+    "after": "then {{balance}}",
+    "kinds": {
+      "opening": "Opening balance",
+      "sale": "Bill on udhaar",
+      "repayment": "Paid",
+      "sale_void": "Bill voided",
+      "sale_return": "Returned goods",
+      "adjustment": "Correction"
+    },
+    "form": {
+      "name": "Customer name",
+      "phone": "Phone (optional)",
+      "opening": "Udhaar already owed (₹, optional)",
+      "openingHint": "Use a minus sign for an advance the customer has paid, e.g. -200.",
+      "creditLimit": "Credit limit (₹, optional)",
+      "save": "Save"
+    },
+    "repay": {
+      "title": "Payment received",
+      "amount": "Amount received",
+      "confirm": "Save payment"
+    },
+    "adjust": {
+      "title": "Correct the balance (owner)",
+      "reduce": "Reduce",
+      "add": "Add",
+      "amount": "Correction amount",
+      "reason": "Reason (required)",
+      "confirm": "Save correction"
+    },
+    "errors": {
+      "NAME_REQUIRED": "Enter the customer's name.",
+      "INVALID_PHONE": "Enter a 10-digit Indian mobile number.",
+      "INVALID_AMOUNT": "Enter an amount like 250 or 99.50.",
+      "REASON_REQUIRED": "Write a reason of at least 3 letters."
     }
   }
 }

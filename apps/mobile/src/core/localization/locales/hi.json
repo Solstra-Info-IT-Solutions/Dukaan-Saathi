@@ -218,7 +218,8 @@
     "expenses": "ख़र्च",
     "dayClose": "दिन बंद करें",
     "stock": "स्टॉक",
-    "suppliers": "सप्लायर और ख़रीद"
+    "suppliers": "सप्लायर और ख़रीद",
+    "udhaar": "उधार (ग्राहक)"
   },
   "catalogue": {
     "search": "नाम, हिंदी नाम या बारकोड से खोजें",
@@ -358,7 +359,9 @@
       "WHOLE_QUANTITY": "यह सामान पूरे नग में बिकता है।",
       "INVALID_SPLIT": "दूसरा भुगतान कुल से कम और दूसरे तरीके से होना चाहिए।",
       "PRICE_CHANGED": "सूची में एक दाम बदल गया है। बिल में नया दाम आ गया है — कुल देखकर फिर भुगतान करें।",
-      "NOTHING_TO_RETURN": "कम से कम एक सामान चुनें।"
+      "NOTHING_TO_RETURN": "कम से कम एक सामान चुनें।",
+      "CUSTOMER_REQUIRED": "उधार के लिए ग्राहक चुनें।",
+      "CUSTOMER_NAME_REQUIRED": "ग्राहक का नाम लिखें।"
     },
     "receipt": {
       "title": "रसीद",
@@ -380,7 +383,9 @@
       "taxInvoice": "टैक्स इनवॉइस",
       "hsn": "HSN",
       "voided": "रद्द",
-      "returned": "वापस"
+      "returned": "वापस",
+      "onUdhaar": "उधार",
+      "customer": "ग्राहक"
     },
     "searchItems": "सामान खोजें",
     "noResults": "कोई सामान नहीं मिला",
@@ -435,7 +440,15 @@
       "reason": "वापसी का कारण",
       "confirm": "पैसे लौटाएँ",
       "invalidQuantity": "कोई मात्रा बची हुई से ज़्यादा है।"
-    }
+    },
+    "udhaarFor": "उधार: {{amount}}",
+    "customerBalance": "बकाया {{amount}}",
+    "changeCustomer": "बदलें",
+    "overLimit": "{{amount}} की उधार सीमा से ज़्यादा।",
+    "addCustomer": "ग्राहक जोड़ें",
+    "findCustomer": "ग्राहक का नाम या फ़ोन",
+    "newCustomer": "नया ग्राहक",
+    "confirmUdhaar": "उधार में सेव करें"
   },
   "sales": {
     "today": "आज",
@@ -479,7 +492,9 @@
       "product": "सामान",
       "category": "श्रेणी",
       "staff": "स्टाफ़"
-    }
+    },
+    "udhaarGiven": "दिया गया उधार",
+    "udhaarCollected": "वसूला गया उधार"
   },
   "dayClose": {
     "title": "दिन बंद करें ({{date}})",
@@ -501,7 +516,8 @@
       "COUNTED_REQUIRED": "नकद गिनकर रकम लिखें।",
       "INVALID_OPENING": "सही शुरुआती रकम लिखें।"
     },
-    "cashSuppliers": "सप्लायर को नकद भुगतान"
+    "cashSuppliers": "सप्लायर को नकद भुगतान",
+    "cashRepayments": "नकद में मिला उधार"
   },
   "expenses": {
     "total": "कुल: {{amount}}",
@@ -638,6 +654,63 @@
       "INVALID_LINE": "चिह्नित सामान की मात्रा और लागत देखें।",
       "PAID_MORE_THAN_TOTAL": "दी गई रकम कुल से ज़्यादा है।",
       "UNPAID_NEEDS_SUPPLIER": "रकम बाकी रखने के लिए सप्लायर चुनें।"
+    }
+  },
+  "customers": {
+    "totalOutstanding": "कुल बकाया उधार: {{amount}}",
+    "withUdhaar": "उधार वाले ग्राहक: {{count}}",
+    "search": "नाम या फ़ोन खोजें",
+    "showAll": "सभी ग्राहक दिखाएँ",
+    "sort": {
+      "highest": "सबसे ज़्यादा",
+      "oldest": "सबसे पुराना",
+      "name": "नाम"
+    },
+    "noUdhaar": "किसी पर कोई उधार नहीं है।",
+    "noCustomers": "अभी कोई ग्राहक नहीं।",
+    "owes": "बकाया {{amount}}",
+    "advance": "अग्रिम {{amount}}",
+    "settled": "चुकता",
+    "add": "ग्राहक जोड़ें",
+    "limit": "उधार सीमा: {{amount}}",
+    "remind": "WhatsApp पर याद दिलाएँ",
+    "ledger": "खाता",
+    "noEntries": "अभी कोई एंट्री नहीं।",
+    "after": "फिर {{balance}}",
+    "kinds": {
+      "opening": "पुराना बकाया",
+      "sale": "उधार बिल",
+      "repayment": "भुगतान मिला",
+      "sale_void": "बिल रद्द",
+      "sale_return": "सामान वापस",
+      "adjustment": "सुधार"
+    },
+    "form": {
+      "name": "ग्राहक का नाम",
+      "phone": "फ़ोन (वैकल्पिक)",
+      "opening": "पहले से बकाया उधार (₹, वैकल्पिक)",
+      "openingHint": "ग्राहक ने अग्रिम दिया हो तो माइनस लगाएँ, जैसे -200।",
+      "creditLimit": "उधार सीमा (₹, वैकल्पिक)",
+      "save": "सेव करें"
+    },
+    "repay": {
+      "title": "भुगतान मिला",
+      "amount": "मिली रकम",
+      "confirm": "भुगतान सेव करें"
+    },
+    "adjust": {
+      "title": "बकाया सुधारें (मालिक)",
+      "reduce": "घटाएँ",
+      "add": "बढ़ाएँ",
+      "amount": "सुधार की रकम",
+      "reason": "कारण (ज़रूरी)",
+      "confirm": "सुधार सेव करें"
+    },
+    "errors": {
+      "NAME_REQUIRED": "ग्राहक का नाम लिखें।",
+      "INVALID_PHONE": "10 अंकों का भारतीय मोबाइल नंबर लिखें।",
+      "INVALID_AMOUNT": "रकम लिखें, जैसे 250 या 99.50।",
+      "REASON_REQUIRED": "कम से कम 3 अक्षर का कारण लिखें।"
     }
   }
 }

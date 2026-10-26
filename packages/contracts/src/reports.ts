@@ -5,6 +5,9 @@ import { PaiseSchema, SignedPaiseSchema, UuidSchema } from './common';
 
 const DateSchema = z.string().regex(/^\d{4}-\d{2}-\d{2}$/);
 const MethodSchema = z.enum(['cash', 'upi', 'card', 'other']);
+/** A return can also go back to the customer's udhaar account (Phase 08). */
+export const REFUND_METHODS = ['cash', 'upi', 'card', 'other', 'udhaar'] as const;
+const RefundMethodSchema = z.enum(REFUND_METHODS);
 
 export const ProfitEstimateSchema = z.object({
   profitPaise: SignedPaiseSchema,
@@ -34,7 +37,9 @@ export const DashboardSnapshotSchema = z.discriminatedUnion('scope', [
     expensesPaise: PaiseSchema,
     /** Only methods used that day appear (partial record). */
     payments: z.partialRecord(MethodSchema, PaiseSchema),
-    refunds: z.partialRecord(MethodSchema, PaiseSchema),
+    refunds: z.partialRecord(RefundMethodSchema, PaiseSchema),
+    /** Phase 08. */
+    udhaarCollectedPaise: PaiseSchema.default(0),
     profit: ProfitEstimateSchema.optional(),
   }),
 ]);
@@ -81,6 +86,8 @@ export const CashBreakdownSchema = z.object({
   cashExpensesPaise: PaiseSchema,
   /** Phase 07; closings stored before it have no such key. */
   cashSupplierPaymentsPaise: PaiseSchema.default(0),
+  /** Phase 08: udhaar repaid in cash on this phone. */
+  cashRepaymentsPaise: PaiseSchema.default(0),
   expectedCashPaise: SignedPaiseSchema,
 });
 export const DayCloseSchema = z.object({
@@ -154,7 +161,7 @@ export const SaleReturnInputSchema = z.object({
   lines: z
     .array(z.object({ lineNo: z.number().int().min(1), quantityMilli: z.number().int().min(1) }))
     .min(1),
-  refundMethod: MethodSchema,
+  refundMethod: RefundMethodSchema,
   reason: z.string().trim().min(3).max(200),
 });
 export type SaleReturnInput = z.infer<typeof SaleReturnInputSchema>;
@@ -163,7 +170,7 @@ export const SaleReturnOutputSchema = z.object({
   returnId: UuidSchema,
   saleId: UuidSchema,
   refundPaise: PaiseSchema,
-  refundMethod: MethodSchema,
+  refundMethod: RefundMethodSchema,
   replayed: z.boolean(),
 });
 export type SaleReturnOutputDto = z.infer<typeof SaleReturnOutputSchema>;
@@ -173,7 +180,7 @@ export const SaleReturnSummarySchema = z.object({
   returnId: UuidSchema,
   createdAt: z.string(),
   refundPaise: PaiseSchema,
-  refundMethod: MethodSchema,
+  refundMethod: RefundMethodSchema,
   reason: z.string(),
   lines: z.array(
     z.object({ lineNo: z.number().int(), quantityMilli: z.number().int(), refundPaise: PaiseSchema }),

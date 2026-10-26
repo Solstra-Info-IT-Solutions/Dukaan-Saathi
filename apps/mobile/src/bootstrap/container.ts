@@ -17,6 +17,7 @@ import {
   BillingRepositoryImpl,
   CreateSale,
   CreateSaleReturn,
+  type CustomerFinder,
   GetSale,
   ListSales,
   type ProductFinder,
@@ -120,6 +121,18 @@ import {
   type SupplierFormViewModelDeps,
   type SuppliersViewModelDeps,
 } from '@/features/purchases';
+import {
+  AdjustBalance,
+  type CustomerFormViewModelDeps,
+  type CustomerLedgerViewModelDeps,
+  CustomerRepositoryImpl,
+  GetCustomerLedger,
+  ListCustomers,
+  RecordRepayment,
+  SaveCustomer,
+  SupabaseCustomerDataSource,
+  type UdhaarListViewModelDeps,
+} from '@/features/customers';
 import { InviteMember, LoadStaff, StaffRepositoryImpl, SupabaseStaffDataSource } from '@/features/staff';
 import type { StaffViewModelDeps } from '@/features/staff';
 
@@ -169,6 +182,7 @@ export interface AppFeatures {
     SupplierFormViewModelDeps &
     SupplierDetailViewModelDeps &
     PurchaseFormViewModelDeps;
+  customers: UdhaarListViewModelDeps & CustomerFormViewModelDeps & CustomerLedgerViewModelDeps;
 }
 
 export interface Container {
@@ -225,6 +239,18 @@ function createFeatures(supabase: TypedSupabaseClient, storage: KeyValueStorage)
   const purchaseRepository = new PurchaseRepositoryImpl(new SupabasePurchaseDataSource(supabase));
   const listStock = new ListStock(inventoryRepository);
   const listSuppliers = new ListSuppliers(purchaseRepository);
+  const customerRepository = new CustomerRepositoryImpl(new SupabaseCustomerDataSource(supabase));
+  const listCustomers = new ListCustomers(customerRepository);
+  const saveCustomer = new SaveCustomer(customerRepository);
+  // Billing sees customers only through this port (udhaar picker and quick add).
+  const customerFinder: CustomerFinder = {
+    search: async (shopId, text) =>
+      (await listCustomers.execute(shopId, { query: text, sort: 'name', udhaarOnly: false })).rows.slice(
+        0,
+        8,
+      ),
+    quickAdd: (input) => saveCustomer.execute(input),
+  };
   // Billing and purchases see the catalogue only through this port (features stay independent).
   const productFinder: ProductFinder = {
     search: async (shopId, text) =>
@@ -283,6 +309,7 @@ function createFeatures(supabase: TypedSupabaseClient, storage: KeyValueStorage)
       getSettings,
       createSale: new CreateSale(billingRepository, createInvoiceCounterStore(storage)),
       products: productFinder,
+      customers: customerFinder,
       getSale: new GetSale(billingRepository),
       listSales: new ListSales(billingRepository),
       voidSale: new VoidSale(billingRepository),
@@ -322,6 +349,16 @@ function createFeatures(supabase: TypedSupabaseClient, storage: KeyValueStorage)
       paySupplier: new RecordSupplierPayment(purchaseRepository),
       receivePurchase: new ReceivePurchase(purchaseRepository),
       products: productFinder,
+      newId: newOperationId,
+    },
+    customers: {
+      listCustomers,
+      saveCustomer,
+      getLedger: new GetCustomerLedger(customerRepository),
+      recordRepayment: new RecordRepayment(customerRepository),
+      adjustBalance: new AdjustBalance(customerRepository),
+      getUpiVpa: async (shopId) => (await getSettings.execute(shopId)).upiVpa,
+      openUrl: (url) => Linking.openURL(url),
       newId: newOperationId,
     },
   };

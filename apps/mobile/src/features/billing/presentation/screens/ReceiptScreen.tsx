@@ -41,6 +41,8 @@ function useReceiptLabels(): ReceiptLabels {
       hsn: t('billing.receipt.hsn'),
       voided: t('billing.receipt.voided'),
       returned: t('billing.receipt.returned'),
+      onUdhaar: t('billing.receipt.onUdhaar'),
+      customer: t('billing.receipt.customer'),
       method: (m: string) => t(`payments.${m}`),
       unit: (code: string) => t(`billing.units.${code}`, { defaultValue: code }),
       formatDate: (iso: string) =>
@@ -137,6 +139,8 @@ export function ReceiptScreen({
               {labels.paid}: {r.payments.join(', ')}
             </Text>
           ) : null}
+          {r.udhaar ? <Text variant="bodyMedium">{r.udhaar}</Text> : null}
+          {r.customer ? <Text variant="bodyMedium">{r.customer}</Text> : null}
           {r.returns.map((x) => (
             <Text key={x} variant="bodySmall">
               {x}
@@ -215,7 +219,7 @@ export function ReceiptScreen({
               <SegmentedButtons
                 value={state.refundMethod}
                 onValueChange={(v) => actions.setRefundMethod(v as typeof state.refundMethod)}
-                buttons={(['cash', 'upi', 'card', 'other'] as const).map((m) => ({
+                buttons={state.refundMethods.map((m) => ({
                   value: m,
                   label: t(`payments.${m}`),
                 }))}

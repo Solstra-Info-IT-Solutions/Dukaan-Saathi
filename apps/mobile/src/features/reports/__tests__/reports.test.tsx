@@ -45,6 +45,7 @@ const DASHBOARD: DashboardSnapshot = {
   expensesPaise: 10300,
   payments: { cash: 10000, upi: 5000 },
   refunds: { cash: 4500 },
+  udhaarCollectedPaise: 0,
   profit: { profitPaise: 1000, linesWithCost: 1, lines: 3 },
 };
 const REPORT: SalesReport = {
@@ -81,6 +82,7 @@ class FakeReportsRepository implements ReportsRepository {
       cashRefundsPaise: 4500,
       cashExpensesPaise: 300,
       cashSupplierPaymentsPaise: 0,
+      cashRepaymentsPaise: 0,
       expectedCashPaise: 4200,
     },
     countedCashPaise: null,

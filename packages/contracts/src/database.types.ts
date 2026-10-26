@@ -139,6 +139,49 @@ export type Database = {
         Update: never
         Relationships: []
       }
+      customer_ledger_entries: {
+        Row: {
+          amount_paise: number
+          balance_after_paise: number
+          business_date: string
+          client_operation_id: string | null
+          created_at: string
+          created_by: string
+          customer_id: string
+          device_id: string | null
+          id: string
+          kind: string
+          method: string | null
+          note: string | null
+          return_id: string | null
+          sale_id: string | null
+          seq: number
+          shop_id: string
+        }
+        Insert: never
+        Update: never
+        Relationships: []
+      }
+      customers: {
+        Row: {
+          archived_at: string | null
+          balance_paise: number
+          created_at: string
+          created_by: string
+          credit_limit_paise: number | null
+          id: string
+          last_activity_at: string | null
+          name: string
+          note: string | null
+          phone_e164: string | null
+          shop_id: string
+          udhaar_since: string | null
+          updated_at: string
+        }
+        Insert: never
+        Update: never
+        Relationships: []
+      }
       day_closures: {
         Row: {
           breakdown: Json
@@ -1053,6 +1096,16 @@ export type Database = {
         Args: { p_client_operation_id: string; p_file_name: string; p_shop_id: string }
         Returns: Json
       }
+      adjust_customer_balance: { Args: { p_input: Json }; Returns: Json }
+      archive_customer: { Args: { p_customer_id: string; p_shop_id: string }; Returns: Json }
+      check_customer_drift: { Args: { p_shop_id: string }; Returns: Json }
+      get_customer_ledger: { Args: { p_customer_id: string; p_limit?: number; p_shop_id: string }; Returns: Json }
+      list_customers: {
+        Args: { p_limit?: number; p_query?: string; p_shop_id: string; p_sort?: string; p_udhaar_only?: boolean }
+        Returns: Json
+      }
+      record_customer_repayment: { Args: { p_input: Json }; Returns: Json }
+      save_customer: { Args: { p_input: Json }; Returns: Json }
       adjust_stock: { Args: { p_input: Json }; Returns: Json }
       begin_report_export: { Args: { p_shop_id: string }; Returns: Json }
       check_stock_drift: { Args: { p_shop_id: string }; Returns: Json }

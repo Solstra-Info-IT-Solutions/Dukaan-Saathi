@@ -18,7 +18,6 @@ import type {
   CatalogueProduct,
   CatalogueReference,
   PaymentMethod,
-  PaymentPart,
   ProductLine,
 } from './entities/Bill';
 
@@ -81,26 +80,8 @@ export function changeDue(tenderedPaise: number, totalPaise: number): number | n
   return tenderedPaise >= totalPaise ? tenderedPaise - totalPaise : null;
 }
 
-/**
- * UPI deep link for a static QR (features/billing.md "UPI"). The shopkeeper confirms receipt by hand;
- * the app never claims the payment was verified.
- */
-export function upiPaymentUri(input: {
-  vpa: string;
-  payeeName: string;
-  amountPaise: number;
-  note?: string;
-}): string {
-  const rupees = `${Math.floor(input.amountPaise / 100)}.${String(input.amountPaise % 100).padStart(2, '0')}`;
-  const params = [
-    `pa=${encodeURIComponent(input.vpa)}`,
-    `pn=${encodeURIComponent(input.payeeName)}`,
-    `am=${rupees}`,
-    'cu=INR',
-    ...(input.note ? [`tn=${encodeURIComponent(input.note)}`] : []),
-  ];
-  return `upi://pay?${params.join('&')}`;
-}
+/** UPI deep link for a static QR; shared with udhaar reminders (now in domain-core). */
+export { upiPaymentUri } from '@ds/domain-core';
 
 /** Keypad entry ("125.5") → paise; null for an empty or invalid entry. Two decimals at most. */
 export function keypadToPaise(entry: string): number | null {
@@ -181,11 +162,11 @@ export const isPriceOverride = (line: ProductLine) => line.unitPricePaise !== li
  * Payments for a total: everything on one method, or a second method for part of it (the first method
  * takes the rest). Null when the split is not valid.
  */
-export function splitPayments(
+export function splitPayments<M extends string = PaymentMethod>(
   totalPaise: number,
-  primary: PaymentMethod,
-  second: PaymentPart | null,
-): PaymentPart[] | null {
+  primary: M,
+  second: { method: M; amountPaise: number } | null,
+): { method: M; amountPaise: number }[] | null {
   if (totalPaise === 0) return [];
   if (!second || second.amountPaise === 0) return [{ method: primary, amountPaise: totalPaise }];
   if (second.method === primary || second.amountPaise < 0 || second.amountPaise >= totalPaise) return null;

@@ -20,11 +20,15 @@ import {
   upiPaymentUri,
 } from '../../domain/billMath';
 import {
+  type BillCustomer,
   type BillDraft,
   type BillingContext,
+  type BillMethod,
+  type BillPart,
   type BillingSettings,
   type BillLine,
   type CatalogueProduct,
+  type CustomerFinder,
   InvoiceSequenceConflict,
   type PaymentMethod,
   PriceChanged,
@@ -39,6 +43,8 @@ export interface BillingViewModelDeps {
   getSettings: { execute(shopId: string): Promise<BillingSettings> };
   createSale: CreateSale;
   products: ProductFinder;
+  /** Phase 08: needed for udhaar bills. */
+  customers?: CustomerFinder;
   newId: () => string;
   now?: () => Date;
 }
@@ -54,7 +60,7 @@ export interface LineEditor {
   discountText: string;
 }
 
-const PAYABLE: readonly PaymentMethod[] = ['cash', 'upi', 'card', 'other'];
+const PAYABLE: readonly BillMethod[] = ['cash', 'upi', 'card', 'other', 'udhaar'];
 export const SEARCH_DEBOUNCE_MS = 250;
 const rupees = (p: number) => (p % 100 === 0 ? String(p / 100) : (p / 100).toFixed(2));
 
@@ -87,8 +93,15 @@ export function useBillingViewModel(
   const [editor, setEditor] = useState<LineEditor | null>(null);
   const [scan, setScan] = useState<ScanState>({ kind: 'closed' });
   const [phase, setPhase] = useState<BillingPhase>('editing');
-  const [chosenMethod, setChosenMethod] = useState<PaymentMethod | null>(null);
-  const [split, setSplit] = useState<{ method: PaymentMethod; amountText: string } | null>(null);
+  const [chosenMethod, setChosenMethod] = useState<BillMethod | null>(null);
+  const [split, setSplit] = useState<{ method: BillMethod; amountText: string } | null>(null);
+  const [customer, setCustomer] = useState<BillCustomer | null>(null);
+  const [customerText, setCustomerText] = useState('');
+  const [customerQuery, setCustomerQuery] = useState('');
+  const [newCustomer, setNewCustomer] = useState<{ id: string; name: string; phoneText: string } | null>(
+    null,
+  );
+  const [addingCustomer, setAddingCustomer] = useState(false);
   const [tenderedText, setTenderedText] = useState('');
   const [errorKey, setErrorKey] = useState<string | null>(null);
   const [errorParams, setErrorParams] = useState<Record<string, string | number>>({});
@@ -101,6 +114,15 @@ export function useBillingViewModel(
     const timer = setTimeout(() => setDebounced(searchText.trim()), SEARCH_DEBOUNCE_MS);
     return () => clearTimeout(timer);
   }, [searchText]);
+  useEffect(() => {
+    const timer = setTimeout(() => setCustomerQuery(customerText.trim()), SEARCH_DEBOUNCE_MS);
+    return () => clearTimeout(timer);
+  }, [customerText]);
+  const customerResults = useQuery({
+    queryKey: [...billingKeys.all(context.shopId), 'customers', customerQuery],
+    queryFn: () => deps.customers!.search(context.shopId, customerQuery),
+    enabled: customerQuery.length > 0 && !!deps.customers,
+  });
   const results = useQuery({
     queryKey: billingKeys.search(context.shopId, debounced),
     queryFn: () => deps.products.search(context.shopId, debounced),
@@ -109,8 +131,13 @@ export function useBillingViewModel(
 
   const s = settings.data;
   const methods = useMemo(
-    () => PAYABLE.filter((m) => s?.enabledPaymentMethods.includes(m)),
-    [s?.enabledPaymentMethods],
+    () =>
+      PAYABLE.filter(
+        (m) =>
+          s?.enabledPaymentMethods.includes(m) &&
+          (m !== 'udhaar' || (context.canGiveUdhaar === true && !!deps.customers)),
+      ),
+    [context.canGiveUdhaar, deps.customers, s?.enabledPaymentMethods],
   );
   const method = chosenMethod && methods.includes(chosenMethod) ? chosenMethod : (methods[0] ?? null);
   const limitBp = s ? discountLimitBp(context.role, s) : 0;
@@ -134,9 +161,21 @@ export function useBillingViewModel(
   const total = totals?.totalPaise ?? 0;
 
   const secondPaise = split ? (parseRupeesToPaise(split.amountText) ?? 0) : 0;
-  const payments = method
-    ? splitPayments(total, method, split ? { method: split.method, amountPaise: secondPaise } : null)
+  const parts: BillPart[] | null = method
+    ? splitPayments<BillMethod>(
+        total,
+        method,
+        split ? { method: split.method, amountPaise: secondPaise } : null,
+      )
     : null;
+  const payments = parts
+    ? parts.filter((p): p is { method: PaymentMethod; amountPaise: number } => p.method !== 'udhaar')
+    : null;
+  const udhaarPaise = parts?.find((p) => p.method === 'udhaar')?.amountPaise ?? 0;
+  const overLimit =
+    customer !== null &&
+    customer.creditLimitPaise !== null &&
+    customer.balancePaise + udhaarPaise > customer.creditLimitPaise;
   const cashDue = payments?.find((p) => p.method === 'cash')?.amountPaise ?? 0;
   const tenderedPaise = parseRupeesToPaise(tenderedText);
   const change = cashDue > 0 && tenderedPaise !== null ? changeDue(tenderedPaise, cashDue) : null;
@@ -328,7 +367,7 @@ export function useBillingViewModel(
   const closePayment = useCallback(() => setPhase('editing'), []);
 
   const selectMethod = useCallback(
-    (m: PaymentMethod) => {
+    (m: BillMethod) => {
       setChosenMethod(m);
       changed();
     },
@@ -341,7 +380,7 @@ export function useBillingViewModel(
   }, [changed, method, methods]);
 
   const setSplitMethod = useCallback(
-    (m: PaymentMethod) => {
+    (m: BillMethod) => {
       setSplit((sp) => (sp ? { ...sp, method: m } : sp));
       changed();
     },
@@ -362,10 +401,53 @@ export function useBillingViewModel(
     setDiscountText('');
     setTenderedText('');
     setSplit(null);
+    setCustomer(null);
+    setCustomerText('');
+    setNewCustomer(null);
     setPhase('editing');
     attempt.current = null;
     source.current = 'keypad';
   }, []);
+
+  // ---- customer for udhaar ---------------------------------------------------------------
+  const pickCustomer = useCallback(
+    (c: BillCustomer | null) => {
+      setCustomer(c);
+      setCustomerText('');
+      setCustomerQuery('');
+      setNewCustomer(null);
+      changed();
+    },
+    [changed],
+  );
+  const startNewCustomer = useCallback(
+    () => setNewCustomer({ id: deps.newId(), name: customerText.trim(), phoneText: '' }),
+    [customerText, deps],
+  );
+  const editNewCustomer = useCallback(
+    (patch: Partial<{ name: string; phoneText: string }>) =>
+      setNewCustomer((c) => (c ? { ...c, ...patch } : c)),
+    [],
+  );
+  const cancelNewCustomer = useCallback(() => setNewCustomer(null), []);
+  const saveNewCustomer = useCallback(async () => {
+    if (!newCustomer || !deps.customers || addingCustomer) return;
+    if (!newCustomer.name.trim()) return fail('billing.errors.CUSTOMER_NAME_REQUIRED');
+    setAddingCustomer(true);
+    setErrorKey(null);
+    try {
+      const created = await deps.customers.quickAdd({ ...newCustomer, shopId: context.shopId });
+      pickCustomer(created);
+    } catch (error) {
+      fail(
+        error instanceof Error && error.name === 'CustomerInputError'
+          ? `customers.errors.${(error as Error & { reason: string }).reason}`
+          : translateError(error).messageKey,
+      );
+    } finally {
+      setAddingCustomer(false);
+    }
+  }, [addingCustomer, context.shopId, deps.customers, fail, newCustomer, pickCustomer]);
 
   const submit = useCallback(async () => {
     if (busy.current || !s) return;
@@ -383,6 +465,8 @@ export function useBillingViewModel(
         settings: s,
         draft,
         payments,
+        udhaarPaise,
+        customerId: customer?.id ?? null,
         attempt: attempt.current,
         source: source.current,
       });
@@ -415,7 +499,7 @@ export function useBillingViewModel(
     } finally {
       busy.current = false;
     }
-  }, [context, deps, draft, fail, onCompleted, payments, reset, s]);
+  }, [context, customer, deps, draft, fail, onCompleted, payments, reset, s, udhaarPaise]);
 
   return {
     state: {
@@ -448,6 +532,14 @@ export function useBillingViewModel(
       method,
       split,
       payments,
+      udhaarPaise,
+      customer,
+      customerText,
+      customerResults: customerQuery ? (customerResults.data ?? []) : [],
+      newCustomer,
+      addingCustomer,
+      canAddCustomer: context.canAddCustomer === true && !!deps.customers,
+      overLimit,
       tenderedText,
       change,
       upiUri,
@@ -476,6 +568,12 @@ export function useBillingViewModel(
       toggleSplit,
       setSplitMethod,
       setSplitAmount,
+      setCustomerText,
+      pickCustomer,
+      startNewCustomer,
+      editNewCustomer,
+      cancelNewCustomer,
+      saveNewCustomer,
       setTenderedText,
       submit,
       reloadSettings: () => {

@@ -60,6 +60,9 @@ export const CreateSaleInputSchema = z.object({
   lines: z.array(SaleLineInputSchema).min(1).max(MAX_BILL_LINES),
   billDiscountPaise: PaiseSchema.optional(),
   payments: z.array(SalePaymentInputSchema).max(10),
+  /** Phase 08: the part of the total given on credit; needs customerId and udhaar.grant. */
+  udhaarPaise: PaiseSchema.optional(),
+  customerId: UuidSchema.optional(),
   clientTotals: BillTotalsSchema,
   note: z.string().trim().max(200).optional(),
 });
@@ -79,9 +82,14 @@ export const CreateSaleOutputSchema = z.object({
         code: z.string(),
         productId: UuidSchema.optional(),
         stockOnHandMilli: z.number().int().optional(),
+        /** CREDIT_LIMIT warnings (policy "warn"). */
+        limitPaise: PaiseSchema.optional(),
+        balancePaise: SignedPaiseSchema.optional(),
       }),
     )
     .optional(),
+  /** Customer's balance after a credit bill. */
+  customerBalancePaise: SignedPaiseSchema.nullable().optional(),
   replayed: z.boolean(),
 });
 export type CreateSaleOutputDto = z.infer<typeof CreateSaleOutputSchema>;
@@ -134,6 +142,15 @@ export const SaleSchema = z.object({
   lines: z.array(SaleLineSchema),
   payments: z.array(SalePaymentSchema),
   returns: z.array(SaleReturnSummarySchema).optional(),
+  customer: z
+    .object({
+      id: UuidSchema,
+      name: z.string(),
+      phone: z.string().nullable(),
+      balancePaise: SignedPaiseSchema,
+    })
+    .nullable()
+    .optional(),
   businessDate: z.string().optional(),
   shop: z.object({
     name: z.string(),

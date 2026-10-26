@@ -18,6 +18,8 @@ export default function BillRoute() {
         canDiscount: hasPermission(shop, 'sale.discount'),
         canOverridePrice: hasPermission(shop, 'sale.price_override'),
         canManageProducts: hasPermission(shop, 'product.manage'),
+        canGiveUdhaar: hasPermission(shop, 'udhaar.grant'),
+        canAddCustomer: hasPermission(shop, 'customer.quick_create'),
         deviceId: shop.deviceId,
         fy: shop.fy,
         lastSeq: shop.lastSeq,

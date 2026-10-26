@@ -9,7 +9,7 @@ import {
   type ShareReceipt,
   type VoidSale,
 } from '../../domain/usecases/billingUseCases';
-import type { PaymentMethod } from '../../domain/entities/Bill';
+import type { RefundMethod } from '../../domain/entities/Bill';
 import type { ReceiptLabels } from '../../domain/receipt';
 import { billingKeys } from '../billingKeys';
 
@@ -43,7 +43,7 @@ export function useReceiptViewModel(
   const voidOp = useRef<{ reason: string; id: string } | null>(null);
   const [returnOpen, setReturnOpen] = useState(false);
   const [returnQty, setReturnQty] = useState<Record<number, string>>({});
-  const [refundMethod, setRefundMethod] = useState<PaymentMethod>('cash');
+  const [refundMethod, setRefundMethod] = useState<RefundMethod>('cash');
   const [returnReason, setReturnReason] = useState('');
   const [returning, setReturning] = useState(false);
   const returnOp = useRef<{ values: string; id: string } | null>(null);
@@ -163,6 +163,10 @@ export function useReceiptViewModel(
       returnOpen,
       returnQty,
       refundMethod,
+      /** Udhaar only when the bill has a customer (the amount comes off their balance). */
+      refundMethods: (sale.data?.customer
+        ? ['cash', 'upi', 'card', 'other', 'udhaar']
+        : ['cash', 'upi', 'card', 'other']) as RefundMethod[],
       returnReason,
       returning,
     },

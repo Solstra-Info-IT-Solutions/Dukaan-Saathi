@@ -129,7 +129,7 @@ select is(public.get_day_close(pg_temp.ctx('shopA')::uuid, pg_temp.ctx('devA')::
 insert into ctx select 'close', public.close_day(jsonb_build_object('clientOperationId', '0190f0f0-0000-7000-8000-000000060201',
   'shopId', pg_temp.ctx('shopA'), 'deviceId', pg_temp.ctx('devA'), 'openingCashPaise', 1000, 'countedCashPaise', 5000))::text;
 select is(pg_temp.ctx('close')::jsonb -> 'breakdown',
-          '{"openingCashPaise": 1000, "cashSalesPaise": 9000, "cashRefundsPaise": 4500, "cashExpensesPaise": 300, "cashSupplierPaymentsPaise": 0, "expectedCashPaise": 5200}'::jsonb,
+          '{"openingCashPaise": 1000, "cashSalesPaise": 9000, "cashRefundsPaise": 4500, "cashExpensesPaise": 300, "cashSupplierPaymentsPaise": 0, "cashRepaymentsPaise": 0, "expectedCashPaise": 5200}'::jsonb,
           'day close stores the expected cash breakdown');
 select is(pg_temp.ctx('close')::jsonb ->> 'differencePaise', '-200', 'counted ₹50 against expected ₹52 is ₹2 short');
 select is(public.close_day(jsonb_build_object('clientOperationId', '0190f0f0-0000-7000-8000-000000060201',

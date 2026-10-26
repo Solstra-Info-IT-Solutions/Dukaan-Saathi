@@ -15,7 +15,8 @@ export interface ModuleEntry {
     | '/expenses'
     | '/day-close'
     | '/stock'
-    | '/suppliers';
+    | '/suppliers'
+    | '/udhaar';
   labelKey: string;
   icon: string;
   permission?: Permission;
@@ -24,6 +25,13 @@ export interface ModuleEntry {
 export const MORE_MODULES: readonly ModuleEntry[] = [
   // Everyone sees today's numbers (cashiers only their own); reports inside need report.view_sales.
   { key: 'reports', href: '/reports', labelKey: 'more.reports', icon: 'chart-bar' },
+  {
+    key: 'udhaar',
+    href: '/udhaar',
+    labelKey: 'more.udhaar',
+    icon: 'notebook-outline',
+    permission: 'customer.view',
+  },
   { key: 'stock', href: '/stock', labelKey: 'more.stock', icon: 'warehouse', permission: 'stock.view' },
   {
     key: 'suppliers',
