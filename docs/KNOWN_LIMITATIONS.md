@@ -3,7 +3,7 @@
 Deliberate gaps. Each has a reason and, where relevant, a backlog item.
 
 ## Current state (end of Phase 09)
-- Mobile: sign-in, shops, staff, settings (02); catalogue and CSV import (03); billing with scan, discounts, overrides, split payment, UPI QR, receipts, history, void, returns (04–06); today & reports, expenses, day close (06); stock tracking, adjustments, counts, suppliers, goods received, supplier payments (07); customers, udhaar on bills, ledger, repayments, owner corrections, WhatsApp reminders (08); offline bills, new customers and udhaar payments with sync, status chip and screen (09).
+- Mobile: sign-in, shops, staff, settings (02); catalogue and CSV import (03); billing with scan, discounts, overrides, split payment, UPI QR, receipts, history, void, returns (04–06); today & reports, expenses, day close (06); stock tracking, adjustments, counts, suppliers, goods received, supplier payments (07); customers, udhaar on bills, ledger, repayments, owner corrections, WhatsApp reminders (08); offline bills, new customers and udhaar payments with sync, status chip and screen (09); voice billing in Hindi/Hinglish with review before adding (10).
 - Not yet tried on a device: the whole app, camera, photo upload, PDF/CSV sharing. Sign-in on a device needs the Supabase Auth settings (email template with `{{ .Token }}`, SMS provider).
 - No push notifications yet (daily summary, low-stock digest) — credentials and a device needed.
 - Offline: bills, new customers and udhaar payments. Expenses, voids, returns, purchases and edits need a connection; bills still on the phone are not in the sales history yet (BL-909). Split payment UI is two methods.

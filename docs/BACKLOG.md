@@ -135,7 +135,14 @@ Phase order may shift for dependencies; nothing is removed without a note in PRO
 | BL-909 | offline expenses, unsynced bills in sales history, "refresh everything" pull, void/return after sync from the receipt | ⬜ backlog |
 
 ## Phase 10 — Voice billing
-BL-1001 recognition spike + benchmark · BL-1002 normalizer/parser/matcher · BL-1003 voice screen + confirm flow · BL-1004 alias learning · BL-1005 tests.
+| ID | Item | Status |
+|---|---|---|
+| BL-1001 | recognition spike + benchmark | 🟨 module chosen, text benchmark 50/50 ([spike](spikes/VOICE_RECOGNITION.md)); audio benchmark needs a phone |
+| BL-1002 | normalizer/parser/matcher | ✅ |
+| BL-1003 | voice screen + confirm flow | ✅ review sheet, typed fallback |
+| BL-1004 | alias learning | ✅ owner/manager corrections (`add_product_alias`) |
+| BL-1005 | tests | ✅ 306-phrase table, benchmark, sheet, pgTAP |
+| BL-1006 | quick line for unmatched phrases, quantity edit inside the sheet, en-IN second pass | ⬜ backlog |
 
 ## Phase 11 — Onboarding & admin panel
 BL-1101 operator auth + MFA + guard · BL-1102 dashboard · BL-1103 shops module · BL-1104 users/memberships · BL-1105 onboarding queue + app request ·

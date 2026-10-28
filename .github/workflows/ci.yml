@@ -12,7 +12,7 @@ concurrency:
 jobs:
   checks:
     name: Typecheck, lint, unit tests, builds
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04  # pinned: ubuntu-latest moves to Ubuntu 26 from 2026-10-19
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
@@ -51,7 +51,7 @@ jobs:
 
   database:
     name: Supabase migrations + pgTAP
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04  # pinned: ubuntu-latest moves to Ubuntu 26 from 2026-10-19
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
@@ -61,7 +61,17 @@ jobs:
           cache: npm
       - run: npm ci
       - name: Start Supabase (database, auth, storage)
-        run: npx supabase start --exclude studio,imgproxy,mailpit,realtime,edge-runtime,logflare,vector,supavisor,postgres-meta
+        # Output kept so a failure (e.g. a migration error) can be turned into readable annotations below.
+        run: |
+          set -o pipefail
+          npx supabase start --exclude studio,imgproxy,mailpit,realtime,edge-runtime,logflare,vector,supavisor,postgres-meta 2>&1 | tee /tmp/start.log
+      - name: Explain a failed start
+        if: failure()
+        run: |
+          grep -iE "error|failed|fatal|migration|denied|no space" /tmp/start.log | tail -25 | while IFS= read -r line; do echo "::error title=supabase start::$line"; done
+          for c in $(docker ps -a --format '{{.Names}}' | grep supabase_db); do
+            docker logs "$c" 2>&1 | grep -iE "error|fatal" | tail -15 | while IFS= read -r line; do echo "::error title=$c::$line"; done
+          done
       - name: pgTAP
         # Failing lines are also emitted as annotations, which are readable without log access.
         run: |

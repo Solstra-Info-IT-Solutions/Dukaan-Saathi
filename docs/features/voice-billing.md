@@ -1,6 +1,6 @@
 # Feature: Hindi/Hinglish Voice Billing
 
-Status: Planned · Phase: 10 (starts with a spike) · Requirements: FR-19
+Status: Implemented (Phase 10, see [../phases/PHASE_10_VOICE.md](../phases/PHASE_10_VOICE.md)) · Phase: 10 · Requirements: FR-19
 
 ## Purpose
 Let a shopkeeper speak a list of items and get a **draft** bill to confirm — faster than typing for long lists.
@@ -47,8 +47,8 @@ VoiceBillingScreen / useVoiceBillingViewModel — states: `idle → listening �
 Parser table tests (≥ 200 phrases in Hindi, Hinglish, English, mixed numbers); matcher tests over a fixture catalogue; ViewModel state machine with a fake recognizer.
 
 ## Acceptance criteria
-- [ ] ≥ 85 % of the 50-phrase benchmark produce the correct draft line without edits (benchmark recorded in spike).
-- [ ] No sale is created without a confirm tap.
+- [~] ≥ 85 % of the 50-phrase benchmark produce the correct draft line without edits — 50/50 on transcripts; audio on a phone pending ([spike](../spikes/VOICE_RECOGNITION.md)).
+- [x] No sale is created without a confirm tap.
 
 ## Limitations
 Accuracy depends on device recognizer; noisy shops reduce accuracy. Regional languages other than Hindi not in v1.
