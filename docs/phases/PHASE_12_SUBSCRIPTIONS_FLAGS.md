@@ -82,7 +82,7 @@ switched on*; navigation per role (billing: Plans; analyst: Plans, Flags read-on
 | @ds/contracts | **30 / 30** |
 | @ds/domain-core | **77 / 77** |
 | DB pre-check (PGlite) | **433 / 433** assertions (new `019_subscriptions_flags` 47) |
-| DB pgTAP on real Supabase (CI) | RESULT_CI |
+| DB pgTAP on real Supabase (CI) | ✅ passed on `95b05ca` ([run 40670031769](https://github.com/Solstra-Info-IT-Solutions/Dukaan-Saathi/actions/runs/40670031769)) |
 
 **Database (019):** S-05 — a shop user cannot write plan entitlements, overrides, subscriptions, flags or flag
 overrides; S-09 — a signed-in user cannot apply a payment event; S-04 — an expired shop cannot open the 30-day
