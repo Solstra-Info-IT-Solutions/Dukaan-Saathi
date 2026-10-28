@@ -143,6 +143,10 @@ Legend: Ph = phase; Idem = idempotent via client_operation_id.
 | `create_support_ticket(p_input)` / `add_ticket_message(p_input)` | R | support | 11 | `support.create` | by ticket id | `{ id, shopId, category, subject, body }` / `{ shopId, ticketId, body }`; a shop reply sets `waiting_support`; closed → `DS_CONFLICT` |
 | `support_tickets`, `support_messages` | T (read only) | support | 11 | own tickets; `staff.manage` sees the shop's (RLS) | — | Internal notes are never readable by shops |
 | `get_announcements()` | R | content | 11 | authenticated | — | Published announcements in their window, critical first |
+| `get_shop_flags(p_shop_id, p_app_version?)` | R | config | 12 | member | — | `{ shopId, flags: { key: boolean }, revision }` evaluated per shop (ADR-066) |
+| `get_shop_entitlements(p_shop_id)` | R | subscription | 02, 12 | member | — | + `planName`, usage of `products.max` and `customers.max` |
+| `process_verified_subscription_event(p_event)` | R | subscription | 12 | **service role only** | provider + event id | Called by `payment-webhook` after signature check (ADR-069) |
+| `payment-webhook` | E | subscription | 12 | provider signature (`X-Razorpay-Signature`) | event id | Not deployed until OD-05 |
 | `register_push_token(p_input)` | R | notifications | 06 | member + device | — | |
 | `get_client_config(p_shop_id, p_app_version, p_platform)` | R | config | 02 (basic), 12 (full) | authenticated | — | Platform config, flags, announcements, content, revision |
 | `get_shop_entitlements(p_shop_id)` | R | subscriptions | 02 (basic), 12 | member | — | Resolved map + revision + plan + status |

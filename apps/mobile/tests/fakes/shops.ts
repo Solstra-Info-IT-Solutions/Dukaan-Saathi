@@ -71,6 +71,11 @@ export class FakeShopRepository implements ShopRepository {
     usage: { 'staff_accounts.max': 0 },
   };
 
+  flags: Record<string, boolean> = { voice_billing: true };
+  async getFlags(shopId: string) {
+    return { shopId, flags: this.flags, revision: 'f1' };
+  }
+
   async getMyContext() {
     return this.ctx;
   }

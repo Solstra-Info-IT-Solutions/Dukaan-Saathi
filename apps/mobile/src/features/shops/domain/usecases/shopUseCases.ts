@@ -6,6 +6,7 @@ import type {
   NewShop,
   ShopActivation,
   ShopEntitlements,
+  ShopFlags,
   ShopSettings,
   ShopSettingsPatch,
 } from '../entities/Shop';
@@ -146,6 +147,16 @@ export class GetShopEntitlements {
   constructor(private readonly shops: ShopRepository) {}
   execute(shopId: string): Promise<ShopEntitlements> {
     return this.shops.getEntitlements(shopId);
+  }
+}
+
+export class GetShopFlags {
+  constructor(
+    private readonly shops: ShopRepository,
+    private readonly appVersion: string,
+  ) {}
+  execute(shopId: string): Promise<ShopFlags> {
+    return this.shops.getFlags(shopId, this.appVersion);
   }
 }
 

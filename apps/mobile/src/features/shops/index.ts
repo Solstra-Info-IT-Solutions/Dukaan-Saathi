@@ -11,6 +11,7 @@ export {
   ActivateShop,
   CreateShop,
   GetShopEntitlements,
+  GetShopFlags,
   GetShopSettings,
   LoadMyContext,
   RestoreSession,

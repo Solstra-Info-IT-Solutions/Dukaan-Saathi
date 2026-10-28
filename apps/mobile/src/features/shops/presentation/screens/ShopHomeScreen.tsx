@@ -6,7 +6,16 @@ import type { ShopActivation } from '../../domain/entities/Shop';
 import { type ShopHomeViewModelDeps, useShopHomeViewModel } from '../viewmodels/useShopHomeViewModel';
 
 /** Home tab until billing exists (Phase 04): shows who you are here and the plan status. */
-export function ShopHomeScreen({ deps, shop }: { deps: ShopHomeViewModelDeps; shop: ShopActivation }) {
+export function ShopHomeScreen({
+  deps,
+  shop,
+  onOpenPlan,
+}: {
+  deps: ShopHomeViewModelDeps;
+  shop: ShopActivation;
+  /** Members who may see the plan open the plan screen from the plan row. */
+  onOpenPlan?: () => void;
+}) {
   const { t } = useTranslation();
   const { state } = useShopHomeViewModel(deps, shop);
 
@@ -26,7 +35,13 @@ export function ShopHomeScreen({ deps, shop }: { deps: ShopHomeViewModelDeps; sh
       <Card>
         <List.Item title={t('shops.home.role')} description={t(`roles.${state.shop.role}`)} />
         <List.Item title={t('shops.home.device')} description={state.invoiceSeries} />
-        <List.Item title={t('shops.home.plan')} description={planText} />
+        <List.Item
+          title={t('shops.home.plan')}
+          description={planText}
+          onPress={onOpenPlan}
+          right={onOpenPlan ? (props) => <List.Icon {...props} icon="chevron-right" /> : undefined}
+          accessibilityRole={onOpenPlan ? 'button' : undefined}
+        />
       </Card>
       <Card>
         <Card.Content>

@@ -92,6 +92,7 @@ describe('navigation gating', () => {
       'dayClose',
       'settings',
       'staff',
+      'plan',
       'help',
       'sync',
       'diagnostics',

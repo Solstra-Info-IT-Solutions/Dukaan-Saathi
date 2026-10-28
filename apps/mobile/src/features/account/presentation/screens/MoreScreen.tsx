@@ -28,8 +28,11 @@ export function MoreScreen({
         <List.Item
           key={m.key}
           title={t(m.labelKey)}
+          description={m.locked ? t('plan.locked') : undefined}
           left={(props) => <List.Icon {...props} icon={m.icon} />}
-          onPress={() => onOpen(m.href)}
+          right={m.locked ? (props) => <List.Icon {...props} icon="lock-outline" /> : undefined}
+          // A locked module opens the plan screen instead (upsell); the server refuses the module anyway.
+          onPress={() => onOpen(m.locked ? '/plan' : m.href)}
           accessibilityRole="button"
         />
       ))}

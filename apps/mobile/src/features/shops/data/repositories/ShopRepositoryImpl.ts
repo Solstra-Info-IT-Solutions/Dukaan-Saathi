@@ -24,6 +24,8 @@ export class ShopRepositoryImpl implements ShopRepository {
     translated(() => this.remote.updateSettings(shopId, patch));
   updateMyLanguage = (language: 'en' | 'hi') => translated(() => this.remote.updateMyLanguage(language));
   getEntitlements = (shopId: string) => translated(() => this.remote.getEntitlements(shopId));
+  getFlags = (shopId: string, appVersion: string) =>
+    translated(() => this.remote.getFlags(shopId, appVersion));
 }
 
 export class DeviceRepositoryImpl implements DeviceRepository {

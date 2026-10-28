@@ -3,6 +3,7 @@ import type {
   DeviceRegistration,
   MyContext,
   ShopEntitlements,
+  ShopFlags,
   ShopSettings,
   ShopSettingsPatch,
 } from '../entities/Shop';
@@ -15,6 +16,8 @@ export interface ShopRepository {
   updateSettings(shopId: string, patch: ShopSettingsPatch): Promise<ShopSettings>;
   updateMyLanguage(language: 'en' | 'hi'): Promise<void>;
   getEntitlements(shopId: string): Promise<ShopEntitlements>;
+  /** Feature flags evaluated for this shop and this app version (rollout, overrides, kill switch). */
+  getFlags(shopId: string, appVersion: string): Promise<ShopFlags>;
 }
 
 export interface DeviceRepository {

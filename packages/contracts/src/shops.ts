@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { BasisPointsSchema, IndianPhoneE164Schema, UuidSchema } from './common';
+import { BasisPointsSchema, IndianPhoneE164Schema, LocalizedTextSchema, UuidSchema } from './common';
 import { PERMISSIONS, SHOP_ROLES } from './permissions';
 
 /**
@@ -149,6 +149,7 @@ const EntitlementValueSchema = z.union([z.boolean(), z.number(), z.null()]);
 export const ShopEntitlementsSchema = z.object({
   shopId: UuidSchema,
   planCode: z.string(),
+  planName: LocalizedTextSchema.optional(),
   subscriptionStatus: z.enum(['trialing', 'active', 'past_due', 'grace', 'expired', 'cancelled']),
   trialEndsAt: z.string().nullable(),
   currentPeriodEndsAt: z.string().nullable(),
@@ -157,3 +158,11 @@ export const ShopEntitlementsSchema = z.object({
   usage: z.record(z.string(), z.number()),
 });
 export type ShopEntitlementsDto = z.infer<typeof ShopEntitlementsSchema>;
+
+/** get_shop_flags: every flag evaluated for this shop and app version (unknown keys are kept, then ignored). */
+export const ShopFlagsSchema = z.object({
+  shopId: UuidSchema,
+  flags: z.record(z.string(), z.boolean()),
+  revision: z.string(),
+});
+export type ShopFlagsDto = z.infer<typeof ShopFlagsSchema>;

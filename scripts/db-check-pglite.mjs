@@ -92,6 +92,16 @@ for (const m of sqlFiles('supabase/migrations', '.sql')) {
 await db.exec(PGTAP_SHIM);
 await db.exec('set search_path = public, tap, extensions');
 
+// Seeded platform data that the per-test `truncate auth.users cascade` would also wipe (it references auth.users)
+// or that a test changes: copied once and put back after every test.
+const SEEDED = ['platform_config', 'feature_flags', 'config_revisions', 'plan_entitlements'];
+await db.exec(
+  'create schema snap;' + SEEDED.map((t) => `create table snap.${t} as select * from public.${t};`).join(''),
+);
+const restoreSeeded =
+  `truncate ${SEEDED.map((t) => `public.${t}`).join(', ')} cascade;` +
+  SEEDED.map((t) => `insert into public.${t} overriding system value select * from snap.${t};`).join('');
+
 let failed = 0;
 let total = 0;
 for (const t of sqlFiles('supabase/tests/database', '.test.sql')) {
@@ -123,6 +133,7 @@ for (const t of sqlFiles('supabase/tests/database', '.test.sql')) {
   for (const r of bad) console.log(`   not ok: ${r.description} — ${r.detail}`);
   // Reset fixtures inserted by the test (it committed instead of rolling back).
   await db.exec('truncate auth.users cascade; truncate audit.events; truncate private.idempotency_keys;');
+  await db.exec(restoreSeeded);
   // Each real pgTAP file runs in its own rolled-back transaction; emulate by dropping its temp objects.
   await db.exec(`do $$ declare f regprocedure; begin
     for f in select p.oid::regprocedure from pg_proc p where p.pronamespace = pg_my_temp_schema() loop

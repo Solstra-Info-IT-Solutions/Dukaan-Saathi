@@ -67,6 +67,7 @@ import {
   CreateShop,
   DeviceRepositoryImpl,
   GetShopEntitlements,
+  GetShopFlags,
   GetShopSettings,
   LoadMyContext,
   RestoreSession,
@@ -74,6 +75,8 @@ import {
   SupabaseShopDataSource,
   UpdateShopSettings,
 } from '@/features/shops';
+import { type PlanViewModelDeps, SupabaseConfigDataSource } from '@/features/subscription';
+import { flagOn, hasEntitlement, type ShopAccess } from '@/shared/navigation/modules';
 import {
   CommitImport,
   FixImportRow,
@@ -227,6 +230,7 @@ export interface AppFeatures {
   sync: SyncStatusViewModelDeps & { service: SyncService };
   voice: VoiceBillingViewModelDeps<ProductDto> & { isEnabled(shopId: string): Promise<boolean> };
   onboarding: OnboardingStatusViewModelDeps & OnboardingRequestViewModelDeps;
+  subscription: PlanViewModelDeps;
   support: SupportViewModelDeps & AnnouncementsViewModelDeps;
 }
 
@@ -287,6 +291,9 @@ function createFeatures(supabase: TypedSupabaseClient, storage: KeyValueStorage)
   const supportRepository = new SupportRepositoryImpl(new SupabaseSupportDataSource(supabase));
   const getSettings = new GetShopSettings(shopRepository);
   const getEntitlements = new GetShopEntitlements(shopRepository);
+  const appVersion = Constants.expoConfig?.version ?? '0.0.0';
+  const getFlags = new GetShopFlags(shopRepository, appVersion);
+  const configSource = new SupabaseConfigDataSource(supabase, appVersion);
   const searchProducts = new SearchProducts(catalogueRepository);
   const loadReference = new LoadCatalogueReference(catalogueRepository);
   const inventoryRepository = new InventoryRepositoryImpl(new SupabaseInventoryDataSource(supabase));
@@ -324,6 +331,14 @@ function createFeatures(supabase: TypedSupabaseClient, storage: KeyValueStorage)
       if (saved !== null && unreachable(error)) return saved;
       throw error;
     }
+  };
+  /** Plan entitlements + flags for UI gating; the last good copy is used offline (FEATURE_CONFIGURATION.md §7). */
+  const getAccess = async (shopId: string): Promise<ShopAccess> => {
+    const [plan, flags] = await Promise.all([
+      cached(`entitlements:${shopId}`, () => getEntitlements.execute(shopId)),
+      cached(`flags:${shopId}`, () => getFlags.execute(shopId)),
+    ]);
+    return { entitlements: plan.entitlements, flags: flags.flags };
   };
   const offlineSales: OfflineSales = {
     isOnline,
@@ -473,7 +488,12 @@ function createFeatures(supabase: TypedSupabaseClient, storage: KeyValueStorage)
       inviteMember: new InviteMember(staffRepository),
       staffRepository,
     },
-    account: { signOut, unsentCount: (userId) => syncStore.unsentCount(userId) },
+    account: { signOut, unsentCount: (userId) => syncStore.unsentCount(userId), getAccess },
+    subscription: {
+      getEntitlements,
+      getClientConfig: () => configSource.getClientConfig(),
+      openUrl: (url) => Linking.openURL(url),
+    },
     catalogue: {
       searchProducts,
       getProduct: new GetProduct(catalogueRepository),
@@ -590,10 +610,11 @@ function createFeatures(supabase: TypedSupabaseClient, storage: KeyValueStorage)
       learnAlias: new LearnAlias<ProductDto>({
         learn: (shopId, productId, alias) => addProductAlias.execute(shopId, productId, alias),
       }),
-      isEnabled: async (shopId) =>
-        (await cached(`entitlements:${shopId}`, () => getEntitlements.execute(shopId))).entitlements[
-          'voice.billing'
-        ] === true,
+      // Needs the plan (voice.billing) and the flag (voice_billing: rollout, kill switch, app version).
+      isEnabled: async (shopId) => {
+        const access = await getAccess(shopId);
+        return hasEntitlement(access, 'voice.billing') && flagOn(access, 'voice_billing');
+      },
     },
     onboarding: {
       getLatestOnboarding: new GetLatestOnboarding(onboardingRepository),

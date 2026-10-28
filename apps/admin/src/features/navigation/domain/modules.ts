@@ -21,6 +21,9 @@ export const ADMIN_MODULES: readonly AdminModule[] = [
   { href: '/onboarding', label: 'Onboarding', roles: ['super_admin', 'onboarding_operator'] },
   { href: '/support', label: 'Support', roles: ['super_admin', 'support_agent'] },
   { href: '/announcements', label: 'Announcements', roles: ['super_admin', 'support_agent'] },
+  { href: '/plans', label: 'Plans', roles: ['super_admin', 'billing_admin', 'analyst'] },
+  { href: '/flags', label: 'Feature flags', roles: ['super_admin', 'analyst'] },
+  { href: '/config', label: 'Platform config', roles: ['super_admin'] },
   { href: '/audit', label: 'Audit log', roles: ['super_admin'] },
   { href: '/operators', label: 'Operators', roles: ['super_admin'] },
 ];

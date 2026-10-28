@@ -228,7 +228,8 @@
       "body_other": "{{count}} bills or payments on this phone are not sent yet. They stay here and are sent when you sign in again.",
       "signOutAnyway": "Sign out anyway"
     },
-    "help": "Help & support"
+    "help": "Help & support",
+    "plan": "Plan"
   },
   "catalogue": {
     "search": "Search by name, Hindi name or barcode",
@@ -873,5 +874,39 @@
       "MESSAGE_REQUIRED": "Write your question.",
       "MESSAGE_TOO_LONG": "The message is too long (2000 letters at most)."
     }
+  },
+  "plan": {
+    "locked": "Not in your plan · see Plan",
+    "daysLeft_one": "{{count}} day left",
+    "daysLeft_other": "{{count}} days left",
+    "attention": {
+      "past_due": "Your payment is due. Billing keeps working; renew to keep all features.",
+      "grace": "Your plan ends in a few days. Billing keeps working; renew to keep all features.",
+      "expired": "Your plan has ended, so the free plan’s limits apply. Billing keeps working."
+    },
+    "usage": "Usage",
+    "of": "{{used}} of {{limit}}",
+    "ofUnlimited": "{{used}} · no limit",
+    "limits": {
+      "products.max": "Items",
+      "customers.max": "Customers",
+      "staff_accounts.max": "Staff",
+      "devices.max": "Phones"
+    },
+    "included": "In your plan",
+    "notIncluded": "Not included",
+    "features": {
+      "reports.advanced": "Reports beyond 7 days and breakdowns",
+      "reports.export": "Export reports",
+      "purchases.enabled": "Suppliers and purchases",
+      "voice.billing": "Voice billing",
+      "onboarding.managed": "We set up your items"
+    },
+    "upgradeTitle": "Upgrade or renew",
+    "upgradeBody": "Talk to us to change or renew your plan. Your data stays as it is.",
+    "upgradeMessage": "I want to upgrade my Dukaan Saathi plan",
+    "whatsapp": "Message us on WhatsApp",
+    "call": "Call us",
+    "noContact": "Ask us from More → Help & support."
   }
 }

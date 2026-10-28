@@ -44,6 +44,8 @@ Deliberate gaps. Each has a reason and, where relevant, a backlog item.
 | No push or WhatsApp notice when our team replies to a ticket or an import is ready; the app shows it when opened | Notification templates and push credentials pending | BL-1111 |
 | Admin panel: no ownership transfer, no CAPTCHA, not hosted yet; operator invites need the Edge Function deployed | Scope; OD-14 | BL-1104, BL-1110, BL-1112 |
 | Dismissed announcements come back after the app restarts | Kept in memory only | — |
+| No in-app purchase; plans are assigned by our team or by a verified payment webhook (not deployed) | Play billing policy and provider not decided (OD-05) | BL-1206 |
+| No renewal reminders; `exports.monthly` not counted; no blocking update screen yet | Notification templates pending; Phase 13 | BL-1209, BL-1111 |
 
 ## Technical
 | Limitation | Mitigation |

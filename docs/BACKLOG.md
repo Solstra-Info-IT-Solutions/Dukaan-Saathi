@@ -161,8 +161,17 @@ Phase order may shift for dependencies; nothing is removed without a note in PRO
 | BL-1112 | admin login CAPTCHA, hosting (OD-14) | ⬜ |
 
 ## Phase 12 — Subscriptions & flags
-BL-1201 plans/entitlements admin · BL-1202 overrides · BL-1203 feature flags + overrides + kill switch · BL-1204 platform config editor + revisions/rollback ·
-BL-1205 lifecycle job · BL-1206 payment webhook (OD-05) · BL-1207 plan screen + upsell · BL-1208 tests S-04, S-05, S-09.
+| ID | Item | Status |
+|---|---|---|
+| BL-1201 | plans/entitlements admin | ✅ plan × entitlement table, plan editor |
+| BL-1202 | overrides | ✅ entitlement and flag overrides per shop, with end date and reason |
+| BL-1203 | feature flags + overrides + kill switch | ✅ rollout %, minimum app version, kill switch beats overrides |
+| BL-1204 | platform config editor + revisions/rollback | ✅ validated keys, optimistic revision, restore |
+| BL-1205 | lifecycle job | ✅ daily pg_cron; reminders pending (BL-1111) |
+| BL-1206 | payment webhook (OD-05) | 🟨 Razorpay-format Edge Function written, not deployed (provider not chosen) |
+| BL-1207 | plan screen + upsell | ✅ plan screen, locked modules; WhatsApp / call contact |
+| BL-1208 | tests S-04, S-05, S-09 | ✅ `019_subscriptions_flags` |
+| BL-1209 | `exports.monthly` usage counter, renewal reminders, pre-sign-in flags | ⬜ |
 
 ## Phase 13 — Hardening
 BL-1301 security audit (advisors, function review, pen-test checklist) · BL-1302 accessibility pass · BL-1303 performance (load script, indexes, rollups) ·

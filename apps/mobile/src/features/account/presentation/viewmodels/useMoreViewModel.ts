@@ -1,17 +1,25 @@
+import { useQuery } from '@tanstack/react-query';
 import { useCallback, useRef, useState } from 'react';
 import { translateError } from '@/core/errors/translateError';
 import { useSessionStore } from '@/core/session/sessionStore';
-import { visibleModules } from '@/shared/navigation/modules';
+import { moduleStates, type ShopAccess } from '@/shared/navigation/modules';
 
 export interface MoreViewModelDeps {
   signOut: { execute(): Promise<void> };
   /** Bills and payments of this user not yet sent (Phase 09); asked before signing out. */
   unsentCount?: (userId: string) => number;
+  /** Plan entitlements and flags; locks or hides modules (Phase 12). */
+  getAccess?: (shopId: string) => Promise<ShopAccess>;
 }
 
 /** The More tab: modules this role may open, switch shop, sign out. */
-export function useMoreViewModel({ signOut, unsentCount }: MoreViewModelDeps) {
+export function useMoreViewModel({ signOut, unsentCount, getAccess }: MoreViewModelDeps) {
   const shop = useSessionStore((s) => s.activeShop);
+  const access = useQuery({
+    queryKey: ['access', shop?.shopId ?? 'none'],
+    queryFn: () => getAccess!(shop!.shopId),
+    enabled: !!getAccess && !!shop,
+  });
   const userId = useSessionStore((s) => s.userId);
   const [unsent, setUnsent] = useState<number | null>(null);
   const [signingOut, setSigningOut] = useState(false);
@@ -50,7 +58,7 @@ export function useMoreViewModel({ signOut, unsentCount }: MoreViewModelDeps) {
     state: {
       shopName: shop?.shopName ?? '',
       role: shop?.role ?? null,
-      modules: visibleModules(shop?.permissions ?? []),
+      modules: moduleStates(shop?.permissions ?? [], access.data ?? null),
       signingOut,
       errorKey,
       unsent,

@@ -13,6 +13,8 @@ import {
   when,
 } from '@/core/ui/ui';
 import { rolesFor } from '@/features/navigation/domain/modules';
+import { BillingRepository } from '@/features/billing/data/BillingRepository';
+import { ShopAccessSection } from '@/features/billing/presentation/ShopAccessSection';
 import { ShopsRepository } from '@/features/shops/data/ShopsRepository';
 import {
   deactivateMemberAction,
@@ -31,7 +33,15 @@ export default async function ShopPage({
   const operator = await requireOperator(rolesFor('/shops'));
   const { shopId } = await params;
   const { error, done } = await searchParams;
-  const d = await new ShopsRepository(await adminClient()).get(shopId);
+  const client = await adminClient();
+  const billing = new BillingRepository(client);
+  const canBill = operator.role === 'super_admin' || operator.role === 'billing_admin';
+  const seesAccess = operator.role !== 'onboarding_operator';
+  const [d, access, plans] = await Promise.all([
+    new ShopsRepository(client).get(shopId),
+    seesAccess ? billing.shopAccess(shopId) : Promise.resolve(null),
+    canBill ? billing.listPlans().then((r) => r.plans) : Promise.resolve([]),
+  ]);
   const canSuspend = operator.role === 'super_admin' || operator.role === 'billing_admin';
   const canSupport = operator.role === 'super_admin' || operator.role === 'support_agent';
   const suspended = d.shop.status === 'suspended';
@@ -180,6 +190,16 @@ export default async function ShopPage({
             {d.onboarding.length + d.tickets.length === 0 ? <li className="text-slate-600">None.</li> : null}
           </ul>
         </section>
+
+        {access ? (
+          <ShopAccessSection
+            shopId={shopId}
+            access={access}
+            plans={plans}
+            canBill={canBill}
+            canFlag={operator.role === 'super_admin'}
+          />
+        ) : null}
       </div>
     </>
   );

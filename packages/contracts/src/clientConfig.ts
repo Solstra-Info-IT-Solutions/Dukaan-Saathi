@@ -32,6 +32,13 @@ export const ClientConfigSchema = z.object({
   latestAppVersion: SemverSchema.optional(),
   refreshSeconds: z.number().int().min(300).max(86_400).default(900),
   maintenance: MaintenanceSchema.optional(),
+  supportContact: z
+    .object({
+      whatsapp: z.string().nullable().optional(),
+      phone: z.string().nullable().optional(),
+      hours: LocalizedTextSchema.optional(),
+    })
+    .optional(),
   flags: z.object(flagsShape).default({}),
   announcements: z.array(AnnouncementSchema).default([]),
   content: z.record(z.string(), LocalizedTextSchema).default({}),

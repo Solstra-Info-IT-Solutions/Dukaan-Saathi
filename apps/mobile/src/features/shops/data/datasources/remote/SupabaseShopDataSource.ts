@@ -4,6 +4,7 @@ import {
   MyContextSchema,
   RegisterDeviceOutputSchema,
   ShopEntitlementsSchema,
+  ShopFlagsSchema,
   ShopSettingsSchema,
   type ShopSettingsPatch,
 } from '@ds/contracts';
@@ -63,6 +64,13 @@ export class SupabaseShopDataSource {
   getEntitlements(shopId: string) {
     return this.rpc(this.client.rpc('get_shop_entitlements', { p_shop_id: shopId }), (d) =>
       ShopEntitlementsSchema.parse(d),
+    );
+  }
+
+  getFlags(shopId: string, appVersion: string) {
+    return this.rpc(
+      this.client.rpc('get_shop_flags', { p_shop_id: shopId, p_app_version: appVersion }),
+      (d) => ShopFlagsSchema.parse(d),
     );
   }
 

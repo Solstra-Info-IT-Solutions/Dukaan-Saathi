@@ -4,6 +4,7 @@ import type {
   MembershipDto,
   MyContextDto,
   ShopEntitlementsDto,
+  ShopFlagsDto,
   ShopSettingsDto,
   ShopSettingsPatch,
 } from '@ds/contracts';
@@ -18,6 +19,7 @@ export type MyContext = MyContextDto;
 export type ShopSettings = ShopSettingsDto;
 export type { ShopSettingsPatch };
 export type ShopEntitlements = ShopEntitlementsDto;
+export type ShopFlags = ShopFlagsDto;
 export type NewShop = Omit<CreateShopInput, 'clientOperationId'>;
 
 /** What the app needs after a shop is opened on this device (mirrors core/session ActiveShop). */

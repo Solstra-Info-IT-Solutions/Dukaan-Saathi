@@ -11,6 +11,9 @@ describe('admin modules by role', () => {
       '/onboarding',
       '/support',
       '/announcements',
+      '/plans',
+      '/flags',
+      '/config',
       '/audit',
       '/operators',
     ]);
@@ -18,8 +21,8 @@ describe('admin modules by role', () => {
   it('limits each other role to its own work', () => {
     expect(hrefs('onboarding_operator')).toEqual(['/', '/shops', '/onboarding']);
     expect(hrefs('support_agent')).toEqual(['/', '/shops', '/support', '/announcements']);
-    expect(hrefs('billing_admin')).toEqual(['/', '/shops']);
-    expect(hrefs('analyst')).toEqual(['/', '/shops']);
+    expect(hrefs('billing_admin')).toEqual(['/', '/shops', '/plans']);
+    expect(hrefs('analyst')).toEqual(['/', '/shops', '/plans', '/flags']);
   });
   it('denies unknown pages to everyone but super_admin', () => {
     expect(rolesFor('/nope')).toEqual(['super_admin']);
