@@ -185,6 +185,13 @@ export class SqliteSyncStore implements OutboxStore {
       .map((r) => JSON.parse(r.json) as CachedProduct);
   }
 
+  /** Every active item of the shop's copy (voice billing matches against all of them). */
+  allProducts(shopId: string): CachedProduct[] {
+    return this.db
+      .all<{ json: string }>('select json from products_cache where shop_id = ? and active = 1', [shopId])
+      .map((r) => JSON.parse(r.json) as CachedProduct);
+  }
+
   productByBarcode(shopId: string, code: string): CachedProduct | null {
     const row = this.db.get<{ json: string }>(
       `select json from products_cache where shop_id = ? and active = 1 and barcodes like ?`,

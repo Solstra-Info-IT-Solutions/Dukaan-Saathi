@@ -1,0 +1,142 @@
+import type { VoiceProduct } from '@/features/voice/domain/matcher';
+
+/** A typical kirana catalogue (names as shops type them: English, Hindi, brand names). */
+export const CATALOGUE: VoiceProduct[] = [
+  ['atta', 'Aashirvaad Atta', 'आटा', ['aata', 'gehu ka atta'], 'kg', 4500],
+  ['cheeni', 'Sugar', 'चीनी', ['cheeni', 'shakkar'], 'kg', 4400],
+  ['chawal', 'Basmati Rice', 'चावल', ['chawal'], 'kg', 9000],
+  ['dal', 'Toor Dal', 'अरहर दाल', ['arhar dal', 'dal'], 'kg', 16000],
+  ['moong', 'Moong Dal', 'मूंग दाल', ['moong'], 'kg', 12000],
+  ['chana', 'Chana Dal', 'चना दाल', [], 'kg', 9500],
+  ['doodh', 'Amul Milk', 'दूध', ['doodh', 'milk'], 'l', 6600],
+  ['dahi', 'Curd', 'दही', ['dahi'], 'kg', 8000],
+  ['paneer', 'Paneer', 'पनीर', [], 'kg', 40000],
+  ['ghee', 'Desi Ghee', 'घी', [], 'l', 65000],
+  ['tel', 'Mustard Oil', 'सरसों तेल', ['sarson tel', 'tel'], 'l', 18000],
+  ['namak', 'Tata Salt', 'नमक', ['namak'], 'pkt', 2800],
+  ['haldi', 'Haldi Powder', 'हल्दी', [], 'g', 30],
+  ['mirchi', 'Red Chilli Powder', 'लाल मिर्च', ['mirchi', 'lal mirch'], 'g', 40],
+  ['dhaniya', 'Coriander', 'धनिया', ['dhaniya'], 'kg', 10000],
+  ['pyaaz', 'Onion', 'प्याज़', ['pyaaz', 'kanda'], 'kg', 4000],
+  ['aloo', 'Potato', 'आलू', ['aloo'], 'kg', 3000],
+  ['tamatar', 'Tomato', 'टमाटर', ['tamatar'], 'kg', 3500],
+  ['adrak', 'Ginger', 'अदरक', [], 'kg', 16000],
+  ['lahsun', 'Garlic', 'लहसुन', [], 'kg', 20000],
+  ['maggi', 'Maggi Masala Noodles', 'मैगी', ['maggi'], 'pkt', 1400],
+  ['biscuit', 'Parle-G Biscuit', 'पारले जी', ['parle g', 'biscuit'], 'pkt', 1000],
+  ['chai', 'Tata Tea Premium', 'चाय पत्ती', ['chai patti', 'chai'], 'pkt', 13000],
+  ['sabun', 'Lux Soap', 'साबुन', ['sabun'], 'pc', 3500],
+  ['surf', 'Surf Excel', 'सर्फ', ['surf', 'washing powder'], 'pkt', 11000],
+  ['anda', 'Eggs', 'अंडा', ['anda', 'ande'], 'pc', 700],
+  ['bread', 'Bread', 'ब्रेड', ['double roti'], 'pc', 4500],
+  ['kela', 'Banana', 'केला', ['kele'], 'dozen', 6000],
+  ['colgate', 'Colgate Toothpaste', 'कोलगेट', ['colgate', 'manjan'], 'pc', 9500],
+  ['matchbox', 'Matchbox', 'माचिस', ['machis'], 'box', 100],
+  ['poha', 'Poha', 'पोहा', [], 'kg', 6000],
+  ['suji', 'Sooji', 'सूजी', ['suji', 'rava'], 'kg', 5000],
+  ['besan', 'Besan', 'बेसन', [], 'kg', 9000],
+  ['jeera', 'Jeera', 'जीरा', ['zeera'], 'g', 60],
+].map(([id, name, nameHi, aliases, unitCode, pricePaise]) => ({
+  id: id as string,
+  name: name as string,
+  nameHi: nameHi as string,
+  aliases: aliases as string[],
+  unitCode: unitCode as string,
+  pricePaise: pricePaise as number,
+}));
+
+export const FRACTION_UNITS = new Set(['kg', 'g', 'l', 'ml', 'dozen', 'm']);
+
+/**
+ * Spike benchmark (docs/spikes/VOICE_RECOGNITION.md): 50 transcripts as Android's recognizer returns kirana
+ * phrases (Devanagari, Hinglish, English, mixed numbers) → the expected draft line(s): [item id, milli or ₹].
+ */
+export const BENCHMARK: [string, [string, number | { amount: number }][]][] = [
+  ['दो किलो आटा', [['atta', 2000]]],
+  ['do kilo aata', [['atta', 2000]]],
+  ['2 kg atta', [['atta', 2000]]],
+  ['एक किलो चीनी', [['cheeni', 1000]]],
+  ['aadha kilo cheeni', [['cheeni', 500]]],
+  ['ढाई किलो चावल', [['chawal', 2500]]],
+  ['dedh kilo dal', [['dal', 1500]]],
+  ['paav paneer', [['paneer', 250]]],
+  ['पाव पनीर', [['paneer', 250]]],
+  ['ek litre doodh', [['doodh', 1000]]],
+  ['आधा लीटर दूध', [['doodh', 500]]],
+  ['दो पैकेट मैगी', [['maggi', 2000]]],
+  ['teen packet maggi', [['maggi', 3000]]],
+  ['5 parle g', [['biscuit', 5000]]],
+  ['pachaas rupaye ka dhaniya', [['dhaniya', { amount: 5000 }]]],
+  ['पचास रुपये का धनिया', [['dhaniya', { amount: 5000 }]]],
+  ['20 rupaye ki mirchi', [['mirchi', { amount: 2000 }]]],
+  ['dhaniya bees rupaye ka', [['dhaniya', { amount: 2000 }]]],
+  ['ek darjan anda', [['anda', 12000]]],
+  ['एक दर्जन केला', [['kela', 1000]]],
+  ['do sabun', [['sabun', 2000]]],
+  ['दो साबुन', [['sabun', 2000]]],
+  ['ek colgate', [['colgate', 1000]]],
+  [
+    'ek kilo aloo aur aadha kilo pyaaz',
+    [
+      ['aloo', 1000],
+      ['pyaaz', 500],
+    ],
+  ],
+  [
+    'दो किलो आलू और एक किलो प्याज़',
+    [
+      ['aloo', 2000],
+      ['pyaaz', 1000],
+    ],
+  ],
+  [
+    'do kilo aata ek kilo cheeni',
+    [
+      ['atta', 2000],
+      ['cheeni', 1000],
+    ],
+  ],
+  [
+    'aata do kilo cheeni ek kilo',
+    [
+      ['atta', 2000],
+      ['cheeni', 1000],
+    ],
+  ],
+  ['500 gram tamatar', [['tamatar', 500]]],
+  ['पांच सौ ग्राम टमाटर', [['tamatar', 500]]],
+  ['100 gram haldi', [['haldi', 100000]]],
+  ['ek litre sarson tel', [['tel', 1000]]],
+  ['saadhe teen kilo chawal', [['chawal', 3500]]],
+  ['sawa kilo moong', [['moong', 1250]]],
+  ['paune do kilo chana dal', [['chana', 1750]]],
+  ['ek packet namak', [['namak', 1000]]],
+  ['tata salt', [['namak', 1000]]],
+  ['ek surf excel', [['surf', 1000]]],
+  ['do double roti', [['bread', 2000]]],
+  ['adha kilo dahi', [['dahi', 500]]],
+  ['ek kilo ghee', [['ghee', 1000]]],
+  ['chai patti ek packet', [['chai', 1000]]],
+  ['do machis', [['matchbox', 2000]]],
+  [
+    'ek kilo besan aur aadha kilo suji',
+    [
+      ['besan', 1000],
+      ['suji', 500],
+    ],
+  ],
+  ['पोहा एक किलो', [['poha', 1000]]],
+  ['50 gram jeera', [['jeera', 50000]]],
+  ['ek kilo adrak', [['adrak', 1000]]],
+  ['paav lahsun', [['lahsun', 250]]],
+  [
+    'do kilo atta, ek packet maggi, 20 ka dhaniya',
+    [
+      ['atta', 2000],
+      ['maggi', 1000],
+      ['dhaniya', { amount: 2000 }],
+    ],
+  ],
+  ['ek basmati rice', [['chawal', 1000]]],
+  ['ek kilo shakkar', [['cheeni', 1000]]],
+];

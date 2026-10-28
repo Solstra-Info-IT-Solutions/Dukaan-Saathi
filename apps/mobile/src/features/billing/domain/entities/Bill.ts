@@ -53,6 +53,13 @@ export interface ProductLine {
 
 export type BillLine = QuickLine | ProductLine;
 
+/** A line confirmed in voice billing (Phase 10): an item with a quantity, or "₹50 worth" of a loose item. */
+export interface VoiceBillLine {
+  product: CatalogueProduct;
+  quantityMilli: number | null;
+  amountPaise: number | null;
+}
+
 export interface BillDraft {
   lines: BillLine[];
   billDiscountPaise: number;

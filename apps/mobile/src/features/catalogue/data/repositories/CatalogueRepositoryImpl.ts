@@ -21,6 +21,8 @@ export class CatalogueRepositoryImpl implements CatalogueRepository {
     translated(() => this.remote.getProduct(shopId, productId));
   saveProduct = (shopId: string, input: SaveProductInput) =>
     translated(() => this.remote.saveProduct(shopId, input));
+  addAlias = (shopId: string, productId: string, alias: string) =>
+    translated(() => this.remote.addAlias(shopId, productId, alias));
   archiveProduct = (shopId: string, productId: string) =>
     translated(() => this.remote.archiveProduct(shopId, productId));
   getReference = (shopId: string) => translated(() => this.remote.getReference(shopId));

@@ -9,6 +9,7 @@ export type {
   Sale,
   ProductFinder,
   ReceiptSharer,
+  VoiceBillLine,
 } from './domain/entities/Bill';
 export {
   CreateSale,

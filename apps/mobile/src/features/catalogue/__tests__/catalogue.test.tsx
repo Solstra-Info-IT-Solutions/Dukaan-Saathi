@@ -93,6 +93,9 @@ class FakeCatalogueRepository implements CatalogueRepository {
   async archiveProduct(_s: string, id: string) {
     this.log.push(`archive:${id}`);
   }
+  async addAlias(_s: string, id: string, alias: string) {
+    this.log.push(`alias:${id}:${alias}`);
+  }
   async getReference(): Promise<CatalogueReference> {
     return {
       units: [

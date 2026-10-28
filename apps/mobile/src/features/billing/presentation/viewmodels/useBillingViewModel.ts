@@ -35,6 +35,7 @@ import {
   type ProductFinder,
   type ProductLine,
   type SaleAttempt,
+  type VoiceBillLine,
 } from '../../domain/entities/Bill';
 import { BillInputError, type CreateSale } from '../../domain/usecases/billingUseCases';
 import { billingKeys } from '../billingKeys';
@@ -106,7 +107,7 @@ export function useBillingViewModel(
   const [errorKey, setErrorKey] = useState<string | null>(null);
   const [errorParams, setErrorParams] = useState<Record<string, string | number>>({});
   const attempt = useRef<SaleAttempt | null>(null);
-  const source = useRef<'keypad' | 'search' | 'scan'>('keypad');
+  const source = useRef<'keypad' | 'search' | 'scan' | 'voice'>('keypad');
   const busy = useRef(false);
   const scanBusy = useRef(false);
 
@@ -233,6 +234,46 @@ export function useBillingViewModel(
       setDebounced('');
     },
     [addProduct],
+  );
+
+  /**
+   * Lines confirmed in voice billing: quantities as said, "₹50 worth" converted at the item's price (rounded down
+   * to whole units for piece items). The same item said twice adds up.
+   */
+  const addVoiceLines = useCallback(
+    (voiceLines: VoiceBillLine[]) => {
+      const ref = reference.data;
+      if (!ref) return;
+      setLines((ls) => {
+        let next = [...ls];
+        for (const v of voiceLines) {
+          const base = productLine(v.product, ref, deps.newId());
+          const q =
+            v.amountPaise !== null
+              ? quantityFromAmount(base, v.amountPaise)
+              : (v.quantityMilli ?? base.quantityMilli);
+          if (!q || q <= 0) continue;
+          const line = {
+            ...base,
+            quantityMilli: q,
+            entryMode: v.amountPaise !== null ? ('amount' as const) : ('quantity' as const),
+          };
+          const same = next.find(
+            (l): l is ProductLine =>
+              l.kind === 'product' &&
+              l.productId === line.productId &&
+              l.unitPricePaise === line.unitPricePaise,
+          );
+          next = same
+            ? next.map((l) => (l === same ? { ...same, quantityMilli: same.quantityMilli + q } : l))
+            : [...next, line];
+        }
+        return next;
+      });
+      source.current = 'voice';
+      changed();
+    },
+    [changed, deps, reference.data],
   );
 
   const openScanner = useCallback(() => setScan({ kind: 'scanning' }), []);
@@ -557,6 +598,7 @@ export function useBillingViewModel(
       pickResult,
       openScanner,
       closeScanner,
+      addVoiceLines,
       scanned,
       openLine,
       editLine,

@@ -44,7 +44,15 @@
           "microphonePermission": false
         }
       ],
-      "expo-sqlite"
+      "expo-sqlite",
+      [
+        "expo-speech-recognition",
+        {
+          "microphonePermission": "Dukaan Saathi uses the microphone only while you hold the voice button to add items to a bill.",
+          "speechRecognitionPermission": "Speech is turned into item names to fill a bill. Audio is not saved.",
+          "androidSpeechServicePackages": ["com.google.android.googlequicksearchbox", "com.google.android.as"]
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true

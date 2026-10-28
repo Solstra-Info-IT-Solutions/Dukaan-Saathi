@@ -50,6 +50,13 @@ export class SupabaseCatalogueDataSource {
     );
   }
 
+  addAlias(shopId: string, productId: string, alias: string) {
+    return this.call(
+      this.client.rpc('add_product_alias', { p_shop_id: shopId, p_product_id: productId, p_alias: alias }),
+      () => {},
+    );
+  }
+
   getReference(shopId: string) {
     return this.call(this.client.rpc('get_catalogue_reference', { p_shop_id: shopId }), (d) =>
       CatalogueReferenceSchema.parse(d),

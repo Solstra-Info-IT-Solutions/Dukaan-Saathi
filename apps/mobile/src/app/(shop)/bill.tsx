@@ -1,8 +1,9 @@
 import { useRouter } from 'expo-router';
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useDependencies } from '@/bootstrap/DependenciesProvider';
 import { hasPermission, useSessionStore } from '@/core/session/sessionStore';
 import { type BillingContext, BillingScreen } from '@/features/billing';
+import { VoiceBillingSheet } from '@/features/voice';
 import { RequirePermission } from '@/shared/components/RequirePermission';
 
 export default function BillRoute() {
@@ -26,7 +27,20 @@ export default function BillRoute() {
       },
     [shop],
   );
-  if (!features || !context) return null;
+  // Voice billing: entitlement voice.billing and a speech service on the phone (features/voice-billing.md).
+  const [voiceOn, setVoiceOn] = useState(false);
+  useEffect(() => {
+    if (!features || !shop) return;
+    let live = true;
+    features.voice
+      .isEnabled(shop.shopId)
+      .then((on) => live && setVoiceOn(on && features.voice.recognizer.isAvailable()))
+      .catch(() => live && setVoiceOn(false));
+    return () => {
+      live = false;
+    };
+  }, [features, shop]);
+  if (!features || !context || !shop) return null;
   return (
     <RequirePermission permission="sale.create">
       <BillingScreen
@@ -34,6 +48,18 @@ export default function BillRoute() {
         context={context}
         onCompleted={(saleId) => router.push({ pathname: '/receipt', params: { saleId } })}
         onCreateProduct={(barcode) => router.push({ pathname: '/product', params: { barcode } })}
+        voice={
+          voiceOn
+            ? (addLines) => (
+                <VoiceBillingSheet
+                  deps={features.voice}
+                  shopId={shop.shopId}
+                  canLearn={hasPermission(shop, 'product.manage')}
+                  onConfirm={addLines}
+                />
+              )
+            : undefined
+        }
       />
     </RequirePermission>
   );

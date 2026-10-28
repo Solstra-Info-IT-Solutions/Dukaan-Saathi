@@ -717,6 +717,25 @@ describe('useBillingViewModel', () => {
     expect(result.current.state.totals?.totalPaise).toBe(4800);
   });
 
+  it('adds lines confirmed by voice: quantities, "₹20 worth", the same item twice adds up', async () => {
+    const { repo, deps } = setup();
+    const { result } = await ready(deps);
+    await act(async () =>
+      result.current.actions.addVoiceLines([
+        { product: ONION, quantityMilli: 1500, amountPaise: null },
+        { product: SUGAR, quantityMilli: 2000, amountPaise: null },
+        { product: ONION, quantityMilli: null, amountPaise: 2000 },
+      ]),
+    );
+    expect(result.current.state.lines).toMatchObject([
+      { kind: 'product', productId: ONION.id, quantityMilli: 2000 },
+      { kind: 'product', productId: SUGAR.id, quantityMilli: 2000 },
+    ]);
+    await act(async () => result.current.actions.openPayment());
+    await act(async () => result.current.actions.submit());
+    expect(repo.calls[0]?.source).toBe('voice');
+  });
+
   it('splits a payment between cash and UPI', async () => {
     const { repo, deps } = setup({ ...baseSettings, enabledPaymentMethods: ['cash', 'upi'] });
     const { result } = await ready(deps);

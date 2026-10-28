@@ -1,11 +1,12 @@
 import { formatPaise, formatQuantity, paise, quantityMilli } from '@ds/domain-core';
+import type { ReactNode } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { Button, Card, HelperText, IconButton, List, Text, TextInput } from 'react-native-paper';
 import { useTranslation } from 'react-i18next';
 import { ErrorState, LoadingState } from '@/shared/components/ScreenState';
 import { spacing } from '@/shared/theme/theme';
 import { type KeypadKey, lineAmount } from '../../domain/billMath';
-import type { BillingContext, BillLine } from '../../domain/entities/Bill';
+import type { BillingContext, BillLine, VoiceBillLine } from '../../domain/entities/Bill';
 import { LineEditorSheet } from '../components/LineEditorSheet';
 import { PaymentSheet } from '../components/PaymentSheet';
 import { ScannerSheet } from '../components/ScannerSheet';
@@ -19,11 +20,14 @@ export function BillingScreen({
   context,
   onCompleted,
   onCreateProduct,
+  voice,
 }: {
   deps: BillingViewModelDeps;
   context: BillingContext;
   onCompleted: (saleId: string) => void;
   onCreateProduct: (barcode: string) => void;
+  /** Phase 10: the mic button, given the action that adds confirmed voice lines to this bill. */
+  voice?: (addLines: (lines: VoiceBillLine[]) => void) => ReactNode;
 }) {
   const { t } = useTranslation();
   const vm = useBillingViewModel(deps, context, onCompleted);
@@ -68,6 +72,7 @@ export function BillingScreen({
             accessibilityLabel={t('billing.scan.open')}
             onPress={actions.openScanner}
           />
+          {voice ? voice(actions.addVoiceLines) : null}
         </View>
         {state.results.length > 0 ? (
           <Card>

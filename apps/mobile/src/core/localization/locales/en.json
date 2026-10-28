@@ -766,5 +766,29 @@
       "price_override": "price changed without permission",
       "method_disabled": "payment method switched off"
     }
+  },
+  "voice": {
+    "open": "Speak items",
+    "title": "Speak the items",
+    "listening": "Listening… say e.g. “do kilo aata aur pachaas rupaye ka dhaniya”",
+    "done": "Done",
+    "processing": "Understanding…",
+    "worth": "{{amount}} worth",
+    "check": "check",
+    "notFound": "Not found: “{{words}}”",
+    "remove": "Remove {{words}}",
+    "type": "Or type the items",
+    "speakAgain": "Speak more items",
+    "unmatchedHint": "Tap the right item for each line not found, or remove it.",
+    "addToBill": "Add to bill",
+    "errors": {
+      "permission": "Allow the microphone to use voice.",
+      "no_speech": "Nothing was heard. Try again a little closer.",
+      "unsupported": "Voice is not available on this phone. You can type the items instead.",
+      "network": "Voice needs the internet on this phone (no Hindi voice pack installed).",
+      "busy": "The microphone is busy. Try again.",
+      "unknown": "Voice did not work. Try again.",
+      "nothing_understood": "No items were understood. Try again or type them."
+    }
   }
 }

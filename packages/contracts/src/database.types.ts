@@ -1096,6 +1096,7 @@ export type Database = {
         Args: { p_client_operation_id: string; p_file_name: string; p_shop_id: string }
         Returns: Json
       }
+      add_product_alias: { Args: { p_alias: string; p_product_id: string; p_shop_id: string }; Returns: Json }
       adjust_customer_balance: { Args: { p_input: Json }; Returns: Json }
       sync_pull: {
         Args: { p_cursors?: Json; p_device_id: string; p_limit?: number; p_shop_id: string }

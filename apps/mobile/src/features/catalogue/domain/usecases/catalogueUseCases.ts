@@ -124,6 +124,13 @@ export class SaveProduct {
   }
 }
 
+export class AddProductAlias {
+  constructor(private readonly catalogue: CatalogueRepository) {}
+  execute(shopId: string, productId: string, alias: string): Promise<void> {
+    return this.catalogue.addAlias(shopId, productId, alias);
+  }
+}
+
 export class ArchiveProduct {
   constructor(private readonly catalogue: CatalogueRepository) {}
   execute(shopId: string, productId: string): Promise<void> {

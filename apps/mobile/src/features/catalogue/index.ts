@@ -1,6 +1,7 @@
 // Public API of the catalogue feature.
 export type { CatalogueRepository } from './domain/repositories/CatalogueRepository';
 export {
+  AddProductAlias,
   ArchiveCategory,
   ArchiveProduct,
   GetProduct,

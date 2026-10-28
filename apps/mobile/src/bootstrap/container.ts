@@ -1,9 +1,10 @@
 import Constants from 'expo-constants';
 import { Linking, Platform } from 'react-native';
-import { normalizeIndianPhone } from '@ds/contracts';
+import { normalizeIndianPhone, type ProductDto } from '@ds/contracts';
 import type { AppEnv } from '@/core/config/env';
 import { useConnectivityStore } from '@/core/connectivity/connectivity';
 import { openAppDatabase } from '@/core/database/expoSqlite';
+import { createExpoSpeechRecognizer } from '@/core/speech/expoSpeechRecognizer';
 import { useSessionStore } from '@/core/session/sessionStore';
 import { newOperationId } from '@/core/ids/operationId';
 import { createSupabaseClient, type TypedSupabaseClient } from '@/core/network/supabaseClient';
@@ -50,6 +51,7 @@ import {
   SaveCategory,
   SaveProduct,
   SearchProducts,
+  AddProductAlias,
   SupabaseCatalogueDataSource,
 } from '@/features/catalogue';
 import {
@@ -140,6 +142,7 @@ import {
   type UdhaarListViewModelDeps,
 } from '@/features/customers';
 import { InviteMember, LoadStaff, StaffRepositoryImpl, SupabaseStaffDataSource } from '@/features/staff';
+import { DraftFromSpeech, LearnAlias, type VoiceBillingViewModelDeps } from '@/features/voice';
 import {
   GetSyncQueue,
   PullChanges,
@@ -201,6 +204,7 @@ export interface AppFeatures {
     PurchaseFormViewModelDeps;
   customers: UdhaarListViewModelDeps & CustomerFormViewModelDeps & CustomerLedgerViewModelDeps;
   sync: SyncStatusViewModelDeps & { service: SyncService };
+  voice: VoiceBillingViewModelDeps<ProductDto> & { isEnabled(shopId: string): Promise<boolean> };
 }
 
 export interface Container {
@@ -255,12 +259,14 @@ function createFeatures(supabase: TypedSupabaseClient, storage: KeyValueStorage)
   const reportsRepository = new ReportsRepositoryImpl(new SupabaseReportsDataSource(supabase));
   const expenseRepository = new ExpenseRepositoryImpl(new SupabaseExpenseDataSource(supabase, readFileBytes));
   const getSettings = new GetShopSettings(shopRepository);
+  const getEntitlements = new GetShopEntitlements(shopRepository);
   const searchProducts = new SearchProducts(catalogueRepository);
   const loadReference = new LoadCatalogueReference(catalogueRepository);
   const inventoryRepository = new InventoryRepositoryImpl(new SupabaseInventoryDataSource(supabase));
   const purchaseRepository = new PurchaseRepositoryImpl(new SupabasePurchaseDataSource(supabase));
   const listStock = new ListStock(inventoryRepository);
   const listSuppliers = new ListSuppliers(purchaseRepository);
+  const addProductAlias = new AddProductAlias(catalogueRepository);
 
   // ---- offline (Phase 09): local SQLite, outbox, sync service ------------------------------------
   const syncStore = new SqliteSyncStore(openAppDatabase());
@@ -432,7 +438,7 @@ function createFeatures(supabase: TypedSupabaseClient, storage: KeyValueStorage)
       }),
       getSettings,
       updateSettings: new UpdateShopSettings(shopRepository),
-      getEntitlements: new GetShopEntitlements(shopRepository),
+      getEntitlements,
       newOperationId,
     },
     staff: {
@@ -533,6 +539,33 @@ function createFeatures(supabase: TypedSupabaseClient, storage: KeyValueStorage)
       getUpiVpa: async (shopId) => (await getSettings.execute(shopId)).upiVpa,
       openUrl: (url) => Linking.openURL(url),
       newId: newOperationId,
+    },
+    voice: {
+      recognizer: createExpoSpeechRecognizer(),
+      draftFromSpeech: new DraftFromSpeech<ProductDto>(
+        {
+          // Voice matches against the whole catalogue: the phone's copy, or the server's when there is none yet.
+          load: async (shopId) => {
+            const cachedItems = syncStore.allProducts(shopId);
+            const products = cachedItems.length
+              ? cachedItems
+              : (await searchProducts.execute(shopId, { query: '', categoryId: null, offset: 0, limit: 500 }))
+                  .items;
+            const units = new Map(
+              (await productFinder.reference(shopId)).units.map((u) => [u.code, u.allowsFraction]),
+            );
+            return { products, allowsFraction: (code) => units.get(code) ?? true };
+          },
+        },
+        newOperationId,
+      ),
+      learnAlias: new LearnAlias<ProductDto>({
+        learn: (shopId, productId, alias) => addProductAlias.execute(shopId, productId, alias),
+      }),
+      isEnabled: async (shopId) =>
+        (await cached(`entitlements:${shopId}`, () => getEntitlements.execute(shopId))).entitlements[
+          'voice.billing'
+        ] === true,
     },
     sync: {
       service: syncService,
