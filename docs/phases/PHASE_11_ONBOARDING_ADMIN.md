@@ -84,7 +84,7 @@ Edge Function source `supabase/functions/admin-invite-operator` — **not deploy
 | @ds/contracts | **30 / 30** |
 | @ds/domain-core | **77 / 77** |
 | DB pre-check (PGlite) | **386 / 386** assertions (new `018_onboarding_support_admin` 41) |
-| DB pgTAP + storage on real Supabase (CI) | see PROJECT_STATUS.md §3 (run on the Phase 11 commits) |
+| DB pgTAP + storage on real Supabase (CI) | ✅ passed on `ff8a9f0` ([run 40664306808](https://github.com/Solstra-Info-IT-Solutions/Dukaan-Saathi/actions/runs/40664306808)); also green on `45ae03c` and `c6f3869` |
 
 **App:** Indian mobile numbers; request + photos are idempotent on retry; photos required for the photo method;
 card offer / hidden without entitlement / progress / ready to check / no review button without `product.manage`;
