@@ -3,7 +3,7 @@ import { LoginForm } from '@/features/authentication/presentation/LoginForm';
 
 const REASON_TEXT: Record<string, string> = {
   signed_out: 'Please sign in to continue.',
-  mfa_required: 'Two-step verification (TOTP) is required for operators. MFA enrolment arrives in Phase 11.',
+  mfa_required: 'Two-step verification (TOTP) is required for operators.',
   not_an_operator: 'This account is not a platform operator.',
   role_not_permitted: 'Your operator role does not have access to that page.',
   backend_not_configured:

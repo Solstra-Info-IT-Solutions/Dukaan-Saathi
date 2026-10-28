@@ -24,5 +24,7 @@ export async function getOperatorAccess(allowedRoles: readonly PlatformRole[]): 
 export async function requireOperator(allowedRoles: readonly PlatformRole[]) {
   const decision = await getOperatorAccess(allowedRoles);
   if (decision.kind === 'allowed') return decision.operator;
+  // Operators without the second factor go to enrolment / the code prompt (Phase 11).
+  if (decision.kind === 'mfa_required') redirect('/mfa');
   redirect(`/login?reason=${decision.kind}`);
 }

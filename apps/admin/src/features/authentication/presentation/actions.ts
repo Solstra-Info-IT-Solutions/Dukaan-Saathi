@@ -27,7 +27,8 @@ export async function signInAction(_prev: LoginFormState, formData: FormData): P
   );
   // Same message for unknown email and wrong password: no account enumeration.
   if (!result.ok) return { error: 'invalid_credentials' };
-  redirect('/');
+  // Operators finish with their authenticator code (aal2); the guard sends anyone else back to /login.
+  redirect('/mfa');
 }
 
 export async function signOutAction(): Promise<void> {

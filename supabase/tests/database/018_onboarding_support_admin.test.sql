@@ -2,7 +2,7 @@
 -- announcements, and the admin RPCs (role + MFA checks, masking, audit).
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(39);
+select plan(41);
 
 create function pg_temp.login(p_user uuid, p_aal text default 'aal1') returns void language plpgsql as $$
 begin
@@ -156,6 +156,14 @@ select throws_ok($$ select public.admin_set_operator_role('00000000-0000-0000-00
 select is(public.admin_set_operator_role('00000000-0000-0000-0000-00000000c102', null, 'disabled', 'Left the team') ->> 'status',
           'disabled', 'an operator is disabled with a reason');
 select is((public.admin_dashboard_metrics() ->> 'openTickets')::int, 1, 'the dashboard counts open tickets');
+reset role;
+insert into auth.users (id, email, aud, role) values ('00000000-0000-0000-0000-00000000c1f1', 'new@ops.test', 'authenticated', 'authenticated');
+select pg_temp.login('00000000-0000-0000-0000-00000000c151', 'aal2');
+select is(public.admin_add_operator('00000000-0000-0000-0000-00000000c1f1', 'analyst') ->> 'role', 'analyst',
+          'a super admin adds an invited user as an operator');
+select pg_temp.login('00000000-0000-0000-0000-00000000c101', 'aal2');
+select throws_ok($$ select public.admin_add_operator('00000000-0000-0000-0000-00000000c1f1', 'super_admin') $$,
+  'P0001', 'DS_PERMISSION_DENIED', 'other operators cannot add operators');
 select pg_temp.login('00000000-0000-0000-0000-00000000c191', 'aal2');
 select throws_ok($$ select public.admin_list_audit_log() $$, 'P0001', 'DS_PERMISSION_DENIED', 'only super admins read the audit log');
 
