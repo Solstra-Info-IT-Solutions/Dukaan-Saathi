@@ -45,7 +45,7 @@ Repository: https://github.com/Solstra-Info-IT-Solutions/Dukaan-Saathi (`main`)
 
 ## 3. CI
 
-Run [40291729698](https://github.com/Solstra-Info-IT-Solutions/Dukaan-Saathi/actions/runs/40291729698) on commit `9fc3cc3` (Phase 09):
+Run [40647201595](https://github.com/Solstra-Info-IT-Solutions/Dukaan-Saathi/actions/runs/40647201595) on commit `141e336` (Phase 10; jobs pinned to `ubuntu-24.04`):
 
 | Job | Result |
 |---|---|

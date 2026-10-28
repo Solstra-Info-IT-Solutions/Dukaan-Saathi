@@ -63,7 +63,7 @@ No audio or transcripts are stored or sent; only a learned alias text reaches th
 | @ds/contracts | **30 / 30** |
 | @ds/domain-core | **77 / 77** |
 | DB pre-check (PGlite) | **345 / 345** assertions (new `017_voice_aliases` 8) |
-| DB pgTAP + storage + concurrency on real Supabase (CI) | {{CI}} |
+| DB pgTAP + storage + concurrency on real Supabase (CI) | ✅ passed on `141e336` ([run 40647201595](https://github.com/Solstra-Info-IT-Solutions/Dukaan-Saathi/actions/runs/40647201595)). The first run on `2d83c69` failed at "Start Supabase" before any test; the jobs are now pinned to `ubuntu-24.04` (GitHub is moving `ubuntu-latest` to Ubuntu 26) and a failed start is reported as annotations |
 
 **Benchmark:** 50 kirana transcripts (Devanagari, Hinglish, English, fractions, amounts, multi-item) → **50 / 50**
 correct draft lines without edits (target ≥ 85 %). Audio on a real phone not yet measured (see spike).
