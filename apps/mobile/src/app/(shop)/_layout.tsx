@@ -115,6 +115,10 @@ export default function ShopLayout() {
       <Tabs.Screen name="supplier" options={{ href: null, title: t('more.suppliers') }} />
       <Tabs.Screen name="supplier-new" options={{ href: null, title: t('purchases.addSupplier') }} />
       <Tabs.Screen name="purchase-new" options={{ href: null, title: t('purchases.newPurchase') }} />
+      <Tabs.Screen name="setup-help" options={{ href: null, title: t('onboarding.request.title') }} />
+      <Tabs.Screen name="help" options={{ href: null, title: t('more.help') }} />
+      <Tabs.Screen name="help-new" options={{ href: null, title: t('support.new') }} />
+      <Tabs.Screen name="help-ticket" options={{ href: null, title: t('more.help') }} />
     </Tabs>
   );
 }

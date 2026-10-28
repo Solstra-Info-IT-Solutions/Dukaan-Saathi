@@ -77,6 +77,7 @@ import {
 import {
   CommitImport,
   FixImportRow,
+  GetImportJob,
   ImportRepositoryImpl,
   ListProblemRows,
   PreviewCsvImport,
@@ -93,6 +94,25 @@ import {
   SupabaseExpenseDataSource,
   VoidExpense,
 } from '@/features/expenses';
+import {
+  GetLatestOnboarding,
+  type OnboardingRequestViewModelDeps,
+  OnboardingRepositoryImpl,
+  type OnboardingStatusViewModelDeps,
+  RequestOnboarding,
+  SupabaseOnboardingDataSource,
+} from '@/features/onboarding';
+import {
+  type AnnouncementsViewModelDeps,
+  CreateTicket,
+  GetAnnouncements,
+  GetTicketThread,
+  ListTickets,
+  ReplyToTicket,
+  SupabaseSupportDataSource,
+  SupportRepositoryImpl,
+  type SupportViewModelDeps,
+} from '@/features/support';
 import {
   CloseDay,
   type DayCloseViewModelDeps,
@@ -192,6 +212,7 @@ export interface AppFeatures {
     fixRow: FixImportRow;
     skipRow: SkipImportRow;
     commitImport: CommitImport;
+    getImportJob: GetImportJob;
     newId: () => string;
   };
   billing: BillingViewModelDeps & ReceiptViewModelDeps & SalesHistoryViewModelDeps;
@@ -205,6 +226,8 @@ export interface AppFeatures {
   customers: UdhaarListViewModelDeps & CustomerFormViewModelDeps & CustomerLedgerViewModelDeps;
   sync: SyncStatusViewModelDeps & { service: SyncService };
   voice: VoiceBillingViewModelDeps<ProductDto> & { isEnabled(shopId: string): Promise<boolean> };
+  onboarding: OnboardingStatusViewModelDeps & OnboardingRequestViewModelDeps;
+  support: SupportViewModelDeps & AnnouncementsViewModelDeps;
 }
 
 export interface Container {
@@ -258,6 +281,10 @@ function createFeatures(supabase: TypedSupabaseClient, storage: KeyValueStorage)
   const billingRepository = new BillingRepositoryImpl(new SupabaseBillingDataSource(supabase));
   const reportsRepository = new ReportsRepositoryImpl(new SupabaseReportsDataSource(supabase));
   const expenseRepository = new ExpenseRepositoryImpl(new SupabaseExpenseDataSource(supabase, readFileBytes));
+  const onboardingRepository = new OnboardingRepositoryImpl(
+    new SupabaseOnboardingDataSource(supabase, readFileBytes),
+  );
+  const supportRepository = new SupportRepositoryImpl(new SupabaseSupportDataSource(supabase));
   const getSettings = new GetShopSettings(shopRepository);
   const getEntitlements = new GetShopEntitlements(shopRepository);
   const searchProducts = new SearchProducts(catalogueRepository);
@@ -464,6 +491,7 @@ function createFeatures(supabase: TypedSupabaseClient, storage: KeyValueStorage)
       fixRow: new FixImportRow(importRepository),
       skipRow: new SkipImportRow(importRepository),
       commitImport: new CommitImport(importRepository),
+      getImportJob: new GetImportJob(importRepository),
       newId: newOperationId,
     },
     billing: {
@@ -566,6 +594,24 @@ function createFeatures(supabase: TypedSupabaseClient, storage: KeyValueStorage)
         (await cached(`entitlements:${shopId}`, () => getEntitlements.execute(shopId))).entitlements[
           'voice.billing'
         ] === true,
+    },
+    onboarding: {
+      getLatestOnboarding: new GetLatestOnboarding(onboardingRepository),
+      isEnabled: async (shopId) =>
+        (await cached(`entitlements:${shopId}`, () => getEntitlements.execute(shopId))).entitlements[
+          'onboarding.managed'
+        ] === true,
+      requestOnboarding: new RequestOnboarding(onboardingRepository),
+      photos: receiptPhotoPicker,
+      newId: newOperationId,
+    },
+    support: {
+      listTickets: new ListTickets(supportRepository),
+      getThread: new GetTicketThread(supportRepository),
+      createTicket: new CreateTicket(supportRepository),
+      replyToTicket: new ReplyToTicket(supportRepository),
+      getAnnouncements: new GetAnnouncements(supportRepository),
+      newId: newOperationId,
     },
     sync: {
       service: syncService,

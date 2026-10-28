@@ -8,7 +8,8 @@
     "offline": "You are offline",
     "back": "Back",
     "cancel": "Cancel",
-    "confirm": "Confirm"
+    "confirm": "Confirm",
+    "dismiss": "Dismiss"
   },
   "diagnostics": {
     "title": "App status",
@@ -226,7 +227,8 @@
       "body_one": "{{count}} bill or payment on this phone is not sent yet. It stays here and is sent when you sign in again.",
       "body_other": "{{count}} bills or payments on this phone are not sent yet. They stay here and are sent when you sign in again.",
       "signOutAnyway": "Sign out anyway"
-    }
+    },
+    "help": "Help & support"
   },
   "catalogue": {
     "search": "Search by name, Hindi name or barcode",
@@ -317,7 +319,8 @@
       "EMPTY_FILE": "The file is empty.",
       "FILE_TOO_LARGE": "The file is too large. Ask us for managed onboarding instead.",
       "MISSING_COLUMNS": "Required columns are missing: {{columns}}.",
-      "NO_ROWS": "The file has a header but no items."
+      "NO_ROWS": "The file has a header but no items.",
+      "NOT_OPEN": "This item list was already added or cancelled."
     },
     "rowErrors": {
       "REQUIRED_NAME": "Name missing",
@@ -789,6 +792,86 @@
       "busy": "The microphone is busy. Try again.",
       "unknown": "Voice did not work. Try again.",
       "nothing_understood": "No items were understood. Try again or type them."
+    }
+  },
+  "onboarding": {
+    "offer": {
+      "title": "Too many items to type?",
+      "body": "Send us photos of your item list or rate card. Our team will type it in and you check it before anything is added.",
+      "action": "Ask us to set it up"
+    },
+    "working": {
+      "title": "We are setting up your items"
+    },
+    "review": {
+      "title": "Your item list is ready",
+      "body": "Check the items our team prepared and add them to your shop.",
+      "action": "Check and add items"
+    },
+    "status": {
+      "new": "Request received. We will contact you soon.",
+      "assigned": "Someone from our team is looking at it.",
+      "in_progress": "Our team is typing in your items."
+    },
+    "methods": {
+      "photos": "Photos",
+      "spreadsheet": "Excel file",
+      "call": "Call me"
+    },
+    "methodHelp": {
+      "photos": "Take clear photos of your item list, rate card or bills.",
+      "spreadsheet": "We will call you to collect your Excel or CSV file.",
+      "call": "We will call you and note down your items."
+    },
+    "request": {
+      "title": "Set up my items",
+      "intro": "Our team adds your items for you. Nothing is added to your shop until you check and approve it.",
+      "method": "How should we get your list?",
+      "phone": "Phone number to call (optional)",
+      "preferredTime": "Best time to call (optional)",
+      "note": "Anything we should know (optional)",
+      "photos_one": "{{count}} photo",
+      "photos_other": "{{count}} photos",
+      "photoLabel": "Photo {{number}}",
+      "removePhoto": "Remove photo {{number}}",
+      "send": "Send request"
+    },
+    "errors": {
+      "PHONE_INVALID": "Enter a 10-digit mobile number.",
+      "PHOTOS_REQUIRED": "Add at least one photo of your item list.",
+      "TOO_MANY_PHOTOS": "You can send up to 30 photos.",
+      "PHOTO_FAILED": "Could not open the camera or gallery."
+    }
+  },
+  "support": {
+    "intro": "Ask our team anything. We usually reply within a working day.",
+    "empty": "No questions yet",
+    "new": "Ask a question",
+    "category": "What is it about?",
+    "categories": {
+      "billing": "Billing",
+      "sync": "Sync / offline",
+      "catalogue": "Items",
+      "account": "Account",
+      "other": "Something else"
+    },
+    "subject": "Short title",
+    "message": "Your question",
+    "reply": "Your reply",
+    "send": "Send",
+    "you": "You",
+    "team": "Dukaan Saathi team",
+    "closedNote": "This question is closed. Ask a new one if you need more help.",
+    "status": {
+      "waiting_support": "Waiting for our reply",
+      "waiting_shop": "We replied",
+      "resolved": "Solved",
+      "closed": "Closed"
+    },
+    "errors": {
+      "SUBJECT_REQUIRED": "Write a short title (3 to 120 letters).",
+      "MESSAGE_REQUIRED": "Write your question.",
+      "MESSAGE_TOO_LONG": "The message is too long (2000 letters at most)."
     }
   }
 }

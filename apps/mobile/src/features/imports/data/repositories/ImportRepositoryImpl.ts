@@ -26,6 +26,7 @@ async function translated<T>(work: () => Promise<T>): Promise<T> {
 export class ImportRepositoryImpl implements ImportRepository {
   constructor(private readonly remote: SupabaseImportDataSource) {}
 
+  getJob = (jobId: string) => translated(() => this.remote.getJob(jobId));
   createJob = (shopId: string, fileName: string, opId: string) =>
     translated(() => this.remote.createJob(shopId, fileName, opId));
   stageRows = (jobId: string, rows: ImportRowInput[]) => translated(() => this.remote.stageRows(jobId, rows));

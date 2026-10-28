@@ -145,8 +145,20 @@ Phase order may shift for dependencies; nothing is removed without a note in PRO
 | BL-1006 | quick line for unmatched phrases, quantity edit inside the sheet, en-IN second pass | ⬜ backlog |
 
 ## Phase 11 — Onboarding & admin panel
-BL-1101 operator auth + MFA + guard · BL-1102 dashboard · BL-1103 shops module · BL-1104 users/memberships · BL-1105 onboarding queue + app request ·
-BL-1106 import workbench · BL-1107 support (app + admin) · BL-1108 content & announcements · BL-1109 audit viewer · BL-1110 operators (Edge invite) · BL-1111 notification templates.
+| ID | Item | Status |
+|---|---|---|
+| BL-1101 | operator auth + MFA + guard | ✅ TOTP enrol/verify, aal2 checked in every admin RPC |
+| BL-1102 | dashboard | ✅ |
+| BL-1103 | shops module | ✅ search, detail, suspend/reactivate |
+| BL-1104 | users/memberships | 🟨 deactivate member, revoke device; replace owner not built |
+| BL-1105 | onboarding queue + app request | ✅ photos from the app |
+| BL-1106 | import workbench | 🟨 CSV upload into the shop's import; XLSX (`import-preview`) and operator commit not built |
+| BL-1107 | support (app + admin) | ✅ internal notes hidden |
+| BL-1108 | content & announcements | 🟨 announcements done; other content blocks in Phase 12 |
+| BL-1109 | audit viewer | ✅ |
+| BL-1110 | operators (Edge invite) | 🟨 built and tested in SQL; Edge Function not deployed yet |
+| BL-1111 | notification templates | ⬜ deferred (with push credentials) |
+| BL-1112 | admin login CAPTCHA, hosting (OD-14) | ⬜ |
 
 ## Phase 12 — Subscriptions & flags
 BL-1201 plans/entitlements admin · BL-1202 overrides · BL-1203 feature flags + overrides + kill switch · BL-1204 platform config editor + revisions/rollback ·

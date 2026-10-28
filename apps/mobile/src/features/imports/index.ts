@@ -4,6 +4,7 @@ export type { ImportRepository } from './domain/repositories/ImportRepository';
 export {
   CommitImport,
   FixImportRow,
+  GetImportJob,
   ListProblemRows,
   PreviewCsvImport,
   SkipImportRow,

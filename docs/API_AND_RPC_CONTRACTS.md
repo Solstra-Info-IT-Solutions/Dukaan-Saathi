@@ -136,8 +136,13 @@ Legend: Ph = phase; Idem = idempotent via client_operation_id.
 | `sync_push(p_input)` | R | offline-sync | 09 | signed in; each op runs its own RPC checks | per-op | `{ shopId, deviceId, operations: [{ clientOperationId, operation: create_sale \| create_customer \| record_customer_repayment, payload }] }` (≤ 50) → `{ results: [{ clientOperationId, status: applied \| replayed \| needs_review \| quarantined \| retry, result?, code?, details? }] }`; each op in its own savepoint |
 | `sync_pull(p_shop_id, p_device_id, p_cursors, p_limit)` | R | offline-sync | 09 | member + active device; `customer.view` for customers | — | `{ serverTime, products, categories, customers: { rows, cursor, more }, customerAliases, settings }`; keyset `updatedAt\|id`, archived rows included, no item cost |
 | `voice-parse` *(optional, flag `voice.cloud_parse`)* | E | voice-billing | 10 | `sale.create`, entitlement `voice.billing` | — | Only if deterministic parser insufficient (ADR-017) |
-| `create_onboarding_request(p_input)` | R | onboarding | 11 | owner | yes | Upload paths in private bucket |
-| `create_support_ticket(p_input)` / `add_ticket_message(p_input)` | R | support | 11 | member | yes | |
+| `create_onboarding_request(p_input)` | R | onboarding | 11 | `onboarding.request` + entitlement `onboarding.managed` | by request id | `{ id, shopId, method, contactPhone?, preferredTime?, note? }`; one open request per shop (`DS_CONFLICT request_open`) → OnboardingRequest |
+| `add_onboarding_file(p_input)` | R | onboarding | 11 | `onboarding.request` | by storage path | `{ shopId, requestId, path, fileName, mimeType, sizeBytes }` after the upload to `onboarding-files/<shop>/<request>/…`; max 30 files |
+| `get_import_job(p_job_id)` | R | imports | 11 | `product.manage` | — | Summary of a job of the caller's shop (owner reviews an operator-prepared import) |
+| `onboarding_requests`, `onboarding_files` | T (read only) | onboarding | 11 | `onboarding.request` (RLS) | — | Status card in the app |
+| `create_support_ticket(p_input)` / `add_ticket_message(p_input)` | R | support | 11 | `support.create` | by ticket id | `{ id, shopId, category, subject, body }` / `{ shopId, ticketId, body }`; a shop reply sets `waiting_support`; closed → `DS_CONFLICT` |
+| `support_tickets`, `support_messages` | T (read only) | support | 11 | own tickets; `staff.manage` sees the shop's (RLS) | — | Internal notes are never readable by shops |
+| `get_announcements()` | R | content | 11 | authenticated | — | Published announcements in their window, critical first |
 | `register_push_token(p_input)` | R | notifications | 06 | member + device | — | |
 | `get_client_config(p_shop_id, p_app_version, p_platform)` | R | config | 02 (basic), 12 (full) | authenticated | — | Platform config, flags, announcements, content, revision |
 | `get_shop_entitlements(p_shop_id)` | R | subscriptions | 02 (basic), 12 | member | — | Resolved map + revision + plan + status |
@@ -145,7 +150,7 @@ Legend: Ph = phase; Idem = idempotent via client_operation_id.
 | `process_verified_subscription_event(p_event)` | R | subscriptions | 12 | **service_role only** | event id | Updates `shop_subscriptions`; audits |
 | `send-notifications` | E | notifications | 06/11 | pg_cron (secret header) | job id | Digests, reminders, announcements |
 | `admin_*` | A | admin | 11–12 | platform roles | — | See ADMIN_PANEL_SPECIFICATION.md §4 |
-| `admin-invite-operator` | E | admin | 11 | `super_admin` | — | Uses service role to create auth user + invite |
+| `admin-invite-operator` | E | admin | 11 | `super_admin` + aal2 (checked via `admin_list_operators` as the caller) | — | Body `{ email, role, redirectTo? }`; invites with the service role, then `admin_add_operator` as the caller (ADR-064). Source in `supabase/functions/`; deploy pending |
 
 ## 5. Detailed contracts (core financial operations)
 

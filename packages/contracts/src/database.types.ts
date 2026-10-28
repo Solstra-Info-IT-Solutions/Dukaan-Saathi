@@ -202,6 +202,75 @@ export type Database = {
         Update: never
         Relationships: []
       }
+      onboarding_requests: {
+        Row: {
+          assigned_to: string | null
+          created_at: string
+          id: string
+          import_job_id: string | null
+          method: string
+          note: string | null
+          operator_may_commit: boolean
+          preferred_time: string | null
+          contact_phone: string | null
+          requested_by: string
+          shop_id: string
+          status: string
+          status_note: string | null
+          updated_at: string
+        }
+        Insert: never
+        Update: never
+        Relationships: []
+      }
+      onboarding_files: {
+        Row: {
+          created_at: string
+          file_name: string
+          id: string
+          mime_type: string
+          request_id: string
+          shop_id: string
+          size_bytes: number
+          storage_path: string
+        }
+        Insert: never
+        Update: never
+        Relationships: []
+      }
+      support_tickets: {
+        Row: {
+          assigned_to: string | null
+          category: string
+          created_at: string
+          created_by: string
+          id: string
+          last_message_at: string
+          priority: string
+          shop_id: string
+          status: string
+          subject: string
+          updated_at: string
+        }
+        Insert: never
+        Update: never
+        Relationships: []
+      }
+      support_messages: {
+        Row: {
+          author_id: string
+          author_kind: string
+          body: string
+          created_at: string
+          id: string
+          is_internal: boolean
+          shop_id: string
+          ticket_id: string
+        }
+        Insert: never
+        Update: never
+        Relationships: []
+      }
       expenses: {
         Row: {
           amount_paise: number
@@ -1160,6 +1229,12 @@ export type Database = {
         Returns: Json
       }
       stage_import_rows: { Args: { p_job_id: string; p_rows: Json }; Returns: Json }
+      create_onboarding_request: { Args: { p_input: Json }; Returns: Json }
+      add_onboarding_file: { Args: { p_input: Json }; Returns: Json }
+      get_import_job: { Args: { p_job_id: string }; Returns: Json }
+      create_support_ticket: { Args: { p_input: Json }; Returns: Json }
+      add_ticket_message: { Args: { p_input: Json }; Returns: Json }
+      get_announcements: { Args: never; Returns: Json }
       update_import_row: { Args: { p_patch?: Json; p_row_id: string; p_skip?: boolean }; Returns: Json }
       accept_shop_invitation: {
         Args: { p_invitation_id: string }

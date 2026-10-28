@@ -1,4 +1,5 @@
 import { formatPaise, paise } from '@ds/domain-core';
+import type { ReactNode } from 'react';
 import { FlatList, StyleSheet, View } from 'react-native';
 import { Button, Chip, FAB, List, Searchbar, Text } from 'react-native-paper';
 import { useTranslation } from 'react-i18next';
@@ -14,6 +15,7 @@ export function ProductsScreen({
   onAddProduct,
   onOpenCategories,
   onOpenImport,
+  banner,
 }: {
   deps: ProductsViewModelDeps;
   shopId: string;
@@ -22,6 +24,8 @@ export function ProductsScreen({
   onAddProduct: () => void;
   onOpenCategories: () => void;
   onOpenImport: () => void;
+  /** Shown above the search box (managed onboarding status). */
+  banner?: ReactNode;
 }) {
   const { t, i18n } = useTranslation();
   const { state, actions } = useProductsViewModel(deps, shopId);
@@ -29,6 +33,7 @@ export function ProductsScreen({
 
   const header = (
     <View style={styles.header}>
+      {banner}
       <Searchbar
         placeholder={t('catalogue.search')}
         accessibilityLabel={t('catalogue.search')}

@@ -1,11 +1,12 @@
 import type { ImportField } from '@ds/domain-core';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { translateError } from '@/core/errors/translateError';
 import type { CsvFileSource, ImportCommitResult, ImportJobSummary } from '../../domain/entities/Import';
 import {
   type CommitImport,
   type FixImportRow,
+  type GetImportJob,
   ImportInputError,
   type ListProblemRows,
   type PreviewCsvImport,
@@ -19,6 +20,7 @@ export interface ImportViewModelDeps {
   fixRow: FixImportRow;
   skipRow: SkipImportRow;
   commitImport: CommitImport;
+  getImportJob: GetImportJob;
   newId: () => string;
   /** Called after a successful commit so catalogue caches can refresh. */
   onCommitted?: () => void;
@@ -33,9 +35,10 @@ export const importKeys = { problems: (jobId: string) => ['imports', jobId, 'pro
  * CSV import: pick → parse and stage (server validates) → fix or skip problem rows → commit once.
  * The commit operation id is created once per job, so a retried commit cannot import twice.
  */
-export function useImportViewModel(deps: ImportViewModelDeps, shopId: string) {
+/** `initialJobId`: open an import our team prepared (managed onboarding) instead of picking a file. */
+export function useImportViewModel(deps: ImportViewModelDeps, shopId: string, initialJobId?: string) {
   const queryClient = useQueryClient();
-  const [phase, setPhase] = useState<ImportPhase>('idle');
+  const [phase, setPhase] = useState<ImportPhase>(initialJobId ? 'reading' : 'idle');
   const [summary, setSummary] = useState<ImportJobSummary | null>(null);
   const [unmappedHeaders, setUnmapped] = useState<string[]>([]);
   const [result, setResult] = useState<ImportCommitResult | null>(null);
@@ -62,6 +65,34 @@ export function useImportViewModel(deps: ImportViewModelDeps, shopId: string) {
       setErrorParams({});
     }
   }, []);
+
+  // Loads once per job id; callers may pass a fresh deps object on every render.
+  const getImportJob = useRef(deps.getImportJob);
+  useEffect(() => {
+    if (!initialJobId) return;
+    let live = true;
+    getImportJob.current
+      .execute(initialJobId)
+      .then((job) => {
+        if (!live) return;
+        if (job.status === 'committed' || job.status === 'cancelled') {
+          setErrorKey('imports.errors.NOT_OPEN');
+          setPhase('idle');
+          return;
+        }
+        setSummary(job);
+        setUnmapped([]);
+        setPhase('review');
+      })
+      .catch((error: unknown) => {
+        if (!live) return;
+        fail(error);
+        setPhase('idle');
+      });
+    return () => {
+      live = false;
+    };
+  }, [fail, initialJobId]);
 
   const pickFile = useCallback(async () => {
     if (busy.current) return;

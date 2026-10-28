@@ -8,6 +8,7 @@ import type { ImportRepository } from '../domain/repositories/ImportRepository';
 import {
   CommitImport,
   FixImportRow,
+  GetImportJob,
   ImportInputError,
   ListProblemRows,
   PreviewCsvImport,
@@ -26,13 +27,14 @@ class FakeImportRepository implements ImportRepository {
   stageCalls = 0;
   commits: string[] = [];
   commitError: unknown = null;
+  jobStatus: ImportJobSummary['status'] = 'review';
 
   private summary(): ImportJobSummary {
     const active = this.rows.filter((r) => !r.skipped);
     const errors = active.filter((r) => r.errors.length > 0);
     return {
       jobId: JOB,
-      status: 'review',
+      status: this.jobStatus,
       fileName: 'items.csv',
       rowCount: this.rows.length,
       validCount: active.length - errors.length,
@@ -48,6 +50,9 @@ class FakeImportRepository implements ImportRepository {
     if (!raw.name) errors.push('REQUIRED_NAME');
     if (!/^\d+(\.\d{1,2})?$/.test(raw.price ?? '')) errors.push('INVALID_PRICE');
     return errors;
+  }
+  async getJob() {
+    return this.summary();
   }
   async createJob() {
     return this.summary();
@@ -94,6 +99,7 @@ function deps(repo: FakeImportRepository, file: PickedFile | null = { name: 'ite
     fixRow: new FixImportRow(repo),
     skipRow: new SkipImportRow(repo),
     commitImport: new CommitImport(repo),
+    getImportJob: new GetImportJob(repo),
     newId: () => OP,
   };
 }
@@ -159,6 +165,28 @@ describe('useImportViewModel', () => {
     await act(async () => result.current.actions.pickFile());
     expect(result.current.state.phase).toBe('idle');
     expect(repo.stageCalls).toBe(0);
+  });
+
+  it('opens an import our team prepared and lets the owner commit it', async () => {
+    const repo = new FakeImportRepository();
+    await repo.stageRows(JOB, [
+      { rowNumber: 2, name: 'Sugar', price: '45' },
+      { rowNumber: 3, name: 'Tea', price: '120' },
+    ]);
+    const { result } = await renderHookWithQuery(() => useImportViewModel(deps(repo, null), SHOP_A, JOB));
+    await waitFor(() => expect(result.current.state.phase).toBe('review'));
+    expect(result.current.state.canCommit).toBe(true);
+    await act(async () => result.current.actions.commit());
+    expect(result.current.state.phase).toBe('committed');
+    expect(repo.commits).toEqual([OP]);
+  });
+
+  it('says so when the prepared import was already added', async () => {
+    const repo = new FakeImportRepository();
+    repo.jobStatus = 'committed';
+    const { result } = await renderHookWithQuery(() => useImportViewModel(deps(repo, null), SHOP_A, JOB));
+    await waitFor(() => expect(result.current.state.errorKey).toBe('imports.errors.NOT_OPEN'));
+    expect(result.current.state.phase).toBe('idle');
   });
 });
 

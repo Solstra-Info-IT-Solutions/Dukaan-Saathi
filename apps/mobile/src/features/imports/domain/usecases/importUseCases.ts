@@ -47,6 +47,14 @@ export class PreviewCsvImport {
   }
 }
 
+/** Opens an import that our team staged for the shop (managed onboarding); the owner reviews and commits it. */
+export class GetImportJob {
+  constructor(private readonly imports: ImportRepository) {}
+  execute(jobId: string): Promise<ImportJobSummary> {
+    return this.imports.getJob(jobId);
+  }
+}
+
 export class ListProblemRows {
   constructor(private readonly imports: ImportRepository) {}
   execute(jobId: string, limit = 200): Promise<ImportRow[]> {

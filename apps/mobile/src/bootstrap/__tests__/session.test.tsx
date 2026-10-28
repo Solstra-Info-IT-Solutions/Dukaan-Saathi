@@ -92,16 +92,18 @@ describe('navigation gating', () => {
       'dayClose',
       'settings',
       'staff',
+      'help',
       'sync',
       'diagnostics',
     ]);
-    // Cashiers: today's own sales, udhaar, the stock list and closing their drawer — not suppliers, expenses,
-    // settings or staff.
+    // Cashiers: today's own sales, udhaar, the stock list, closing their drawer and asking us for help — not
+    // suppliers, expenses, settings or staff.
     expect(visibleModules(DEFAULT_ROLE_PERMISSIONS.cashier).map((m) => m.key)).toEqual([
       'reports',
       'udhaar',
       'stock',
       'dayClose',
+      'help',
       'sync',
       'diagnostics',
     ]);

@@ -11,3 +11,4 @@ export * from './reports';
 export * from './inventory';
 export * from './customers';
 export * from './sync';
+export * from './support';

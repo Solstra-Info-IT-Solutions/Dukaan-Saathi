@@ -13,13 +13,16 @@ export function ImportScreen({
   deps,
   shopId,
   onDone,
+  jobId,
 }: {
   deps: ImportViewModelDeps;
   shopId: string;
   onDone: () => void;
+  /** Review an import prepared by our team. */
+  jobId?: string;
 }) {
   const { t } = useTranslation();
-  const { state, actions } = useImportViewModel(deps, shopId);
+  const { state, actions } = useImportViewModel(deps, shopId, jobId);
   const error = (
     <HelperText type="error" visible={state.errorKey !== null}>
       {state.errorKey ? t(state.errorKey, state.errorParams) : ''}

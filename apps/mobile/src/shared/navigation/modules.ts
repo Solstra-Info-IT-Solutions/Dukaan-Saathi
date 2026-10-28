@@ -17,7 +17,8 @@ export interface ModuleEntry {
     | '/stock'
     | '/suppliers'
     | '/udhaar'
-    | '/sync';
+    | '/sync'
+    | '/help';
   labelKey: string;
   icon: string;
   permission?: Permission;
@@ -69,6 +70,8 @@ export const MORE_MODULES: readonly ModuleEntry[] = [
     icon: 'account-group-outline',
     permission: 'staff.manage',
   },
+  // Questions to our team (Phase 11).
+  { key: 'help', href: '/help', labelKey: 'more.help', icon: 'lifebuoy', permission: 'support.create' },
   // Everyone: what is waiting on this phone (Phase 09).
   { key: 'sync', href: '/sync', labelKey: 'more.sync', icon: 'cloud-sync-outline' },
   { key: 'diagnostics', href: '/diagnostics', labelKey: 'diagnostics.title', icon: 'information-outline' },

@@ -21,6 +21,12 @@ export class SupabaseImportDataSource {
     return parse(data);
   }
 
+  getJob(jobId: string) {
+    return this.call(this.client.rpc('get_import_job', { p_job_id: jobId }), (d) =>
+      ImportJobSummarySchema.parse(d),
+    );
+  }
+
   createJob(shopId: string, fileName: string, opId: string) {
     return this.call(
       this.client.rpc('create_import_job', {

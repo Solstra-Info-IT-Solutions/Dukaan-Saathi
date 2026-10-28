@@ -40,6 +40,10 @@ Deliberate gaps. Each has a reason and, where relevant, a backlog item.
 | Android only for pilot | Focus | BL-IOS |
 | Each staff member needs their own phone login | Shared-device mode not designed yet | BL-S01 |
 | Profit is an estimate when cost prices are missing | Data quality | — |
+| Managed onboarding: owners approve every prepared import; operators upload CSV only (no XLSX); shops send photos, spreadsheets are collected by our team | Owner control (ADR-062); scope | BL-1106 |
+| No push or WhatsApp notice when our team replies to a ticket or an import is ready; the app shows it when opened | Notification templates and push credentials pending | BL-1111 |
+| Admin panel: no ownership transfer, no CAPTCHA, not hosted yet; operator invites need the Edge Function deployed | Scope; OD-14 | BL-1104, BL-1110, BL-1112 |
+| Dismissed announcements come back after the app restarts | Kept in memory only | — |
 
 ## Technical
 | Limitation | Mitigation |
