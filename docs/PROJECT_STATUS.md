@@ -46,7 +46,7 @@ Repository: https://github.com/Solstra-Info-IT-Solutions/Dukaan-Saathi (`main`)
 
 ## 3. CI
 
-Run [40670031769](https://github.com/Solstra-Info-IT-Solutions/Dukaan-Saathi/actions/runs/40670031769) on commit `95b05ca` (Phase 12):
+Run [40853469311](https://github.com/Solstra-Info-IT-Solutions/Dukaan-Saathi/actions/runs/40853469311) on commit `706f990` (Phase 13; create_sale p95 1.1 ms at 100k bills):
 
 | Job | Result |
 |---|---|

@@ -91,7 +91,7 @@ restore-drill steps and what to time; the drill itself is a Phase 14 task once p
 | @ds/contracts | **30 / 30** |
 | @ds/domain-core | **77 / 77** |
 | DB pre-check (PGlite) | **449 / 449** assertions (new `020_hardening` 16) |
-| DB pgTAP, concurrency and load on real Supabase (CI) | RESULT_CI |
+| DB pgTAP, concurrency and load on real Supabase (CI) | ✅ passed on `706f990` ([run 40853469311](https://github.com/Solstra-Info-IT-Solutions/Dukaan-Saathi/actions/runs/40853469311)) |
 
 **Database (020):** old app refused, config and offline push still allowed, minimum version passes, no header not
 gated; maintenance blocks writes, keeps reads and admin open, ignores GET; ten tickets an hour allowed, the eleventh
@@ -105,8 +105,8 @@ Static checks: format ✅, typecheck ✅ (all workspaces), lint ✅, admin `next
 ## Acceptance criteria
 - [x] Supabase security & performance advisors clean or justified (above).
 - [~] Accessibility pass — automated checks pass; the TalkBack / font-scale / contrast pass needs a phone.
-- [~] Load test: create_sale p95 < 150 ms DB time at 100k sales/shop — the check runs in CI on every push
-  (RESULT_LOAD).
+- [x] Load test: create_sale p95 < 150 ms DB time at 100k sales/shop — the check runs in CI on every push
+  — **met: p50 1.0 ms, p95 1.1 ms, max 14.3 ms with 100 200 bills in one shop** (CI run 40853469311).
 - [ ] PITR enabled; restore drill documented with timings — needs the paid plan and production (Phase 14).
 
 ## Decisions (DECISIONS.md)
