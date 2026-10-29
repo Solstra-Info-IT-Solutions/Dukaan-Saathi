@@ -1,7 +1,7 @@
 import { PLATFORM_ROLES } from '@ds/contracts';
 import { requireOperator } from '@/core/auth/requireOperator';
 import { adminClient, rpc } from '@/core/admin/rpc';
-import { card, PageTitle, rupees } from '@/core/ui/ui';
+import { PageTitle, rupees, StatCard } from '@/core/ui/ui';
 import { HealthPanel } from '@/features/health/presentation/HealthPanel';
 
 interface Metrics {
@@ -39,13 +39,13 @@ export default async function DashboardPage() {
   ];
   return (
     <>
-      <PageTitle title="Dashboard" subtitle="Across all shops. Figures update on every visit." />
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      <PageTitle
+        title="Dashboard"
+        subtitle="Across all shops · figures update on every visit · Har Dukaan Ka Saathi"
+      />
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {tiles.map(([label, value]) => (
-          <div key={label} className={card}>
-            <p className="text-xs text-slate-500">{label}</p>
-            <p className="text-xl font-semibold">{value}</p>
-          </div>
+          <StatCard key={label} label={label} value={value} />
         ))}
       </div>
       {seesHealth ? <HealthPanel /> : null}

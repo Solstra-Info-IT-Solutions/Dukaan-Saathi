@@ -97,22 +97,22 @@ export default async function FlagsPage({
                 {f.key}
               </h2>
               <span
-                className={`rounded px-2 text-xs ${f.enabled ? 'bg-emerald-100 text-emerald-900' : 'bg-slate-100'}`}
+                className={`rounded px-2 text-xs ${f.enabled ? 'bg-success-bg text-brand' : 'bg-surface-soft'}`}
               >
                 {flagSummary(f)}
               </span>
-              {!f.killSwitchable ? <span className="text-xs text-slate-500">not kill-switchable</span> : null}
-              <span className="text-xs text-slate-500">
+              {!f.killSwitchable ? <span className="text-xs text-ink-2">not kill-switchable</span> : null}
+              <span className="text-xs text-ink-2">
                 rev {f.revision} · {when(f.updatedAt)}
                 {f.updatedBy ? ` · ${f.updatedBy}` : ''}
               </span>
             </div>
-            <p className="text-sm text-slate-600">{f.description}</p>
+            <p className="text-sm text-ink-2">{f.description}</p>
             {f.overrides.length > 0 ? (
               <ul className="mt-1 text-xs">
                 {f.overrides.map((o) => (
                   <li key={o.shopId}>
-                    <Link href={`/shops/${o.shopId}`} className="text-emerald-800 underline">
+                    <Link href={`/shops/${o.shopId}`} className="text-brand underline">
                       {o.shopName}
                     </Link>
                     : {o.value ? 'on' : 'off'} — {o.reason}
@@ -132,7 +132,7 @@ export default async function FlagsPage({
             ) : null}
             {canEdit ? (
               <details className="mt-2">
-                <summary className="cursor-pointer text-sm text-emerald-800">Edit</summary>
+                <summary className="cursor-pointer text-sm text-brand">Edit</summary>
                 <div className="mt-2">
                   <FlagForm flag={f} />
                 </div>

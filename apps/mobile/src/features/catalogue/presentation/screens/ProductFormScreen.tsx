@@ -1,6 +1,7 @@
 import { Controller } from 'react-hook-form';
 import { ScrollView, StyleSheet, View } from 'react-native';
-import { Button, Chip, Dialog, HelperText, Portal, Switch, Text, TextInput } from 'react-native-paper';
+import { Chip, Dialog, HelperText, Portal, Switch, Text, TextInput } from 'react-native-paper';
+import { Button } from '@/shared/components/Button';
 import { useTranslation } from 'react-i18next';
 import { ErrorState, LoadingState } from '@/shared/components/ScreenState';
 import { spacing } from '@/shared/theme/theme';

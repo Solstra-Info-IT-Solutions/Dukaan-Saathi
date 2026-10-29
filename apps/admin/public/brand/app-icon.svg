@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 128 128" role="img" aria-label="Dukaan Saathi shopping bag and growth arrow icon">
+<rect x="0" y="0" width="128" height="128" rx="26" fill="#0F3D2E"/>
+        <g stroke-linecap="round" stroke-linejoin="round">
+          <path d="M36 44 C36 27 47 16 61 16 C75 16 86 27 86 44" fill="none" stroke="#FFFFFF" stroke-width="8"/>
+          <path d="M24 43 Q24 36 32 36 H90 Q98 36 99 44 L107 99 Q108 111 96 113 H28 Q16 112 18 100 Z" fill="#FFFFFF"/>
+          <path d="M28 92 C43 100 56 97 68 84 L83 68" fill="none" stroke="#0F3D2E" stroke-width="8"/>
+          <path d="M66 68 L85 65 L88 84" fill="none" stroke="#0F3D2E" stroke-width="8"/>
+          <path d="M92 20 L98 9 M105 28 L117 23 M80 10 L82 1" fill="none" stroke="#FFFFFF" stroke-width="5"/>
+        </g>
+</svg>

@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { requireOperator } from '@/core/auth/requireOperator';
 import { adminClient } from '@/core/admin/rpc';
-import { button, input, PageTitle, table, when } from '@/core/ui/ui';
+import { button, input, PageTitle, table, tableWrap, when } from '@/core/ui/ui';
 import { rolesFor } from '@/features/navigation/domain/modules';
 import { SupportRepository } from '@/features/support/data/SupportRepository';
 import { isTicketStatus, TICKET_STATUS_LABEL, TICKET_STATUSES } from '@/features/support/domain/support';
@@ -40,43 +40,45 @@ export default async function SupportQueuePage({
           Search
         </button>
       </form>
-      <table className={table}>
-        <thead>
-          <tr>
-            <th>Subject</th>
-            <th>Shop</th>
-            <th>Category</th>
-            <th>Priority</th>
-            <th>Status</th>
-            <th>Assigned</th>
-            <th>Last message</th>
-          </tr>
-        </thead>
-        <tbody>
-          {tickets.map((t) => (
-            <tr key={t.id}>
-              <td>
-                <Link href={`/support/${t.id}`} className="font-medium text-emerald-800 hover:underline">
-                  {t.subject}
-                </Link>
-              </td>
-              <td>{t.shopName}</td>
-              <td>{t.category}</td>
-              <td
-                className={
-                  t.priority === 'urgent' || t.priority === 'high' ? 'font-medium text-red-700' : undefined
-                }
-              >
-                {t.priority}
-              </td>
-              <td>{TICKET_STATUS_LABEL[t.status]}</td>
-              <td>{t.assignedToEmail ?? '—'}</td>
-              <td>{when(t.lastMessageAt)}</td>
+      <div className={tableWrap}>
+        <table className={table}>
+          <thead>
+            <tr>
+              <th>Subject</th>
+              <th>Shop</th>
+              <th>Category</th>
+              <th>Priority</th>
+              <th>Status</th>
+              <th>Assigned</th>
+              <th>Last message</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
-      {tickets.length === 0 ? <p className="mt-4 text-sm text-slate-600">No tickets.</p> : null}
+          </thead>
+          <tbody>
+            {tickets.map((t) => (
+              <tr key={t.id}>
+                <td>
+                  <Link href={`/support/${t.id}`} className="font-medium text-brand hover:underline">
+                    {t.subject}
+                  </Link>
+                </td>
+                <td>{t.shopName}</td>
+                <td>{t.category}</td>
+                <td
+                  className={
+                    t.priority === 'urgent' || t.priority === 'high' ? 'font-medium text-error' : undefined
+                  }
+                >
+                  {t.priority}
+                </td>
+                <td>{TICKET_STATUS_LABEL[t.status]}</td>
+                <td>{t.assignedToEmail ?? '—'}</td>
+                <td>{when(t.lastMessageAt)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      {tickets.length === 0 ? <p className="mt-4 text-sm text-ink-2">No tickets.</p> : null}
     </>
   );
 }

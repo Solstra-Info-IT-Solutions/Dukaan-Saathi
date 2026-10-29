@@ -1,7 +1,6 @@
 import { formatPaise, paise } from '@ds/domain-core';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import {
-  Button,
   Card,
   Chip,
   HelperText,
@@ -11,8 +10,10 @@ import {
   Text,
   TextInput,
 } from 'react-native-paper';
+import { Button } from '@/shared/components/Button';
 import { useTranslation } from 'react-i18next';
 import { LoadingState } from '@/shared/components/ScreenState';
+import { semantic } from '@/shared/theme/brand';
 import { spacing } from '@/shared/theme/theme';
 import type { PaymentMethod } from '../../domain/entities/Purchases';
 import {
@@ -196,6 +197,6 @@ const styles = StyleSheet.create({
   chips: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.xs },
   row: { flexDirection: 'row', gap: spacing.xs },
   flex: { flex: 1 },
-  errorCard: { borderColor: '#B3261E', borderWidth: 1 },
+  errorCard: { borderColor: semantic.error, borderWidth: 1 },
   button: { minHeight: 56 },
 });

@@ -1,7 +1,9 @@
 import { FlatList, StyleSheet, View } from 'react-native';
-import { Button, Card, Chip, HelperText, List, Text, TextInput } from 'react-native-paper';
+import { Card, Chip, HelperText, List, Text, TextInput } from 'react-native-paper';
+import { Button } from '@/shared/components/Button';
 import { useTranslation } from 'react-i18next';
 import { ErrorState, LoadingState } from '@/shared/components/ScreenState';
+import { semantic } from '@/shared/theme/brand';
 import { spacing } from '@/shared/theme/theme';
 import type { StockItem } from '../../domain/entities/Inventory';
 import { qty, type StockViewModelDeps, useStockViewModel } from '../viewmodels/useStockViewModel';
@@ -123,5 +125,5 @@ const styles = StyleSheet.create({
   flex: { flex: 1 },
   empty: { textAlign: 'center', padding: spacing.lg, opacity: 0.7 },
   qty: { alignItems: 'flex-end', justifyContent: 'center' },
-  low: { color: '#B3261E' },
+  low: { color: semantic.error },
 });

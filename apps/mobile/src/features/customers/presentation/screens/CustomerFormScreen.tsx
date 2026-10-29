@@ -1,5 +1,6 @@
 import { ScrollView, StyleSheet } from 'react-native';
-import { Button, HelperText, TextInput } from 'react-native-paper';
+import { HelperText, TextInput } from 'react-native-paper';
+import { Button } from '@/shared/components/Button';
 import { useTranslation } from 'react-i18next';
 import { spacing } from '@/shared/theme/theme';
 import {

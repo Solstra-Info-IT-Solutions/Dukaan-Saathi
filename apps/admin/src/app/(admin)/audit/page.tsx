@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { requireOperator } from '@/core/auth/requireOperator';
 import { adminClient } from '@/core/admin/rpc';
-import { button, input, PageTitle, table, when } from '@/core/ui/ui';
+import { button, input, PageTitle, table, tableWrap, when } from '@/core/ui/ui';
 import { AuditRepository } from '@/features/audit/data/AuditRepository';
 import { rolesFor } from '@/features/navigation/domain/modules';
 
@@ -61,53 +61,52 @@ export default async function AuditPage({
           Filter
         </button>
       </form>
-      <table className={table}>
-        <thead>
-          <tr>
-            <th>When</th>
-            <th>Who</th>
-            <th>Shop</th>
-            <th>Action</th>
-            <th>What</th>
-            <th>Change</th>
-            <th>Reason</th>
-          </tr>
-        </thead>
-        <tbody>
-          {page.items.map((e) => (
-            <tr key={e.id} className="align-top">
-              <td className="whitespace-nowrap">{when(e.occurredAt)}</td>
-              <td>
-                {e.actor ?? '—'} <span className="text-slate-500">({e.actorKind})</span>
-              </td>
-              <td>
-                {e.shopId ? (
-                  <Link href={`/shops/${e.shopId}`} className="text-emerald-800 hover:underline">
-                    {e.shopName ?? e.shopId}
-                  </Link>
-                ) : (
-                  '—'
-                )}
-              </td>
-              <td className="font-mono text-xs">{e.action}</td>
-              <td className="text-xs">
-                {e.entityType ?? ''} {e.entityId ?? ''}
-              </td>
-              <td className="max-w-md break-all font-mono text-xs">
-                {e.before != null ? <div className="text-slate-500">{short(e.before)}</div> : null}
-                <div>{short(e.after)}</div>
-              </td>
-              <td>{e.reason ?? ''}</td>
+      <div className={tableWrap}>
+        <table className={table}>
+          <thead>
+            <tr>
+              <th>When</th>
+              <th>Who</th>
+              <th>Shop</th>
+              <th>Action</th>
+              <th>What</th>
+              <th>Change</th>
+              <th>Reason</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
-      {page.items.length === 0 ? <p className="mt-4 text-sm text-slate-600">No events.</p> : null}
+          </thead>
+          <tbody>
+            {page.items.map((e) => (
+              <tr key={e.id} className="align-top">
+                <td className="whitespace-nowrap">{when(e.occurredAt)}</td>
+                <td>
+                  {e.actor ?? '—'} <span className="text-ink-2">({e.actorKind})</span>
+                </td>
+                <td>
+                  {e.shopId ? (
+                    <Link href={`/shops/${e.shopId}`} className="text-brand hover:underline">
+                      {e.shopName ?? e.shopId}
+                    </Link>
+                  ) : (
+                    '—'
+                  )}
+                </td>
+                <td className="font-mono text-xs">{e.action}</td>
+                <td className="text-xs">
+                  {e.entityType ?? ''} {e.entityId ?? ''}
+                </td>
+                <td className="max-w-md break-all font-mono text-xs">
+                  {e.before != null ? <div className="text-ink-2">{short(e.before)}</div> : null}
+                  <div>{short(e.after)}</div>
+                </td>
+                <td>{e.reason ?? ''}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      {page.items.length === 0 ? <p className="mt-4 text-sm text-ink-2">No events.</p> : null}
       {page.nextBeforeId ? (
-        <Link
-          href={`/audit?${next.toString()}`}
-          className="mt-4 inline-block text-sm text-emerald-800 underline"
-        >
+        <Link href={`/audit?${next.toString()}`} className="mt-4 inline-block text-sm text-brand underline">
           Older
         </Link>
       ) : null}

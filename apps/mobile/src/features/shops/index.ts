@@ -23,6 +23,7 @@ export { SupabaseShopDataSource } from './data/datasources/remote/SupabaseShopDa
 export { SelectShopScreen } from './presentation/screens/SelectShopScreen';
 export { CreateShopScreen } from './presentation/screens/CreateShopScreen';
 export { ShopHomeScreen } from './presentation/screens/ShopHomeScreen';
+export type { HomeShortcut } from './presentation/screens/ShopHomeScreen';
 export { ShopSettingsScreen } from './presentation/screens/ShopSettingsScreen';
 export type { SelectShopViewModelDeps } from './presentation/viewmodels/useSelectShopViewModel';
 export type { CreateShopViewModelDeps } from './presentation/viewmodels/useCreateShopViewModel';

@@ -46,8 +46,8 @@ export default async function ConfigPage({
             <h2 id={`cfg-${e.key}`} className="font-mono font-semibold">
               {e.key}
             </h2>
-            <p className="text-xs text-slate-600">{HELP[e.key] ?? ''}</p>
-            <p className="text-xs text-slate-500">
+            <p className="text-xs text-ink-2">{HELP[e.key] ?? ''}</p>
+            <p className="text-xs text-ink-2">
               rev {e.revision} · {when(e.updatedAt)}
               {e.updatedBy ? ` · ${e.updatedBy}` : ''}
             </p>

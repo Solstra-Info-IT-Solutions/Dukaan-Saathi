@@ -3,11 +3,13 @@ import { useRouter } from 'expo-router';
 import { Tabs } from 'expo-router/js-tabs';
 import { useEffect } from 'react';
 import { AppState, View } from 'react-native';
+import { useTheme } from 'react-native-paper';
 import { useTranslation } from 'react-i18next';
 import { useDependencies } from '@/bootstrap/DependenciesProvider';
 import { useConnectivityStore } from '@/core/connectivity/connectivity';
 import { useSessionStore } from '@/core/session/sessionStore';
 import { SyncChip } from '@/features/sync';
+import { BrandLogo } from '@/shared/components/BrandLogo';
 
 /** Runs the phone's sync for the active shop: start, back online, back in the foreground (OFFLINE_SYNC_DESIGN.md §5). */
 function useShopSync() {
@@ -37,11 +39,23 @@ export default function ShopLayout() {
   const { t } = useTranslation();
   const router = useRouter();
   const shopName = useSessionStore((s) => s.activeShop?.shopName ?? '');
+  const theme = useTheme();
   useShopSync();
   return (
     <Tabs
       screenOptions={{
         headerTitle: shopName,
+        // Brand: white header with the forest shop name and the logo mark; forest for the active tab.
+        headerStyle: { backgroundColor: theme.colors.surface },
+        headerShadowVisible: false,
+        headerTitleStyle: { color: theme.colors.onSurface, fontFamily: 'Inter', fontWeight: '700' },
+        headerTintColor: theme.colors.primary,
+        headerLeft: () => <BrandLogo variant="icon" width={28} style={{ marginLeft: 16 }} />,
+        tabBarActiveTintColor: theme.colors.primary,
+        tabBarInactiveTintColor: theme.colors.onSurfaceVariant,
+        tabBarStyle: { backgroundColor: theme.colors.surface, borderTopColor: theme.colors.outlineVariant },
+        tabBarLabelStyle: { fontFamily: 'Inter', fontWeight: '600' },
+        sceneStyle: { backgroundColor: theme.colors.background },
         headerRight: () => (
           <View style={{ marginRight: 8 }}>
             <SyncChip onPress={() => router.push('/sync')} />

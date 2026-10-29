@@ -1,5 +1,6 @@
 import { StyleSheet, View } from 'react-native';
-import { ActivityIndicator, Button, Text } from 'react-native-paper';
+import { ActivityIndicator, Text } from 'react-native-paper';
+import { Button } from '@/shared/components/Button';
 import { useTranslation } from 'react-i18next';
 import { spacing } from '../theme/theme';
 

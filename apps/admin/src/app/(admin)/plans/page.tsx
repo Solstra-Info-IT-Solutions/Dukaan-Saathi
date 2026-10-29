@@ -1,6 +1,6 @@
 import { requireOperator } from '@/core/auth/requireOperator';
 import { adminClient } from '@/core/admin/rpc';
-import { ActionError, button, card, input, Notice, PageTitle, rupees, table } from '@/core/ui/ui';
+import { ActionError, button, card, input, Notice, PageTitle, rupees, table, tableWrap } from '@/core/ui/ui';
 import { BillingRepository, type Plan } from '@/features/billing/data/BillingRepository';
 import { formatEntitlement } from '@/features/billing/domain/entitlements';
 import { savePlanAction, setPlanEntitlementAction } from '@/features/billing/presentation/actions';
@@ -88,70 +88,72 @@ export default async function PlansPage({
       <ActionError code={error} />
       <Notice text={done ? 'Saved.' : null} />
       <div className="overflow-x-auto">
-        <table className={table}>
-          <thead>
-            <tr>
-              <th>Entitlement</th>
-              {plans.map((p) => (
-                <th key={p.id}>
-                  {p.name.en} <span className="font-mono text-xs">({p.code})</span>
-                  <div className="text-xs font-normal">
-                    {rupees(p.pricePaise)} / {p.billingPeriod} · {p.status}
-                    {p.isPublic ? ' · public' : ''} · {p.shopCount} shops
-                  </div>
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {definitions.map((d) => (
-              <tr key={d.key} className="align-top">
-                <td>
-                  <div className="font-mono text-xs">{d.key}</div>
-                  <div className="text-xs text-slate-500">{d.description}</div>
-                </td>
+        <div className={tableWrap}>
+          <table className={table}>
+            <thead>
+              <tr>
+                <th>Entitlement</th>
                 {plans.map((p) => (
-                  <td key={p.id}>
-                    {canEdit ? (
-                      <form action={setPlanEntitlementAction} className="flex gap-1">
-                        <input type="hidden" name="planId" value={p.id} />
-                        <input type="hidden" name="key" value={d.key} />
-                        <input type="hidden" name="valueType" value={d.valueType} />
-                        {d.valueType === 'boolean' ? (
-                          <select
-                            name="value"
-                            defaultValue={String(p.entitlements[d.key] ?? d.defaultValue)}
-                            aria-label={`${d.key} for ${p.code}`}
-                            className={input}
-                          >
-                            <option value="true">Yes</option>
-                            <option value="false">No</option>
-                          </select>
-                        ) : (
-                          <input
-                            name="value"
-                            defaultValue={
-                              p.entitlements[d.key] === null
-                                ? 'unlimited'
-                                : String(p.entitlements[d.key] ?? '')
-                            }
-                            aria-label={`${d.key} for ${p.code}`}
-                            className={`${input} w-24`}
-                          />
-                        )}
-                        <button type="submit" className="text-xs text-emerald-800 underline">
-                          Set
-                        </button>
-                      </form>
-                    ) : (
-                      formatEntitlement(p.entitlements[d.key])
-                    )}
-                  </td>
+                  <th key={p.id}>
+                    {p.name.en} <span className="font-mono text-xs">({p.code})</span>
+                    <div className="text-xs font-normal">
+                      {rupees(p.pricePaise)} / {p.billingPeriod} · {p.status}
+                      {p.isPublic ? ' · public' : ''} · {p.shopCount} shops
+                    </div>
+                  </th>
                 ))}
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {definitions.map((d) => (
+                <tr key={d.key} className="align-top">
+                  <td>
+                    <div className="font-mono text-xs">{d.key}</div>
+                    <div className="text-xs text-ink-2">{d.description}</div>
+                  </td>
+                  {plans.map((p) => (
+                    <td key={p.id}>
+                      {canEdit ? (
+                        <form action={setPlanEntitlementAction} className="flex gap-1">
+                          <input type="hidden" name="planId" value={p.id} />
+                          <input type="hidden" name="key" value={d.key} />
+                          <input type="hidden" name="valueType" value={d.valueType} />
+                          {d.valueType === 'boolean' ? (
+                            <select
+                              name="value"
+                              defaultValue={String(p.entitlements[d.key] ?? d.defaultValue)}
+                              aria-label={`${d.key} for ${p.code}`}
+                              className={input}
+                            >
+                              <option value="true">Yes</option>
+                              <option value="false">No</option>
+                            </select>
+                          ) : (
+                            <input
+                              name="value"
+                              defaultValue={
+                                p.entitlements[d.key] === null
+                                  ? 'unlimited'
+                                  : String(p.entitlements[d.key] ?? '')
+                              }
+                              aria-label={`${d.key} for ${p.code}`}
+                              className={`${input} w-24`}
+                            />
+                          )}
+                          <button type="submit" className="text-xs text-brand underline">
+                            Set
+                          </button>
+                        </form>
+                      ) : (
+                        formatEntitlement(p.entitlements[d.key])
+                      )}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       {canEdit ? (

@@ -1,7 +1,8 @@
 import { formatPaise, paise } from '@ds/domain-core';
 import type { ReactNode } from 'react';
 import { FlatList, StyleSheet, View } from 'react-native';
-import { Button, Chip, FAB, List, Searchbar, Text } from 'react-native-paper';
+import { Chip, FAB, List, Searchbar, Text } from 'react-native-paper';
+import { Button } from '@/shared/components/Button';
 import { useTranslation } from 'react-i18next';
 import { EmptyState, ErrorState, LoadingState } from '@/shared/components/ScreenState';
 import { spacing } from '@/shared/theme/theme';

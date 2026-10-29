@@ -1,7 +1,8 @@
 import { formatQuantity, quantityMilli } from '@ds/domain-core';
 import { REPORT_GROUPS } from '@ds/contracts';
 import { RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
-import { Banner, Button, Card, Chip, HelperText, SegmentedButtons, Text } from 'react-native-paper';
+import { Banner, Card, Chip, HelperText, SegmentedButtons, Text } from 'react-native-paper';
+import { Button } from '@/shared/components/Button';
 import { useTranslation } from 'react-i18next';
 import { ErrorState, LoadingState } from '@/shared/components/ScreenState';
 import { spacing } from '@/shared/theme/theme';

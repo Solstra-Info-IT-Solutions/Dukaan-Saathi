@@ -33,6 +33,7 @@ export async function proxy(request: NextRequest) {
   return response;
 }
 
+// Public brand images (logos, app icons) load before sign-in; they contain no data.
 export const config = {
-  matcher: ['/((?!_next/static|_next/image|favicon.ico).*)'],
+  matcher: ['/((?!_next/static|_next/image|favicon.ico|icon.png|apple-icon.png|brand/).*)'],
 };

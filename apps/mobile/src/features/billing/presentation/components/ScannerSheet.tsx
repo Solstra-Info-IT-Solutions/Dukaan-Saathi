@@ -1,6 +1,7 @@
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import { StyleSheet, View } from 'react-native';
-import { Button, Modal, Portal, Text, useTheme } from 'react-native-paper';
+import { Modal, Portal, Text, useTheme } from 'react-native-paper';
+import { Button } from '@/shared/components/Button';
 import { useTranslation } from 'react-i18next';
 import { spacing } from '@/shared/theme/theme';
 import type { useBillingViewModel } from '../viewmodels/useBillingViewModel';

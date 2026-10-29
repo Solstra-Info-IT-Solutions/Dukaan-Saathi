@@ -32,13 +32,13 @@ export default async function TicketPage({
               key={m.id}
               className={`rounded-lg border p-3 text-sm ${
                 m.isInternal
-                  ? 'border-amber-300 bg-amber-50'
+                  ? 'border-warning/40 bg-warning-bg'
                   : m.authorKind === 'operator'
-                    ? 'border-emerald-200 bg-emerald-50'
-                    : 'border-slate-200 bg-white'
+                    ? 'border-action-light bg-tint'
+                    : 'border-line bg-white'
               }`}
             >
-              <p className="mb-1 text-xs text-slate-600">
+              <p className="mb-1 text-xs text-ink-2">
                 {m.author ?? (m.authorKind === 'shop' ? 'Shop' : 'Operator')} · {when(m.createdAt)}
                 {m.isInternal ? ' · internal note' : ''}
               </p>
@@ -97,7 +97,7 @@ export default async function TicketPage({
             </button>
           </form>
           <p className="mt-3 text-sm">
-            <Link href={`/shops/${t.shopId}`} className="text-emerald-800 underline">
+            <Link href={`/shops/${t.shopId}`} className="text-brand underline">
               Open shop
             </Link>
           </p>

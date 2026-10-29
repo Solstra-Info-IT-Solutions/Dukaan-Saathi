@@ -1,0 +1,38 @@
+:root {
+  /* Dukaan Saathi brand */
+  --ds-primary: #0F3D2E;
+  --ds-primary-hover: #0B3024;
+  --ds-green: #22C55E;
+  --ds-green-dark: #16A34A;
+  --ds-green-light: #A7F3D0;
+  --ds-green-tint: #F0FDF4;
+  --ds-success: #15803D;
+  --ds-warning: #FACC15;
+  --ds-orange: #FB923C;
+
+  /* Neutrals */
+  --ds-text-primary: #1F2937;
+  --ds-text-secondary: #6B7280;
+  --ds-text-muted: #9CA3AF;
+  --ds-border: #E5E7EB;
+  --ds-surface: #FFFFFF;
+  --ds-background: #F8FAFC;
+  --ds-surface-soft: #F9FAFB;
+
+  /* Semantic status colors */
+  --ds-success-bg: #DCFCE7;
+  --ds-warning-text: #B45309;
+  --ds-warning-bg: #FEF3C7;
+  --ds-error: #B91C1C;
+  --ds-error-bg: #FEE2E2;
+  --ds-info: #1D4ED8;
+  --ds-info-bg: #DBEAFE;
+
+  /* Shape and elevation */
+  --ds-radius-sm: 8px;
+  --ds-radius-md: 12px;
+  --ds-radius-lg: 16px;
+  --ds-radius-xl: 24px;
+  --ds-shadow-card: 0 2px 10px rgba(15, 61, 46, 0.06);
+  --ds-shadow-modal: 0 16px 48px rgba(15, 61, 46, 0.16);
+}

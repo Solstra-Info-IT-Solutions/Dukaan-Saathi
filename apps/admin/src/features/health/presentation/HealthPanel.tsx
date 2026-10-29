@@ -14,17 +14,17 @@ export async function HealthPanel() {
         System health
       </h2>
       {alerts.length === 0 ? (
-        <p className="text-sm text-emerald-800">All good.</p>
+        <p className="text-sm text-brand">All good.</p>
       ) : (
         <ul className="mb-2 flex flex-col gap-1 text-sm" role="alert">
           {alerts.map((a) => (
-            <li key={a.text} className={a.level === 'error' ? 'text-red-700' : 'text-amber-800'}>
+            <li key={a.text} className={a.level === 'error' ? 'text-error' : 'text-warning'}>
               {a.text}
             </li>
           ))}
         </ul>
       )}
-      <ul className="text-xs text-slate-600">
+      <ul className="text-xs text-ink-2">
         {h.jobs.map((j) => (
           <li key={j.job}>
             {j.job}: {j.status ?? 'never ran'} · {when(j.lastRunAt)}

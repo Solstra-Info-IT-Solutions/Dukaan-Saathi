@@ -1,7 +1,9 @@
 import { ScrollView, StyleSheet } from 'react-native';
-import { Button, Card, HelperText, List, Text } from 'react-native-paper';
+import { Card, HelperText, List, Text } from 'react-native-paper';
+import { Button } from '@/shared/components/Button';
 import { useTranslation } from 'react-i18next';
 import { ErrorState, LoadingState } from '@/shared/components/ScreenState';
+import { BrandLogo } from '@/shared/components/BrandLogo';
 import { spacing } from '@/shared/theme/theme';
 import type { ShopActivation } from '../../domain/entities/Shop';
 import { type SelectShopViewModelDeps, useSelectShopViewModel } from '../viewmodels/useSelectShopViewModel';
@@ -28,6 +30,7 @@ export function SelectShopScreen({
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
+      <BrandLogo variant="horizontal" width={200} style={styles.logo} />
       <Text variant="headlineSmall" accessibilityRole="header">
         {nothingYet ? t('shops.select.welcome') : t('shops.select.title')}
       </Text>
@@ -96,6 +99,8 @@ export function SelectShopScreen({
 }
 
 const styles = StyleSheet.create({
+  // Horizontal logo 1000×260 includes its own clear space on the right, so it sits left-aligned with the title.
+  logo: { marginLeft: -6, marginBottom: spacing.sm },
   container: { padding: spacing.md, gap: spacing.md },
   card: { marginTop: spacing.xs },
   opening: { marginRight: spacing.md },

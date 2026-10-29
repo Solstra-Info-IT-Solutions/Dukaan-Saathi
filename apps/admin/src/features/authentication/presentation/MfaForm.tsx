@@ -2,6 +2,7 @@
 
 import { useActionState, useState, useTransition } from 'react';
 import { type MfaState, startEnrolmentAction, verifyCodeAction } from './mfaActions';
+import { button, input } from '@/core/ui/classes';
 
 const ERRORS: Record<NonNullable<MfaState['error']>, string> = {
   invalid_code: 'That code is not right. Enter the 6 digits shown in your authenticator app now.',
@@ -32,12 +33,12 @@ export function MfaForm({
   if (!activeFactor) {
     return (
       <div className="flex flex-col gap-4">
-        <p className="text-sm text-slate-700">
+        <p className="text-sm text-ink">
           Set up an authenticator app (Google Authenticator, Microsoft Authenticator, 1Password…) for this
           account.
         </p>
         {error ? (
-          <p role="alert" className="text-sm text-red-700">
+          <p role="alert" className="text-sm text-error">
             {ERRORS[error]}
           </p>
         ) : null}
@@ -45,7 +46,7 @@ export function MfaForm({
           type="button"
           disabled={starting}
           onClick={() => startTransition(async () => setEnrolment(await start()))}
-          className="rounded-md bg-emerald-800 px-4 py-2 font-semibold text-white disabled:opacity-60"
+          className={`${button} w-full`}
         >
           {starting ? 'Preparing…' : 'Set up authenticator'}
         </button>
@@ -59,13 +60,13 @@ export function MfaForm({
         <div className="flex flex-col items-center gap-2">
           {/* eslint-disable-next-line @next/next/no-img-element -- data URL from Supabase */}
           <img src={shown.qrCode} alt="QR code for your authenticator app" width={180} height={180} />
-          <p className="text-xs text-slate-600">
+          <p className="text-xs text-ink-2">
             Or enter this key: <code className="break-all">{shown.secret}</code>
           </p>
         </div>
       ) : null}
       <input type="hidden" name="factorId" value={activeFactor} />
-      <label className="flex flex-col gap-1 text-sm font-medium">
+      <label className="flex flex-col gap-1 text-sm font-medium text-ink">
         6-digit code
         <input
           name="code"
@@ -74,19 +75,15 @@ export function MfaForm({
           pattern="\d{6}"
           maxLength={6}
           required
-          className="rounded-md border border-slate-300 px-3 py-2 text-base tracking-widest"
+          className={`${input} text-base tracking-widest`}
         />
       </label>
       {error ? (
-        <p role="alert" className="text-sm text-red-700">
+        <p role="alert" className="text-sm text-error">
           {ERRORS[error]}
         </p>
       ) : null}
-      <button
-        type="submit"
-        disabled={pending}
-        className="rounded-md bg-emerald-800 px-4 py-2 font-semibold text-white disabled:opacity-60"
-      >
+      <button type="submit" disabled={pending} className={`${button} w-full`}>
         {pending ? 'Checking…' : 'Verify'}
       </button>
     </form>

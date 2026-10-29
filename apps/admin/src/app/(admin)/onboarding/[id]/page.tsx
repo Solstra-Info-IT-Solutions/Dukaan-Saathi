@@ -42,19 +42,19 @@ export default async function OnboardingRequestPage({
         <section className={card}>
           <h2 className="mb-2 font-semibold">Request</h2>
           <dl className="grid grid-cols-[8rem_1fr] gap-1 text-sm">
-            <dt className="text-slate-500">Call on</dt>
+            <dt className="text-ink-2">Call on</dt>
             <dd>{r.contactPhone ?? '—'}</dd>
-            <dt className="text-slate-500">Best time</dt>
+            <dt className="text-ink-2">Best time</dt>
             <dd>{r.preferredTime ?? '—'}</dd>
-            <dt className="text-slate-500">Note</dt>
+            <dt className="text-ink-2">Note</dt>
             <dd>{r.note ?? '—'}</dd>
-            <dt className="text-slate-500">Assigned to</dt>
+            <dt className="text-ink-2">Assigned to</dt>
             <dd>{r.assignedToEmail ?? '—'}</dd>
-            <dt className="text-slate-500">Status note</dt>
+            <dt className="text-ink-2">Status note</dt>
             <dd>{r.statusNote ?? '—'}</dd>
           </dl>
           <p className="mt-2 text-sm">
-            <Link href={`/shops/${r.shopId}`} className="text-emerald-800 underline">
+            <Link href={`/shops/${r.shopId}`} className="text-brand underline">
               Open shop
             </Link>
           </p>
@@ -66,21 +66,16 @@ export default async function OnboardingRequestPage({
             {r.files.map((f) => (
               <li key={f.id}>
                 {links[f.path] ? (
-                  <a
-                    href={links[f.path]}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="text-emerald-800 underline"
-                  >
+                  <a href={links[f.path]} target="_blank" rel="noreferrer" className="text-brand underline">
                     {f.fileName}
                   </a>
                 ) : (
                   f.fileName
                 )}{' '}
-                <span className="text-slate-500">({Math.round(f.sizeBytes / 1024)} KB)</span>
+                <span className="text-ink-2">({Math.round(f.sizeBytes / 1024)} KB)</span>
               </li>
             ))}
-            {r.files.length === 0 ? <li className="text-slate-600">No files.</li> : null}
+            {r.files.length === 0 ? <li className="text-ink-2">No files.</li> : null}
           </ul>
         </section>
 
@@ -93,7 +88,7 @@ export default async function OnboardingRequestPage({
               {r.importJob.status}
             </p>
           ) : (
-            <p className="mb-2 text-sm text-slate-600">Nothing prepared yet.</p>
+            <p className="mb-2 text-sm text-ink-2">Nothing prepared yet.</p>
           )}
           {canStage ? (
             <form action={uploadImportCsvAction} className="flex flex-col gap-2">
@@ -119,9 +114,7 @@ export default async function OnboardingRequestPage({
 
         <section className={card}>
           <h2 className="mb-2 font-semibold">Next step</h2>
-          {NEXT_STEPS[r.status].length === 0 ? (
-            <p className="text-sm text-slate-600">Nothing to do.</p>
-          ) : null}
+          {NEXT_STEPS[r.status].length === 0 ? <p className="text-sm text-ink-2">Nothing to do.</p> : null}
           <div className="flex flex-col gap-2">
             {NEXT_STEPS[r.status].map((to) => (
               <form key={to} action={changeOnboardingStatusAction} className="flex flex-wrap gap-2">
@@ -143,7 +136,7 @@ export default async function OnboardingRequestPage({
             ))}
           </div>
           {r.status === 'awaiting_owner' ? (
-            <p className="mt-2 text-sm text-slate-600">
+            <p className="mt-2 text-sm text-ink-2">
               The owner sees the items under Items → Import in the app and approves them there.
             </p>
           ) : null}

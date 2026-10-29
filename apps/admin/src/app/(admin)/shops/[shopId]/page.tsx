@@ -10,6 +10,7 @@ import {
   PageTitle,
   secondaryButton,
   table,
+  tableWrap,
   when,
 } from '@/core/ui/ui';
 import { rolesFor } from '@/features/navigation/domain/modules';
@@ -57,7 +58,7 @@ export default async function ShopPage({
       <div className="grid gap-4 lg:grid-cols-2">
         <section className={card} aria-labelledby="status">
           <h2 id="status" className="mb-2 font-semibold">
-            Status: <span className={suspended ? 'text-red-700' : undefined}>{d.shop.status}</span>
+            Status: <span className={suspended ? 'text-error' : undefined}>{d.shop.status}</span>
           </h2>
           <p className="text-sm">
             Plan: {d.subscription ? `${d.subscription.plan} (${d.subscription.status})` : '—'}
@@ -94,76 +95,80 @@ export default async function ShopPage({
           <h2 id="members" className="mb-2 font-semibold">
             Members
           </h2>
-          <table className={table}>
-            <tbody>
-              {d.members.map((m) => (
-                <tr key={m.userId}>
-                  <td>{m.name ?? '—'}</td>
-                  <td>{m.phone ?? '—'}</td>
-                  <td>{m.role}</td>
-                  <td>{m.status}</td>
-                  <td>
-                    {canSupport && m.role !== 'owner' && m.status === 'active' ? (
-                      <form action={deactivateMemberAction} className="flex gap-1">
-                        <input type="hidden" name="shopId" value={shopId} />
-                        <input type="hidden" name="userId" value={m.userId} />
-                        <input
-                          name="reason"
-                          required
-                          minLength={5}
-                          placeholder="Reason"
-                          aria-label={`Reason to deactivate ${m.name ?? m.role}`}
-                          className={input}
-                        />
-                        <button type="submit" className={secondaryButton}>
-                          Deactivate
-                        </button>
-                      </form>
-                    ) : null}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <div className={tableWrap}>
+            <table className={table}>
+              <tbody>
+                {d.members.map((m) => (
+                  <tr key={m.userId}>
+                    <td>{m.name ?? '—'}</td>
+                    <td>{m.phone ?? '—'}</td>
+                    <td>{m.role}</td>
+                    <td>{m.status}</td>
+                    <td>
+                      {canSupport && m.role !== 'owner' && m.status === 'active' ? (
+                        <form action={deactivateMemberAction} className="flex gap-1">
+                          <input type="hidden" name="shopId" value={shopId} />
+                          <input type="hidden" name="userId" value={m.userId} />
+                          <input
+                            name="reason"
+                            required
+                            minLength={5}
+                            placeholder="Reason"
+                            aria-label={`Reason to deactivate ${m.name ?? m.role}`}
+                            className={input}
+                          />
+                          <button type="submit" className={secondaryButton}>
+                            Deactivate
+                          </button>
+                        </form>
+                      ) : null}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </section>
 
         <section className={card} aria-labelledby="devices">
           <h2 id="devices" className="mb-2 font-semibold">
             Phones
           </h2>
-          <table className={table}>
-            <tbody>
-              {d.devices.map((v) => (
-                <tr key={v.deviceId}>
-                  <td>{v.code}</td>
-                  <td>
-                    {v.platform} {v.appVersion ?? ''}
-                  </td>
-                  <td>{v.status}</td>
-                  <td>{when(v.lastSeenAt)}</td>
-                  <td>
-                    {canSupport && v.status === 'active' ? (
-                      <form action={revokeDeviceAction} className="flex gap-1">
-                        <input type="hidden" name="shopId" value={shopId} />
-                        <input type="hidden" name="deviceId" value={v.deviceId} />
-                        <input
-                          name="reason"
-                          required
-                          minLength={5}
-                          placeholder="Reason"
-                          aria-label={`Reason to revoke phone ${v.code}`}
-                          className={input}
-                        />
-                        <button type="submit" className={secondaryButton}>
-                          Revoke
-                        </button>
-                      </form>
-                    ) : null}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <div className={tableWrap}>
+            <table className={table}>
+              <tbody>
+                {d.devices.map((v) => (
+                  <tr key={v.deviceId}>
+                    <td>{v.code}</td>
+                    <td>
+                      {v.platform} {v.appVersion ?? ''}
+                    </td>
+                    <td>{v.status}</td>
+                    <td>{when(v.lastSeenAt)}</td>
+                    <td>
+                      {canSupport && v.status === 'active' ? (
+                        <form action={revokeDeviceAction} className="flex gap-1">
+                          <input type="hidden" name="shopId" value={shopId} />
+                          <input type="hidden" name="deviceId" value={v.deviceId} />
+                          <input
+                            name="reason"
+                            required
+                            minLength={5}
+                            placeholder="Reason"
+                            aria-label={`Reason to revoke phone ${v.code}`}
+                            className={input}
+                          />
+                          <button type="submit" className={secondaryButton}>
+                            Revoke
+                          </button>
+                        </form>
+                      ) : null}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </section>
 
         <section className={card} aria-labelledby="requests">
@@ -173,7 +178,7 @@ export default async function ShopPage({
           <ul className="text-sm">
             {d.onboarding.map((r) => (
               <li key={r.id}>
-                <Link href={`/onboarding/${r.id}`} className="text-emerald-800 underline">
+                <Link href={`/onboarding/${r.id}`} className="text-brand underline">
                   Onboarding ({r.method})
                 </Link>{' '}
                 · {r.status} · {when(r.createdAt)}
@@ -181,13 +186,13 @@ export default async function ShopPage({
             ))}
             {d.tickets.map((t) => (
               <li key={t.id}>
-                <Link href={`/support/${t.id}`} className="text-emerald-800 underline">
+                <Link href={`/support/${t.id}`} className="text-brand underline">
                   {t.subject}
                 </Link>{' '}
                 · {t.status} · {when(t.lastMessageAt)}
               </li>
             ))}
-            {d.onboarding.length + d.tickets.length === 0 ? <li className="text-slate-600">None.</li> : null}
+            {d.onboarding.length + d.tickets.length === 0 ? <li className="text-ink-2">None.</li> : null}
           </ul>
         </section>
 

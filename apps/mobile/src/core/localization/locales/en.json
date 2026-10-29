@@ -1,6 +1,7 @@
 {
   "app": {
-    "name": "Dukaan Saathi"
+    "name": "Dukaan Saathi",
+    "tagline": "Har Dukaan Ka Saathi"
   },
   "common": {
     "retry": "Try again",
@@ -149,9 +150,7 @@
         "grace": "Grace period",
         "expired": "Free plan",
         "cancelled": "Cancelled"
-      },
-      "billingSoonTitle": "Billing is coming next",
-      "billingSoonBody": "Quick billing arrives in the next release. Your shop, staff and settings are ready."
+      }
     }
   },
   "settings": {
@@ -926,5 +925,8 @@
     "accept": "I have read and accept",
     "acceptedOn": "You accepted version {{version}} on {{date}}.",
     "notPublished": "The privacy policy and terms will appear here."
+  },
+  "home": {
+    "newBill": "New bill"
   }
 }

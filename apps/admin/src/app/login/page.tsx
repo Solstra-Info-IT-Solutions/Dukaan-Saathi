@@ -1,4 +1,6 @@
 import { readAdminEnv } from '@/core/config/env';
+import { Alert } from '@/core/ui/ui';
+import { AuthShell } from '@/features/authentication/presentation/AuthShell';
 import { LoginForm } from '@/features/authentication/presentation/LoginForm';
 
 const REASON_TEXT: Record<string, string> = {
@@ -16,22 +18,14 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
   const message = reason ? REASON_TEXT[reason] : undefined;
 
   return (
-    <main className="mx-auto flex min-h-screen max-w-sm flex-col justify-center gap-6 px-4">
-      <div>
-        <h1 className="text-2xl font-bold">Dukaan Saathi Admin</h1>
-        <p className="text-sm text-slate-600">Platform operators only.</p>
-      </div>
-      {message ? (
-        <p role="status" className="rounded-md bg-amber-50 p-3 text-sm text-amber-900">
-          {message}
-        </p>
-      ) : null}
+    <AuthShell title="Sign in to Admin" subtitle="Use your operator email and password.">
+      {message ? <Alert tone="warning">{message}</Alert> : null}
       {env.issues.map((issue) => (
-        <p key={issue} role="alert" className="rounded-md bg-red-50 p-3 text-sm text-red-800">
+        <Alert key={issue} tone="error">
           {issue}
-        </p>
+        </Alert>
       ))}
       <LoginForm />
-    </main>
+    </AuthShell>
   );
 }

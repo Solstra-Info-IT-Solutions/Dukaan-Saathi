@@ -19,23 +19,24 @@ export default async function OnboardingQueuePage() {
         {COLUMNS.map((status) => {
           const items = requests.filter((r) => r.status === status);
           return (
-            <section key={status} className="rounded-lg bg-slate-100 p-3" aria-labelledby={`col-${status}`}>
+            <section
+              key={status}
+              className="rounded-lg bg-surface-soft p-3"
+              aria-labelledby={`col-${status}`}
+            >
               <h2 id={`col-${status}`} className="mb-2 text-sm font-semibold">
                 {STATUS_LABEL[status]} ({items.length})
               </h2>
               <ul className="flex flex-col gap-2">
                 {items.map((r) => (
                   <li key={r.id} className={card}>
-                    <Link
-                      href={`/onboarding/${r.id}`}
-                      className="font-medium text-emerald-800 hover:underline"
-                    >
+                    <Link href={`/onboarding/${r.id}`} className="font-medium text-brand hover:underline">
                       {r.shopName}
                     </Link>
-                    <p className="text-xs text-slate-600">
+                    <p className="text-xs text-ink-2">
                       {r.method} · {r.files.length} files · {when(r.createdAt)}
                     </p>
-                    {r.assignedToEmail ? <p className="text-xs text-slate-600">{r.assignedToEmail}</p> : null}
+                    {r.assignedToEmail ? <p className="text-xs text-ink-2">{r.assignedToEmail}</p> : null}
                   </li>
                 ))}
               </ul>

@@ -1,5 +1,6 @@
 import { ScrollView, StyleSheet } from 'react-native';
-import { Button, List, Text } from 'react-native-paper';
+import { List, Text } from 'react-native-paper';
+import { Button } from '@/shared/components/Button';
 import { useTranslation } from 'react-i18next';
 import { spacing } from '@/shared/theme/theme';
 import type { OutboxEntry } from '../../domain/entities/Sync';

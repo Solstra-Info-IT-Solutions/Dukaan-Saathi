@@ -2,7 +2,6 @@ import { formatPaise, formatQuantity, paise, quantityMilli } from '@ds/domain-co
 import { useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import {
-  Button,
   Chip,
   HelperText,
   IconButton,
@@ -13,6 +12,7 @@ import {
   TextInput,
   useTheme,
 } from 'react-native-paper';
+import { Button } from '@/shared/components/Button';
 import { useTranslation } from 'react-i18next';
 import { spacing } from '@/shared/theme/theme';
 import type { VoiceLine, VoiceProduct } from '../../domain/matcher';

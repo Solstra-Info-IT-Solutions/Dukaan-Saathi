@@ -1,1 +1,51 @@
 @import 'tailwindcss';
+/* Dukaan Saathi Brand Kit tokens, unchanged (docs/brand/design-tokens.css). */
+@import '../styles/design-tokens.css';
+
+/*
+ * Tailwind names for the kit's variables — the only colours, radii and shadows the panel uses.
+ * Primary call to action: action green with a forest label (5.3:1; white on action green is only 2.3:1).
+ */
+@theme inline {
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+
+  --color-brand: var(--ds-primary);
+  --color-brand-hover: var(--ds-primary-hover);
+  --color-action: var(--ds-green);
+  --color-action-dark: var(--ds-green-dark);
+  --color-action-light: var(--ds-green-light);
+  --color-tint: var(--ds-green-tint);
+  --color-promo-yellow: var(--ds-warning);
+  --color-promo-orange: var(--ds-orange);
+
+  --color-ink: var(--ds-text-primary);
+  --color-ink-2: var(--ds-text-secondary);
+  --color-ink-muted: var(--ds-text-muted);
+  --color-line: var(--ds-border);
+  --color-surface: var(--ds-surface);
+  --color-surface-soft: var(--ds-surface-soft);
+  --color-page: var(--ds-background);
+
+  --color-success: var(--ds-success);
+  --color-success-bg: var(--ds-success-bg);
+  --color-warning: var(--ds-warning-text);
+  --color-warning-bg: var(--ds-warning-bg);
+  --color-error: var(--ds-error);
+  --color-error-bg: var(--ds-error-bg);
+  --color-info: var(--ds-info);
+  --color-info-bg: var(--ds-info-bg);
+
+  --radius-ds-sm: var(--ds-radius-sm);
+  --radius-ds-md: var(--ds-radius-md);
+  --radius-ds-lg: var(--ds-radius-lg);
+  --radius-ds-xl: var(--ds-radius-xl);
+  --shadow-card: var(--ds-shadow-card);
+  --shadow-modal: var(--ds-shadow-modal);
+}
+
+/* Visible keyboard focus everywhere: action-green ring with a forest edge. */
+:focus-visible {
+  outline: 2px solid var(--ds-primary);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px var(--ds-green-light);
+}

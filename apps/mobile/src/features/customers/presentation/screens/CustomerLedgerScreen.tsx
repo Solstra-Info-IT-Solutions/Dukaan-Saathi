@@ -1,6 +1,7 @@
 import { formatPaise, paise } from '@ds/domain-core';
 import { ScrollView, StyleSheet } from 'react-native';
-import { Button, Card, HelperText, List, SegmentedButtons, Text, TextInput } from 'react-native-paper';
+import { Card, HelperText, List, SegmentedButtons, Text, TextInput } from 'react-native-paper';
+import { Button } from '@/shared/components/Button';
 import { useTranslation } from 'react-i18next';
 import { ErrorState, LoadingState } from '@/shared/components/ScreenState';
 import { spacing } from '@/shared/theme/theme';

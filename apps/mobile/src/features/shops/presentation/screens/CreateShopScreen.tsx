@@ -1,7 +1,9 @@
 import { Controller } from 'react-hook-form';
 import { ScrollView, StyleSheet, View } from 'react-native';
-import { Button, Chip, HelperText, Text, TextInput } from 'react-native-paper';
+import { Chip, HelperText, Text, TextInput } from 'react-native-paper';
+import { Button } from '@/shared/components/Button';
 import { useTranslation } from 'react-i18next';
+import { BrandLogo } from '@/shared/components/BrandLogo';
 import { spacing } from '@/shared/theme/theme';
 import type { ShopActivation } from '../../domain/entities/Shop';
 import { type CreateShopViewModelDeps, useCreateShopViewModel } from '../viewmodels/useCreateShopViewModel';
@@ -22,6 +24,7 @@ export function CreateShopScreen({
 
   return (
     <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
+      <BrandLogo variant="horizontal" width={200} style={styles.logo} />
       <Text variant="headlineSmall" accessibilityRole="header">
         {t('shops.create.title')}
       </Text>
@@ -107,6 +110,8 @@ export function CreateShopScreen({
 }
 
 const styles = StyleSheet.create({
+  // Horizontal logo 1000×260 includes its own clear space on the right, so it sits left-aligned with the title.
+  logo: { marginLeft: -6, marginBottom: spacing.sm },
   container: { padding: spacing.md, gap: spacing.sm },
   chips: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm },
   city: { marginTop: spacing.md },

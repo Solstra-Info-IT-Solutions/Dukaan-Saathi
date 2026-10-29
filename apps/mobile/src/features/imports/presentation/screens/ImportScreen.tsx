@@ -1,6 +1,7 @@
 import { IMPORT_FIELDS } from '@ds/domain-core';
 import { ScrollView, StyleSheet, View } from 'react-native';
-import { Button, Card, HelperText, List, Text, TextInput } from 'react-native-paper';
+import { Card, HelperText, List, Text, TextInput } from 'react-native-paper';
+import { Button } from '@/shared/components/Button';
 import { useTranslation } from 'react-i18next';
 import { LoadingState } from '@/shared/components/ScreenState';
 import { spacing } from '@/shared/theme/theme';

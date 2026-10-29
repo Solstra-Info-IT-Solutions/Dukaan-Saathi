@@ -1,0 +1,32 @@
+{
+  "brand": {
+    "primary": "#0F3D2E",
+    "primaryHover": "#0B3024",
+    "green": "#22C55E",
+    "greenDark": "#16A34A",
+    "greenLight": "#A7F3D0",
+    "greenTint": "#F0FDF4",
+    "success": "#15803D",
+    "warning": "#FACC15",
+    "orange": "#FB923C"
+  },
+  "neutral": {
+    "textPrimary": "#1F2937",
+    "textSecondary": "#6B7280",
+    "textMuted": "#9CA3AF",
+    "border": "#E5E7EB",
+    "surface": "#FFFFFF",
+    "background": "#F8FAFC",
+    "surfaceSoft": "#F9FAFB"
+  },
+  "semantic": {
+    "success": "#15803D",
+    "successBackground": "#DCFCE7",
+    "warning": "#B45309",
+    "warningBackground": "#FEF3C7",
+    "error": "#B91C1C",
+    "errorBackground": "#FEE2E2",
+    "info": "#1D4ED8",
+    "infoBackground": "#DBEAFE"
+  }
+}

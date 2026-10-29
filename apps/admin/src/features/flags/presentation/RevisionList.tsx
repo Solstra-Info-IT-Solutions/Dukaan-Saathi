@@ -14,11 +14,11 @@ export function RevisionList({
 }) {
   return (
     <details className="mt-2 text-sm">
-      <summary className="cursor-pointer text-emerald-800">History ({revisions.length})</summary>
+      <summary className="cursor-pointer text-brand">History ({revisions.length})</summary>
       <ul className="mt-2 flex flex-col gap-2">
         {revisions.map((r, i) => (
-          <li key={r.id} className="rounded border border-slate-200 p-2">
-            <p className="text-xs text-slate-600">
+          <li key={r.id} className="rounded border border-line p-2">
+            <p className="text-xs text-ink-2">
               Revision {r.revision} · {when(r.changedAt)} · {r.changedBy ?? 'migration'}
               {i === 0 ? ' · current' : ''}
             </p>

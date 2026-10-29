@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation';
 import { connection } from 'next/server';
 import { getOperatorAccess } from '@/core/auth/requireOperator';
 import { createAdminServerClient } from '@/core/supabase/server';
+import { AuthShell } from '@/features/authentication/presentation/AuthShell';
 import { MfaForm } from '@/features/authentication/presentation/MfaForm';
 import { signOutAction } from '@/features/authentication/presentation/actions';
 import { PLATFORM_ROLES } from '@ds/contracts';
@@ -17,19 +18,16 @@ export default async function MfaPage() {
   const verified = factors?.data?.totp?.[0]?.id ?? null;
 
   return (
-    <main className="mx-auto flex min-h-screen max-w-sm flex-col justify-center gap-6 px-4">
-      <div>
-        <h1 className="text-2xl font-bold">Two-step verification</h1>
-        <p className="text-sm text-slate-600">
-          Signed in as {decision.operator.email ?? decision.operator.userId}
-        </p>
-      </div>
+    <AuthShell
+      title="Two-step verification"
+      subtitle={<>Signed in as {decision.operator.email ?? decision.operator.userId}</>}
+    >
       <MfaForm factorId={verified} />
       <form action={signOutAction}>
-        <button type="submit" className="text-sm text-slate-600 underline">
+        <button type="submit" className="text-sm font-medium text-brand underline-offset-2 hover:underline">
           Use another account
         </button>
       </form>
-    </main>
+    </AuthShell>
   );
 }

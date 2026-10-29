@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import { ScrollView, StyleSheet } from 'react-native';
-import { Button, HelperText, Text } from 'react-native-paper';
+import { HelperText, Text } from 'react-native-paper';
+import { Button } from '@/shared/components/Button';
 import { useTranslation } from 'react-i18next';
 import { spacing } from '@/shared/theme/theme';
 import { type ConsentViewModelDeps, useConsentViewModel } from '../viewmodels/useConsentViewModel';

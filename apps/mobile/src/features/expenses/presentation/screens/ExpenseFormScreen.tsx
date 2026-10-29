@@ -1,6 +1,7 @@
 import { EXPENSE_CATEGORIES } from '@ds/contracts';
 import { Image, ScrollView, StyleSheet, View } from 'react-native';
-import { Button, Chip, HelperText, SegmentedButtons, Text, TextInput } from 'react-native-paper';
+import { Chip, HelperText, SegmentedButtons, Text, TextInput } from 'react-native-paper';
+import { Button } from '@/shared/components/Button';
 import { useTranslation } from 'react-i18next';
 import { spacing } from '@/shared/theme/theme';
 import type { ExpenseMethod } from '../../domain/entities/Expense';

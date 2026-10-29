@@ -114,13 +114,13 @@ export default async function AnnouncementsPage({
           <section key={a.id} className={card}>
             <div className="mb-2 flex flex-wrap items-center gap-2">
               <h2 className="font-semibold">{a.title.en}</h2>
-              <span className="rounded bg-slate-100 px-2 text-xs">{a.status}</span>
+              <span className="rounded bg-surface-soft px-2 text-xs">{a.status}</span>
               <span
-                className={`rounded px-2 text-xs ${a.severity === 'critical' ? 'bg-red-100 text-red-800' : 'bg-slate-100'}`}
+                className={`rounded px-2 text-xs ${a.severity === 'critical' ? 'bg-error-bg text-error' : 'bg-surface-soft'}`}
               >
                 {a.severity}
               </span>
-              <span className="text-xs text-slate-500">updated {when(a.updatedAt)}</span>
+              <span className="text-xs text-ink-2">updated {when(a.updatedAt)}</span>
             </div>
             <div className="mb-3 flex flex-wrap gap-2">
               {a.status === 'draft' ? <StatusButton a={a} to="published" label="Publish" /> : null}
@@ -128,14 +128,14 @@ export default async function AnnouncementsPage({
               <StatusButton a={a} to="archived" label="Archive" />
             </div>
             <details>
-              <summary className="cursor-pointer text-sm text-emerald-800">Edit</summary>
+              <summary className="cursor-pointer text-sm text-brand">Edit</summary>
               <div className="mt-2">
                 <AnnouncementForm a={a} />
               </div>
             </details>
           </section>
         ))}
-        {items.length === 0 ? <p className="text-sm text-slate-600">No announcements yet.</p> : null}
+        {items.length === 0 ? <p className="text-sm text-ink-2">No announcements yet.</p> : null}
       </div>
     </>
   );

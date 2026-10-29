@@ -1,6 +1,8 @@
 import { KeyboardAvoidingView, Platform, StyleSheet, View } from 'react-native';
-import { Button, HelperText, SegmentedButtons, Text, TextInput } from 'react-native-paper';
+import { HelperText, SegmentedButtons, Text, TextInput } from 'react-native-paper';
+import { Button } from '@/shared/components/Button';
 import { useTranslation } from 'react-i18next';
+import { BrandLogo } from '@/shared/components/BrandLogo';
 import { spacing } from '@/shared/theme/theme';
 import type { OtpChannel, OtpDestination } from '../../domain/entities/AuthSession';
 import { type LoginViewModelDeps, useLoginViewModel } from '../viewmodels/useLoginViewModel';
@@ -26,10 +28,9 @@ export function LoginScreen({
   return (
     <KeyboardAvoidingView style={styles.flex} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
       <View style={styles.container}>
-        <Text variant="displaySmall" accessibilityRole="header">
-          {t('app.name')}
-        </Text>
-        <Text variant="bodyLarge" style={styles.subtitle}>
+        {/* The stacked logo carries the name and the tagline; it is announced as the app name. */}
+        <BrandLogo variant="stacked" width={220} style={styles.logo} />
+        <Text variant="titleMedium" accessibilityRole="header" style={styles.subtitle}>
           {t('auth.login.subtitle')}
         </Text>
 
@@ -81,7 +82,8 @@ export function LoginScreen({
 const styles = StyleSheet.create({
   flex: { flex: 1 },
   container: { flex: 1, justifyContent: 'center', padding: spacing.lg, gap: spacing.sm },
-  subtitle: { marginBottom: spacing.md },
+  logo: { alignSelf: 'center', marginBottom: spacing.sm },
+  subtitle: { marginBottom: spacing.md, textAlign: 'center' },
   input: { marginTop: spacing.md },
   button: { minHeight: 48 },
   secondary: { marginTop: spacing.lg },
