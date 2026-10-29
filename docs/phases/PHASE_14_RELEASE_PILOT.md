@@ -57,7 +57,7 @@ production project, the Play listing, publishing the legal text and visiting the
 | admin `next build` | ✅ |
 | `expo-doctor` | ⚠️ one check: 10 Expo packages have newer SDK 58 patch versions — run `npx expo install --check` and the full suite before the first store build (RELEASE_CHECKLIST.md §2) |
 | DB pre-check (PGlite) | **458 / 458** assertions (new `021_legal_consent` 9) |
-| CI on real Supabase | RESULT_CI |
+| CI on real Supabase | ✅ passed on `d4a2cf3` ([run 40857114723](https://github.com/Solstra-Info-IT-Solutions/Dukaan-Saathi/actions/runs/40857114723)); load check p95 1.6 ms at 100 200 bills |
 
 **Database (021):** no links before publishing and nothing to accept; https required; super admin publishes; apps
 get the links; old version refused; current accepted; acceptance audited.
