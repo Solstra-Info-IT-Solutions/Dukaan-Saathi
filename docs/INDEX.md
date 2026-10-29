@@ -47,6 +47,7 @@ Every document has one owner topic. If two documents disagree, the more specific
 | [OFFLINE_SYNC_DESIGN.md](OFFLINE_SYNC_DESIGN.md) | Local persistence, outbox, sync protocol, conflicts |
 | [TESTING_STRATEGY.md](TESTING_STRATEGY.md) | Test pyramid, tools, security tests, CI gates |
 | [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md) | Environments, credentials, release process, backups |
+| [SETUP_GUIDE.md](SETUP_GUIDE.md) | Step by step: accounts and settings to create, what to send, from demo phone to Play Store |
 | [RELEASE_CHECKLIST.md](RELEASE_CHECKLIST.md) | Automated and manual regression, builds, go / no-go |
 | [PILOT_PLAYBOOK.md](PILOT_PLAYBOOK.md) | Choosing and onboarding the 10 pilot shops, what to measure |
 | [SUPPORT_RUNBOOK.md](SUPPORT_RUNBOOK.md) | Daily support routine, common problems, incidents |
