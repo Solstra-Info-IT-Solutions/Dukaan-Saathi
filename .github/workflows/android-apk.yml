@@ -1,0 +1,73 @@
+# Demo / test APK built on GitHub's servers (no Expo build quota needed).
+# Run it from Actions → "Android APK (demo)" → Run workflow; download the APK from the run's Artifacts.
+# Needs repository variables (Settings → Secrets and variables → Actions → Variables):
+#   EXPO_PUBLIC_SUPABASE_URL, EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY  (public by design; never a secret key here)
+# The APK is signed with the standard debug key, so it is for testing and demos only. Store builds use EAS
+# (apps/mobile/eas.json); uninstall this APK before installing a store build.
+name: Android APK (demo)
+
+on:
+  workflow_dispatch:
+    inputs:
+      app_env:
+        description: Which backend label the app shows
+        type: choice
+        options: [staging, development]
+        default: staging
+
+concurrency:
+  group: android-apk
+  cancel-in-progress: true
+
+jobs:
+  apk:
+    name: Build APK
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    env:
+      EXPO_PUBLIC_APP_ENV: ${{ inputs.app_env }}
+      EXPO_PUBLIC_SUPABASE_URL: ${{ vars.EXPO_PUBLIC_SUPABASE_URL }}
+      EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY: ${{ vars.EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY }}
+      GRADLE_OPTS: -Dorg.gradle.jvmargs=-Xmx4g -Dorg.gradle.daemon=false
+    steps:
+      - name: Check configuration
+        run: |
+          missing=""
+          [ -n "$EXPO_PUBLIC_SUPABASE_URL" ] || missing="$missing EXPO_PUBLIC_SUPABASE_URL"
+          [ -n "$EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY" ] || missing="$missing EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY"
+          if [ -n "$missing" ]; then
+            echo "::error title=APK not configured::Add repository variables:$missing"
+            exit 1
+          fi
+          case "$EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY" in
+            sb_secret*|*service_role*) echo "::error title=Wrong key::Use the publishable (anon) key, never a secret key"; exit 1;;
+          esac
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+      - run: npm ci
+      - name: Generate the Android project
+        working-directory: apps/mobile
+        run: npx expo prebuild --platform android --no-install --clean
+      - name: Build release APK
+        working-directory: apps/mobile/android
+        # Phones in Indian shops are almost all 64-bit or 32-bit ARM; leaving out x86 halves the build time.
+        run: ./gradlew assembleRelease -PreactNativeArchitectures=arm64-v8a,armeabi-v7a
+      - name: Name the APK
+        run: |
+          version=$(node -p "require('./apps/mobile/app.json').expo.version")
+          mkdir -p out
+          cp apps/mobile/android/app/build/outputs/apk/release/app-release.apk \
+             "out/dukaan-saathi-${version}-${{ inputs.app_env }}-${GITHUB_RUN_NUMBER}.apk"
+          ls -lh out
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dukaan-saathi-apk
+          path: out/*.apk
+          retention-days: 14
