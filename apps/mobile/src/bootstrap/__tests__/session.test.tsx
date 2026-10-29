@@ -95,6 +95,7 @@ describe('navigation gating', () => {
       'plan',
       'help',
       'sync',
+      'legal',
       'diagnostics',
     ]);
     // Cashiers: today's own sales, udhaar, the stock list, closing their drawer and asking us for help — not
@@ -106,6 +107,7 @@ describe('navigation gating', () => {
       'dayClose',
       'help',
       'sync',
+      'legal',
       'diagnostics',
     ]);
   });

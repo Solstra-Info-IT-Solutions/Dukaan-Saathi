@@ -1235,6 +1235,8 @@ export type Database = {
       create_support_ticket: { Args: { p_input: Json }; Returns: Json }
       add_ticket_message: { Args: { p_input: Json }; Returns: Json }
       get_announcements: { Args: never; Returns: Json }
+      get_my_consent: { Args: never; Returns: Json }
+      accept_terms: { Args: { p_version: string }; Returns: Json }
       get_shop_flags: { Args: { p_app_version?: string; p_shop_id: string }; Returns: Json }
       update_import_row: { Args: { p_patch?: Json; p_row_id: string; p_skip?: boolean }; Returns: Json }
       accept_shop_invitation: {

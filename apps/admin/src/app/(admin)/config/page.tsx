@@ -17,6 +17,8 @@ const HELP: Record<string, string> = {
   'import.max_file_mb': 'Largest CSV a shop may import (1–20 MB).',
   'support.contact': 'Shown on the plan screen: {"whatsapp": "+91…", "phone": "+91…", "hours": {"en": "…"}}',
   'subscription.lifecycle': 'Days after the period end: {"pastDueDays": 3, "graceDays": 7}',
+  legal:
+    'Published privacy policy and terms; users accept a new version once: {"version": "2026-11", "privacyUrl": "https://…", "termsUrl": "https://…"}',
 };
 
 export default async function ConfigPage({

@@ -75,7 +75,7 @@ import {
   SupabaseShopDataSource,
   UpdateShopSettings,
 } from '@/features/shops';
-import { type AppGateDeps, SupabaseConfigDataSource } from '@/features/config';
+import { type AppGateDeps, type ConsentViewModelDeps, SupabaseConfigDataSource } from '@/features/config';
 import type { PlanViewModelDeps } from '@/features/subscription';
 import { flagOn, hasEntitlement, type ShopAccess } from '@/shared/navigation/modules';
 import {
@@ -232,7 +232,7 @@ export interface AppFeatures {
   voice: VoiceBillingViewModelDeps<ProductDto> & { isEnabled(shopId: string): Promise<boolean> };
   onboarding: OnboardingStatusViewModelDeps & OnboardingRequestViewModelDeps;
   subscription: PlanViewModelDeps;
-  config: AppGateDeps;
+  config: AppGateDeps & ConsentViewModelDeps;
   support: SupportViewModelDeps & AnnouncementsViewModelDeps;
 }
 
@@ -497,6 +497,8 @@ function createFeatures(supabase: TypedSupabaseClient, storage: KeyValueStorage)
       getClientConfig: () => configSource.getClientConfig(),
       openUrl: (url) => Linking.openURL(url),
       appVersion,
+      getMyConsent: () => configSource.getMyConsent(),
+      acceptTerms: (version) => configSource.acceptTerms(version),
     },
     subscription: {
       getEntitlements,

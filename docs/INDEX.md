@@ -47,6 +47,10 @@ Every document has one owner topic. If two documents disagree, the more specific
 | [OFFLINE_SYNC_DESIGN.md](OFFLINE_SYNC_DESIGN.md) | Local persistence, outbox, sync protocol, conflicts |
 | [TESTING_STRATEGY.md](TESTING_STRATEGY.md) | Test pyramid, tools, security tests, CI gates |
 | [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md) | Environments, credentials, release process, backups |
+| [RELEASE_CHECKLIST.md](RELEASE_CHECKLIST.md) | Automated and manual regression, builds, go / no-go |
+| [PILOT_PLAYBOOK.md](PILOT_PLAYBOOK.md) | Choosing and onboarding the 10 pilot shops, what to measure |
+| [SUPPORT_RUNBOOK.md](SUPPORT_RUNBOOK.md) | Daily support routine, common problems, incidents |
+| [legal/](legal/) | Privacy policy and terms drafts for legal review |
 | [BACKLOG.md](BACKLOG.md) | Every requirement as a backlog item mapped to a phase |
 | [phases/](phases/) | One document per phase with scope and acceptance criteria |
 | [PROJECT_STATUS.md](PROJECT_STATUS.md) | What is actually done, verified, and pending |

@@ -414,3 +414,11 @@ enabled = true
 # formatted with uppercase keywords, indent 2, max width 180, trailing commas,
 # and column/key alignment. Set to "null" to emit raw, unformatted SQL.
 # format_options = "{\"keywordCase\":\"upper\",\"indent\":2,\"maxWidth\":180,\"commaStyle\":\"trailing\"}"
+
+# The payment provider calls this without a Supabase login; the function checks the provider's signature instead.
+[functions.payment-webhook]
+verify_jwt = false
+
+# Called by signed-in super admins; the gateway checks their JWT before the function runs.
+[functions.admin-invite-operator]
+verify_jwt = true

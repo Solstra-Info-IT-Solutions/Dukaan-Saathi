@@ -916,5 +916,15 @@
     "update": "Update",
     "updateAvailable": "A new version of the app is available.",
     "maintenance": "Maintenance in progress."
+  },
+  "legal": {
+    "menu": "Privacy & terms",
+    "title": "Privacy policy and terms",
+    "body": "Before you continue, please read how Dukaan Saathi keeps your shop’s data and the terms for using the app. Your bills and customers belong to your shop; we only store them for you.",
+    "privacy": "Read the privacy policy",
+    "terms": "Read the terms of use",
+    "accept": "I have read and accept",
+    "acceptedOn": "You accepted version {{version}} on {{date}}.",
+    "notPublished": "The privacy policy and terms will appear here."
   }
 }

@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { AppProviders } from '@/bootstrap/AppProviders';
 import { useDependencies } from '@/bootstrap/DependenciesProvider';
 import { SessionController } from '@/bootstrap/SessionController';
-import { AppGate } from '@/features/config';
+import { AppGate, ConsentGate } from '@/features/config';
 import { useSessionStore } from '@/core/session/sessionStore';
 import { LoadingState } from '@/shared/components/ScreenState';
 
@@ -34,12 +34,13 @@ function RootNavigator() {
  */
 function GuardedStack() {
   const { t } = useTranslation();
+  const { features } = useDependencies();
   const authStatus = useSessionStore((s) => s.authStatus);
   const hasShop = useSessionStore((s) => s.activeShop !== null);
   if (authStatus === 'loading') return <LoadingState />;
   const signedIn = authStatus === 'signedIn';
 
-  return (
+  const stack = (
     <Stack screenOptions={{ headerShown: false }}>
       <Stack.Screen name="index" />
       <Stack.Protected guard={!signedIn}>
@@ -53,5 +54,13 @@ function GuardedStack() {
       </Stack.Protected>
       <Stack.Screen name="diagnostics" options={{ headerShown: true, title: t('diagnostics.title') }} />
     </Stack>
+  );
+  // Signed-in users accept the published privacy policy and terms once per version (Phase 14).
+  return signedIn && features ? (
+    <ConsentGate deps={features.config} onSignOut={() => void features.account.signOut.execute()}>
+      {stack}
+    </ConsentGate>
+  ) : (
+    stack
   );
 }

@@ -20,7 +20,8 @@ export interface ModuleEntry {
     | '/udhaar'
     | '/sync'
     | '/help'
-    | '/plan';
+    | '/plan'
+    | '/legal';
   labelKey: string;
   icon: string;
   permission?: Permission;
@@ -87,6 +88,7 @@ export const MORE_MODULES: readonly ModuleEntry[] = [
   { key: 'help', href: '/help', labelKey: 'more.help', icon: 'lifebuoy', permission: 'support.create' },
   // Everyone: what is waiting on this phone (Phase 09).
   { key: 'sync', href: '/sync', labelKey: 'more.sync', icon: 'cloud-sync-outline' },
+  { key: 'legal', href: '/legal', labelKey: 'legal.menu', icon: 'shield-check-outline' },
   { key: 'diagnostics', href: '/diagnostics', labelKey: 'diagnostics.title', icon: 'information-outline' },
 ];
 

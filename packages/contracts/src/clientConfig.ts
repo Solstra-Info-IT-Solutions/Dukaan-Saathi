@@ -32,6 +32,7 @@ export const ClientConfigSchema = z.object({
   latestAppVersion: SemverSchema.optional(),
   refreshSeconds: z.number().int().min(300).max(86_400).default(900),
   maintenance: MaintenanceSchema.optional(),
+  legal: z.object({ version: z.string(), privacyUrl: z.string(), termsUrl: z.string() }).optional(),
   supportContact: z
     .object({
       whatsapp: z.string().nullable().optional(),
@@ -44,6 +45,16 @@ export const ClientConfigSchema = z.object({
   content: z.record(z.string(), LocalizedTextSchema).default({}),
 });
 export type ClientConfig = z.infer<typeof ClientConfigSchema>;
+
+/** get_my_consent / accept_terms (Phase 14). */
+export const ConsentSchema = z.object({
+  currentVersion: z.string().nullable(),
+  acceptedVersion: z.string().nullable(),
+  acceptedAt: z.string().nullable(),
+  privacyUrl: z.string().nullable(),
+  termsUrl: z.string().nullable(),
+});
+export type ConsentDto = z.infer<typeof ConsentSchema>;
 
 /** Bundled defaults used before the first successful fetch and when a fetched payload is invalid. */
 export const DEFAULT_CLIENT_CONFIG: ClientConfig = {

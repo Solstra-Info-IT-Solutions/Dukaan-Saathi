@@ -186,7 +186,14 @@ Phase order may shift for dependencies; nothing is removed without a note in PRO
 | BL-1308 | monitoring alerts | 🟨 admin System health panel; email / Slack push needs a destination |
 
 ## Phase 14 — Release & pilot
-BL-1401 full regression · BL-1402 Play internal/closed testing · BL-1403 legal docs in app · BL-1404 pilot onboarding of 10 shops · BL-1405 support runbook.
+| ID | Item | Status |
+|---|---|---|
+| BL-1401 | full regression | 🟨 `npm run verify` + CI green; manual checklist ready, needs 3 phones |
+| BL-1402 | Play internal/closed testing | 🟨 EAS profiles ready; needs Expo and Google Play accounts |
+| BL-1403 | legal docs in app | 🟨 consent flow done; drafts for legal review; needs final text and website |
+| BL-1404 | pilot onboarding of 10 shops | 🟨 playbook ready; needs production and the shops |
+| BL-1405 | support runbook | ✅ |
+| BL-1406 | Play listing assets and data-safety form; Sentry wiring | ⬜ |
 
 ## Phase 15 — Post-launch
 Driven by pilot feedback. Candidate items:

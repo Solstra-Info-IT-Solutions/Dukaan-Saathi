@@ -1,6 +1,9 @@
 # Deployment Guide
 
-Nothing is deployed yet. This document is the target process; each step is verified in the phase that introduces it.
+Only the dev project exists. Production follows the steps in [phases/PHASE_14_RELEASE_PILOT.md](phases/PHASE_14_RELEASE_PILOT.md)
+("Steps for you") using the **Deploy database** workflow (`.github/workflows/deploy-database.yml`) and the EAS profiles in
+`apps/mobile/eas.json`. Release steps: [RELEASE_CHECKLIST.md](RELEASE_CHECKLIST.md); pilot: [PILOT_PLAYBOOK.md](PILOT_PLAYBOOK.md);
+support: [SUPPORT_RUNBOOK.md](SUPPORT_RUNBOOK.md).
 
 ## 1. Prerequisites (to be done by you — credentials cannot be invented)
 

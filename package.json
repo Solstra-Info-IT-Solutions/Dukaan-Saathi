@@ -19,7 +19,8 @@
     "db:test": "supabase test db",
     "db:types": "supabase gen types typescript --local > packages/contracts/src/database.types.ts",
     "db:check:local": "node scripts/db-check-pglite.mjs",
-    "db:fixtures": "node supabase/tests/generate-money-fixtures.mjs && node --no-warnings supabase/tests/generate-contract-checks.mjs"
+    "db:fixtures": "node supabase/tests/generate-money-fixtures.mjs && node --no-warnings supabase/tests/generate-contract-checks.mjs",
+    "verify": "npm run format:check && npm run typecheck && npm run lint && npm run test && npm run db:check:local"
   },
   "overrides": {
     "react": "19.3.0",
