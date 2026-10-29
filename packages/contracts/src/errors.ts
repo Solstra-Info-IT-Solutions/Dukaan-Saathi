@@ -29,6 +29,7 @@ export const SERVER_ERROR_CODES = [
   'DS_APP_VERSION_UNSUPPORTED',
   'DS_CONFIG_INVALID',
   'DS_RATE_LIMITED',
+  'DS_MAINTENANCE',
   'DS_NOT_FOUND',
   'DS_CONFLICT',
   'DS_INTERNAL',
@@ -57,6 +58,7 @@ export function isServerErrorCode(value: unknown): value is ServerErrorCode {
 /** Codes where retrying the same request (same client_operation_id) can succeed. */
 export const RETRYABLE_ERROR_CODES: ReadonlySet<ErrorCode> = new Set<ErrorCode>([
   'DS_RATE_LIMITED',
+  'DS_MAINTENANCE',
   'DS_INTERNAL',
   'NETWORK_OFFLINE',
   'NETWORK_TIMEOUT',

@@ -14,6 +14,7 @@ export type TypedSupabaseClient = SupabaseClient<Database>;
 export function createSupabaseClient(
   backend: NonNullable<AppEnv['backend']>,
   storage: KeyValueStorage,
+  appVersion = '0.0.0',
 ): TypedSupabaseClient {
   return createClient<Database>(backend.url, backend.publishableKey, {
     auth: {
@@ -22,7 +23,8 @@ export function createSupabaseClient(
       persistSession: true,
       detectSessionInUrl: false,
     },
-    global: { headers: { 'x-ds-client': 'mobile' } },
+    // The app version lets the server refuse writes from unsupported versions (public.check_request).
+    global: { headers: { 'x-ds-client': 'mobile', 'x-ds-app-version': appVersion } },
   });
 }
 

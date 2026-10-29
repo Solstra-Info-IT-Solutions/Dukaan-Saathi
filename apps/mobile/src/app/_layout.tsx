@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { AppProviders } from '@/bootstrap/AppProviders';
 import { useDependencies } from '@/bootstrap/DependenciesProvider';
 import { SessionController } from '@/bootstrap/SessionController';
+import { AppGate } from '@/features/config';
 import { useSessionStore } from '@/core/session/sessionStore';
 import { LoadingState } from '@/shared/components/ScreenState';
 
@@ -19,9 +20,11 @@ export default function RootLayout() {
 function RootNavigator() {
   const { features } = useDependencies();
   return (
-    <SessionController features={features}>
-      <GuardedStack />
-    </SessionController>
+    <AppGate deps={features?.config ?? null}>
+      <SessionController features={features}>
+        <GuardedStack />
+      </SessionController>
+    </AppGate>
   );
 }
 

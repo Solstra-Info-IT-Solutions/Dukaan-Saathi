@@ -139,7 +139,8 @@ allow-lists per bucket (CSV/XLSX/JPEG/PNG/PDF). Files are parsed only in Edge Fu
 ## 11. Rate limiting and abuse
 
 - Supabase Auth built-in OTP limits.
-- RPC-level: `private.rate_limit(key, max, window)` backed by a small table for expensive operations (`import-preview`, `export-report`, `create_support_ticket`).
+- RPC-level: `private.rate_limit(key, max, window)` backed by `private.rate_limits`, applied per signed-in user by the pre-request hook `public.check_request` to the RPCs in `private.rate_limit_rules` (Phase 13, ADR-071).
+- The same hook refuses writes from unsupported app versions (`DS_APP_VERSION_UNSUPPORTED`, except `get_client_config` and `sync_push`) and during maintenance with `blocksWrites` (`DS_MAINTENANCE`, except reads and `admin_*`).
 - Edge Functions: reject bodies > configured size; time-box parsing.
 
 ## 12. Required security tests (all automated, see TESTING_STRATEGY.md §5)

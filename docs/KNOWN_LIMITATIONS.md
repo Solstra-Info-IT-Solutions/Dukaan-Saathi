@@ -52,7 +52,9 @@ Deliberate gaps. Each has a reason and, where relevant, a backlog item.
 |---|---|
 | ESLint pinned to 9.x (deprecated upstream) | Expo's ESLint plugins do not support 10 yet (ADR-022) |
 | `database.types.ts` is generated, then narrowed by hand (table Insert/Update set to `never` because clients write only through RPCs), so the CI diff against `supabase gen types` stays advisory | Review the CI diff when migrations change; regenerate with the Supabase MCP/CLI |
-| Offline SQLite data not encrypted at rest in v1 | Android app sandbox; SQLCipher decision in Phase 13 (BL-1304) |
+| Offline SQLite data not encrypted at rest in v1 | Android file-based encryption + app sandbox (ADR-074); SQLCipher if shared phones or legal review require it |
+| Rate limits are per user and RPC, not per IP | Supabase Auth limits OTP separately; add an edge/WAF limit if abuse appears |
+| Health alerts only on the admin dashboard | Email / Slack push needs a destination (BL-1308) |
 | Feature-flag changes reach installed apps within the refresh interval (default 15 min), not instantly | Server-enforced features are instant |
 | Subscription purchase flow undecided (Play billing policy) | OD-05; manual activation path designed |
 | Data-retention periods are defaults, not legal advice | OD-12 legal review before pilot |

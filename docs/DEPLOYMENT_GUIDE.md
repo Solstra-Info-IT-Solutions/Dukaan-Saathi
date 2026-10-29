@@ -62,6 +62,10 @@ Build `next build` in CI; deploy to staging on merge, production on tag. Environ
 - Weekly logical dump (`supabase db dump`) to an encrypted off-platform location (GitHub Action, retention 90 days).
 - Storage buckets: weekly sync of private buckets to off-platform storage.
 - **Restore drill** before pilot (Phase 14): restore to a scratch project, run integrity checks (ledger vs projection), record time taken.
+  Steps: (1) note the time T and pick a PITR target T−5 min; (2) restore into a new project; (3) run all pgTAP files and
+  `select private.run_retention(now())` to prove functions work; (4) compare per-shop sale counts and ledger sums with
+  production at T−5 min; (5) record wall-clock time of each step in `docs/incidents/restore-drill-YYYY-MM-DD.md`.
+- Scheduled jobs (pg_cron): `subscription-lifecycle` 00:30 UTC, `retention` 01:15 UTC; their last run is on the admin dashboard.
 - Device-side: unsynced outbox survives app restarts; app update keeps SQLite (migrations forward-only).
 
 ## 8. Monitoring and incident response

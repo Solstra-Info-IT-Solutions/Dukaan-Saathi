@@ -174,8 +174,16 @@ Phase order may shift for dependencies; nothing is removed without a note in PRO
 | BL-1209 | `exports.monthly` usage counter, renewal reminders, pre-sign-in flags | ⬜ |
 
 ## Phase 13 — Hardening
-BL-1301 security audit (advisors, function review, pen-test checklist) · BL-1302 accessibility pass · BL-1303 performance (load script, indexes, rollups) ·
-BL-1304 SQLite encryption decision · BL-1305 backups, PITR, restore drill · BL-1306 rate limiting · BL-1307 retention jobs · BL-1308 monitoring alerts.
+| ID | Item | Status |
+|---|---|---|
+| BL-1301 | security audit (advisors, function review, pen-test checklist) | ✅ advisors justified, pre-request gate, CSP |
+| BL-1302 | accessibility pass | 🟨 automated checks pass; TalkBack / font scale / contrast need a phone |
+| BL-1303 | performance (load script, indexes, rollups) | ✅ CI load check at 100k bills; rollups not needed yet |
+| BL-1304 | SQLite encryption decision | ✅ ADR-074 (stay unencrypted in v1) |
+| BL-1305 | backups, PITR, restore drill | ⬜ needs paid plan and production (Phase 14) |
+| BL-1306 | rate limiting | ✅ per user, per RPC |
+| BL-1307 | retention jobs | ✅ daily |
+| BL-1308 | monitoring alerts | 🟨 admin System health panel; email / Slack push needs a destination |
 
 ## Phase 14 — Release & pilot
 BL-1401 full regression · BL-1402 Play internal/closed testing · BL-1403 legal docs in app · BL-1404 pilot onboarding of 10 shops · BL-1405 support runbook.

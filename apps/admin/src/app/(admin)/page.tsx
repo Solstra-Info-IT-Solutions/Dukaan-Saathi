@@ -2,6 +2,7 @@ import { PLATFORM_ROLES } from '@ds/contracts';
 import { requireOperator } from '@/core/auth/requireOperator';
 import { adminClient, rpc } from '@/core/admin/rpc';
 import { card, PageTitle, rupees } from '@/core/ui/ui';
+import { HealthPanel } from '@/features/health/presentation/HealthPanel';
 
 interface Metrics {
   shops: number;
@@ -20,7 +21,8 @@ interface Metrics {
 }
 
 export default async function DashboardPage() {
-  await requireOperator(PLATFORM_ROLES);
+  const operator = await requireOperator(PLATFORM_ROLES);
+  const seesHealth = ['super_admin', 'support_agent', 'analyst'].includes(operator.role);
   const m = await rpc<Metrics>(await adminClient(), 'admin_dashboard_metrics');
   const backlog = Object.values(m.onboarding).reduce((s, n) => s + n, 0);
   const tiles: [string, string | number][] = [
@@ -46,6 +48,7 @@ export default async function DashboardPage() {
           </div>
         ))}
       </div>
+      {seesHealth ? <HealthPanel /> : null}
     </>
   );
 }

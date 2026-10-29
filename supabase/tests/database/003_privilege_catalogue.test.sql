@@ -24,7 +24,7 @@ select is_empty(
       join pg_namespace n on n.oid = p.pronamespace
      where n.nspname = 'public'
        and has_function_privilege('anon', p.oid, 'EXECUTE')
-       and p.proname not in ('get_client_config')
+       and p.proname not in ('get_client_config', 'check_request')
   $$,
   'anon can execute only allow-listed public functions'
 );

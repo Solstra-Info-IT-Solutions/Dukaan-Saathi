@@ -75,7 +75,8 @@ import {
   SupabaseShopDataSource,
   UpdateShopSettings,
 } from '@/features/shops';
-import { type PlanViewModelDeps, SupabaseConfigDataSource } from '@/features/subscription';
+import { type AppGateDeps, SupabaseConfigDataSource } from '@/features/config';
+import type { PlanViewModelDeps } from '@/features/subscription';
 import { flagOn, hasEntitlement, type ShopAccess } from '@/shared/navigation/modules';
 import {
   CommitImport,
@@ -231,6 +232,7 @@ export interface AppFeatures {
   voice: VoiceBillingViewModelDeps<ProductDto> & { isEnabled(shopId: string): Promise<boolean> };
   onboarding: OnboardingStatusViewModelDeps & OnboardingRequestViewModelDeps;
   subscription: PlanViewModelDeps;
+  config: AppGateDeps;
   support: SupportViewModelDeps & AnnouncementsViewModelDeps;
 }
 
@@ -246,7 +248,9 @@ export function createContainer(
   env: AppEnv,
   storage: KeyValueStorage = createChunkedSecureStorage(),
 ): Container {
-  const supabase = env.backend ? createSupabaseClient(env.backend, storage) : null;
+  const supabase = env.backend
+    ? createSupabaseClient(env.backend, storage, Constants.expoConfig?.version ?? '0.0.0')
+    : null;
 
   const diagnosticsRepository = new DiagnosticsRepositoryImpl(
     new AppInfoDataSource(env),
@@ -489,6 +493,11 @@ function createFeatures(supabase: TypedSupabaseClient, storage: KeyValueStorage)
       staffRepository,
     },
     account: { signOut, unsentCount: (userId) => syncStore.unsentCount(userId), getAccess },
+    config: {
+      getClientConfig: () => configSource.getClientConfig(),
+      openUrl: (url) => Linking.openURL(url),
+      appVersion,
+    },
     subscription: {
       getEntitlements,
       getClientConfig: () => configSource.getClientConfig(),

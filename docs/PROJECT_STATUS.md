@@ -1,6 +1,6 @@
 # Project Status
 
-Last updated: 2026-10-28 · Current phase: **12 complete, awaiting approval for Phase 13**
+Last updated: 2026-10-28 · Current phase: **13 complete (production-only items open), awaiting approval for Phase 14**
 Repository: https://github.com/Solstra-Info-IT-Solutions/Dukaan-Saathi (`main`)
 
 ## 1. Phase overview
@@ -20,8 +20,8 @@ Repository: https://github.com/Solstra-Info-IT-Solutions/Dukaan-Saathi (`main`)
 | 10 | Voice billing | ✅ Complete — see [phases/PHASE_10_VOICE.md](phases/PHASE_10_VOICE.md) (on-phone audio benchmark pending a device) |
 | 11 | Managed onboarding + admin panel | ✅ Complete — see [phases/PHASE_11_ONBOARDING_ADMIN.md](phases/PHASE_11_ONBOARDING_ADMIN.md) (invite Edge Function not deployed yet) |
 | 12 | Subscriptions, plans, flags, entitlements | ✅ Complete — see [phases/PHASE_12_SUBSCRIPTIONS_FLAGS.md](phases/PHASE_12_SUBSCRIPTIONS_FLAGS.md) (payment provider pending, OD-05) |
-| 13 | Hardening | ⬜ Next |
-| 14 | Regression, release, pilot | ⬜ |
+| 13 | Hardening | ✅ Complete — see [phases/PHASE_13_HARDENING.md](phases/PHASE_13_HARDENING.md) (PITR drill and on-phone accessibility pending) |
+| 14 | Regression, release, pilot | ⬜ Next |
 | 15 | Post-launch | ⬜ |
 
 ## 2. What exists and is verified
@@ -31,7 +31,7 @@ Repository: https://github.com/Solstra-Info-IT-Solutions/Dukaan-Saathi (`main`)
 | Shared packages `@ds/domain-core`, `@ds/contracts` | 77 + 29 unit tests |
 | Mobile foundation + diagnostics reference feature | 40 Jest/RNTL tests, typecheck, boundary lint, Android Metro bundle |
 | Admin panel: MFA, shops, onboarding, support, audit, announcements, operators, plans, flags, config | 34 Vitest tests, `next build` |
-| Supabase schema (baseline … subscriptions, flags, config revisions) on `dukaan-saathi-dev` | 433/433 assertions in the PGlite pre-check; pgTAP on real Supabase in CI (§3); security advisor reviewed |
+| Supabase schema (baseline … hardening: request gate, rate limits, retention) on `dukaan-saathi-dev` | 449/449 assertions in the PGlite pre-check; pgTAP on real Supabase in CI (§3); security advisor reviewed |
 | Mobile auth, shops, staff, settings, navigation guards | 87 Jest/RNTL tests (Phase 01 + 02) |
 | Mobile catalogue, categories, CSV import | 103 Jest/RNTL tests in total (Phase 01–03) |
 | Mobile quick billing, payment sheet, receipts | 119 Jest/RNTL tests in total (Phase 01–04) |
@@ -61,7 +61,9 @@ The generated-types comparison step stays advisory (`continue-on-error`): the co
 |---|---|
 | Supabase dashboard (dev): Email template "Magic Link" must contain `{{ .Token }}` | Trying the app with email OTP |
 | SMS provider for phone OTP (OD-02) + test phone numbers | Phone login (default flow) |
-| Approve Phase 12 | Phase 13: hardening |
+| Approve Phase 13 | Phase 14: regression, release, pilot |
+| Supabase paid plan with PITR for production | Backups and the restore drill |
+| Sentry DSN and an alert destination (email or Slack) | Crash reports and pushed alerts |
 | Payment provider (OD-05) and its webhook secret, or keep manual plan assignment | Automatic plan activation |
 | WhatsApp / phone for sales in Platform config → `support.contact` | Contact buttons on the plan screen |
 | Run `npx supabase functions deploy admin-invite-operator --project-ref qrrhakcmkgmxiyhwyqwg` | Inviting operators from the admin panel |

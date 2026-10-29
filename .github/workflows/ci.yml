@@ -82,6 +82,8 @@ jobs:
           }
       - name: Concurrency checks (create_sale)
         run: bash supabase/tests/concurrency/invoice-sequence.sh
+      - name: Load check (create_sale p95 at 100k bills)
+        run: bash supabase/tests/load/create-sale-load.sh
       - name: Generated DB types are current
         # Not blocking until the first generated file is committed in Phase 02.
         continue-on-error: true

@@ -58,6 +58,9 @@ export const ERROR_TEXT: Record<string, string> = {
   DS_NOT_FOUND: 'Not found. It may have been removed.',
   DS_QUOTA_EXCEEDED: 'The shop’s plan limit was reached.',
   DS_AUTH_REQUIRED: 'Your session ended. Sign in again.',
+  DS_RATE_LIMITED: 'Too many tries in a short time. Wait a few minutes and try again.',
+  DS_MAINTENANCE: 'Maintenance is on and saving is paused.',
+  DS_ENTITLEMENT_REQUIRED: 'The shop’s plan does not include this.',
   UNKNOWN: 'Something went wrong. Try again.',
 };
 
