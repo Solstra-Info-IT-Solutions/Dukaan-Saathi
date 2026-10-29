@@ -9,7 +9,11 @@
     "userInterfaceStyle": "automatic",
     "ios": {
       "supportsTablet": false,
-      "bundleIdentifier": "in.dukaansaathi.app"
+      "bundleIdentifier": "in.dukaansaathi.app",
+      "infoPlist": {
+        "NSSpeechRecognitionUsageDescription": "Speech is turned into item names to fill a bill. Audio is not saved.",
+        "NSMicrophoneUsageDescription": "Dukaan Saathi uses the microphone only while you hold the voice button to add items to a bill."
+      }
     },
     "android": {
       "package": "in.dukaansaathi.app",
@@ -19,7 +23,8 @@
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
       },
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "permissions": ["android.permission.CAMERA", "android.permission.RECORD_AUDIO"]
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -56,6 +61,17 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "owner": "bharti1s-team",
+    "extra": {
+      "router": {
+        "asyncRoutes": {
+          "web": true
+        }
+      },
+      "eas": {
+        "projectId": "0f6d680f-4df8-4c3c-98bc-2618b8a6ebda"
+      }
     }
   }
 }
