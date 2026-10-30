@@ -40,8 +40,21 @@ export function translateError(error: unknown): AppError {
   // Supabase Auth (GoTrue) error codes
   switch (code) {
     case 'otp_expired':
-    case 'invalid_credentials':
       return new AppError('AUTH_OTP_INVALID', { cause: error });
+    case 'invalid_credentials':
+      return new AppError('AUTH_INVALID_CREDENTIALS', { cause: error });
+    case 'user_already_exists':
+    case 'email_exists':
+      return new AppError('AUTH_EMAIL_IN_USE', { cause: error });
+    case 'weak_password':
+      return new AppError('AUTH_WEAK_PASSWORD', { cause: error });
+    case 'email_not_confirmed':
+      return new AppError('AUTH_EMAIL_NOT_CONFIRMED', { cause: error });
+    case 'same_password':
+      return new AppError('AUTH_SAME_PASSWORD', { cause: error });
+    case 'signup_disabled':
+    case 'email_address_not_authorized':
+      return new AppError('AUTH_SIGNUP_DISABLED', { cause: error });
     case 'phone_provider_disabled':
     case 'email_provider_disabled':
     case 'sms_send_failed':

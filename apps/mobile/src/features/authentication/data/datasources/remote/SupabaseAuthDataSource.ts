@@ -38,6 +38,42 @@ export class SupabaseAuthDataSource {
     return () => data.subscription.unsubscribe();
   }
 
+  async signInWithPassword(email: string, password: string): Promise<Session> {
+    const { data, error } = await this.client.auth.signInWithPassword({ email, password });
+    if (error) throw error;
+    return data.session;
+  }
+
+  /** Session is null when the project asks new users to confirm their email first. */
+  async signUp(email: string, password: string, displayName: string): Promise<Session | null> {
+    const { data, error } = await this.client.auth.signUp({
+      email,
+      password,
+      options: { data: { display_name: displayName } },
+    });
+    if (error) throw error;
+    // An existing, confirmed email comes back as a user without identities (Supabase hides that it exists).
+    if (data.user && data.user.identities?.length === 0) throw { code: 'user_already_exists' };
+    return data.session;
+  }
+
+  async requestPasswordReset(email: string): Promise<void> {
+    const { error } = await this.client.auth.resetPasswordForEmail(email);
+    if (error) throw error;
+  }
+
+  async verifyRecovery(email: string, token: string): Promise<Session> {
+    const { data, error } = await this.client.auth.verifyOtp({ email, token, type: 'recovery' });
+    if (error) throw error;
+    if (!data.session) throw new Error('verifyOtp returned no session');
+    return data.session;
+  }
+
+  async updatePassword(password: string): Promise<void> {
+    const { error } = await this.client.auth.updateUser({ password });
+    if (error) throw error;
+  }
+
   async signOut(): Promise<void> {
     // scope 'local' clears this device even if the network call fails.
     const { error } = await this.client.auth.signOut({ scope: 'local' });

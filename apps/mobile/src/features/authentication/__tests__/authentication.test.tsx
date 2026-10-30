@@ -36,6 +36,17 @@ class FakeAuthRepository implements AuthRepository {
   async signOut() {
     this.signedOut = true;
   }
+  async signInWithPassword(email: string): Promise<AuthSession> {
+    return { userId: 'u1', phone: null, email };
+  }
+  async signUp(input: { email: string }) {
+    return { kind: 'confirm_email' as const, email: input.email };
+  }
+  async requestPasswordReset() {}
+  async resetPassword(email: string): Promise<AuthSession> {
+    return { userId: 'u1', phone: null, email };
+  }
+  async updatePassword() {}
 }
 
 describe('toOtpDestination', () => {

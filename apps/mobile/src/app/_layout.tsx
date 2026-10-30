@@ -1,5 +1,6 @@
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
+import { useTheme } from 'react-native-paper';
 import { useTranslation } from 'react-i18next';
 import { AppProviders } from '@/bootstrap/AppProviders';
 import { useDependencies } from '@/bootstrap/DependenciesProvider';
@@ -12,7 +13,7 @@ export default function RootLayout() {
   return (
     <AppProviders>
       <RootNavigator />
-      <StatusBar style="auto" />
+      <ThemedStatusBar />
     </AppProviders>
   );
 }
@@ -63,4 +64,10 @@ function GuardedStack() {
   ) : (
     stack
   );
+}
+
+/** Status bar icons follow the app's chosen theme, not only the phone's. */
+function ThemedStatusBar() {
+  const theme = useTheme();
+  return <StatusBar style={theme.dark ? 'light' : 'dark'} />;
 }

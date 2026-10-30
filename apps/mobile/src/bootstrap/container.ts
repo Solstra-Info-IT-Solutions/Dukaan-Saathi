@@ -16,7 +16,13 @@ import { readFileBytes, receiptPhotoPicker } from '@/core/files/receiptPhotoPick
 import { fileSharer } from '@/core/sharing/fileSharer';
 import { receiptSharer } from '@/core/sharing/receiptSharer';
 import { createInvoiceCounterStore } from '@/core/storage/invoiceCounterStore';
-import type { MoreViewModelDeps } from '@/features/account';
+import {
+  GetMyProfile,
+  type MoreViewModelDeps,
+  type ProfileViewModelDeps,
+  SupabaseProfileRepository,
+  UpdateMyProfile,
+} from '@/features/account';
 import {
   type BillingViewModelDeps,
   BillingRepositoryImpl,
@@ -37,7 +43,12 @@ import {
 import {
   type AuthRepository,
   AuthRepositoryImpl,
+  ChangePassword,
+  RegisterAccount,
   RequestOtp,
+  RequestPasswordReset,
+  ResetPassword,
+  SignInWithPassword,
   SignOut,
   SupabaseAuthDataSource,
   VerifyOtp,
@@ -185,7 +196,17 @@ import type { StaffViewModelDeps } from '@/features/staff';
  * typed groups to routes. Tests build their own fakes and pass them to screens directly.
  */
 export interface AppFeatures {
-  auth: { repository: AuthRepository; requestOtp: RequestOtp; verifyOtp: VerifyOtp; signOut: SignOut };
+  auth: {
+    repository: AuthRepository;
+    requestOtp: RequestOtp;
+    verifyOtp: VerifyOtp;
+    signOut: SignOut;
+    signInWithPassword: SignInWithPassword;
+    registerAccount: RegisterAccount;
+    requestPasswordReset: RequestPasswordReset;
+    resetPassword: ResetPassword;
+    changePassword: ChangePassword;
+  };
   shops: {
     loadContext: LoadMyContext;
     activateShop: ActivateShop;
@@ -198,7 +219,7 @@ export interface AppFeatures {
     newOperationId: () => string;
   };
   staff: StaffViewModelDeps;
-  account: MoreViewModelDeps;
+  account: MoreViewModelDeps & ProfileViewModelDeps;
   catalogue: {
     searchProducts: SearchProducts;
     getProduct: GetProduct;
@@ -238,6 +259,8 @@ export interface AppFeatures {
 
 export interface Container {
   env: AppEnv;
+  /** Device key-value storage (appearance choice and other per-phone preferences). */
+  storage: KeyValueStorage;
   supabase: TypedSupabaseClient | null;
   diagnostics: DiagnosticsViewModelDeps;
   /** Null when no backend is configured: the app shows diagnostics instead of sign-in. */
@@ -259,6 +282,7 @@ export function createContainer(
 
   return {
     env,
+    storage,
     supabase,
     diagnostics: { getDiagnostics: new GetDiagnostics(diagnosticsRepository) },
     features: supabase ? createFeatures(supabase, storage) : null,
@@ -293,6 +317,7 @@ function createFeatures(supabase: TypedSupabaseClient, storage: KeyValueStorage)
     new SupabaseOnboardingDataSource(supabase, readFileBytes),
   );
   const supportRepository = new SupportRepositoryImpl(new SupabaseSupportDataSource(supabase));
+  const profileRepository = new SupabaseProfileRepository(supabase);
   const getSettings = new GetShopSettings(shopRepository);
   const getEntitlements = new GetShopEntitlements(shopRepository);
   const appVersion = Constants.expoConfig?.version ?? '0.0.0';
@@ -471,6 +496,11 @@ function createFeatures(supabase: TypedSupabaseClient, storage: KeyValueStorage)
       requestOtp: new RequestOtp(authRepository),
       verifyOtp: new VerifyOtp(authRepository),
       signOut,
+      signInWithPassword: new SignInWithPassword(authRepository),
+      registerAccount: new RegisterAccount(authRepository),
+      requestPasswordReset: new RequestPasswordReset(authRepository),
+      resetPassword: new ResetPassword(authRepository),
+      changePassword: new ChangePassword(authRepository),
     },
     shops: {
       loadContext,
@@ -492,7 +522,13 @@ function createFeatures(supabase: TypedSupabaseClient, storage: KeyValueStorage)
       inviteMember: new InviteMember(staffRepository),
       staffRepository,
     },
-    account: { signOut, unsentCount: (userId) => syncStore.unsentCount(userId), getAccess },
+    account: {
+      signOut,
+      unsentCount: (userId) => syncStore.unsentCount(userId),
+      getAccess,
+      getProfile: new GetMyProfile(profileRepository),
+      updateProfile: new UpdateMyProfile(profileRepository),
+    },
     config: {
       getClientConfig: () => configSource.getClientConfig(),
       openUrl: (url) => Linking.openURL(url),

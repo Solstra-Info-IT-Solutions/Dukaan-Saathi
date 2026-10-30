@@ -55,7 +55,13 @@ export default function ShopLayout() {
         tabBarInactiveTintColor: theme.colors.onSurfaceVariant,
         tabBarStyle: { backgroundColor: theme.colors.surface, borderTopColor: theme.colors.outlineVariant },
         tabBarLabelStyle: { fontFamily: 'Inter', fontWeight: '600' },
-        sceneStyle: { backgroundColor: theme.colors.background },
+        // Tablets / iPads: content stays a readable width, centred, instead of stretching edge to edge.
+        sceneStyle: {
+          backgroundColor: theme.colors.background,
+          width: '100%',
+          maxWidth: 960,
+          alignSelf: 'center',
+        },
         headerRight: () => (
           <View style={{ marginRight: 8 }}>
             <SyncChip onPress={() => router.push('/sync')} />
@@ -129,6 +135,8 @@ export default function ShopLayout() {
       <Tabs.Screen name="supplier" options={{ href: null, title: t('more.suppliers') }} />
       <Tabs.Screen name="supplier-new" options={{ href: null, title: t('purchases.addSupplier') }} />
       <Tabs.Screen name="purchase-new" options={{ href: null, title: t('purchases.newPurchase') }} />
+      <Tabs.Screen name="profile" options={{ href: null, title: t('profile.title') }} />
+      <Tabs.Screen name="change-password" options={{ href: null, title: t('profile.changePassword') }} />
       <Tabs.Screen name="legal" options={{ href: null, title: t('legal.menu') }} />
       <Tabs.Screen name="plan" options={{ href: null, title: t('more.plan') }} />
       <Tabs.Screen name="setup-help" options={{ href: null, title: t('onboarding.request.title') }} />

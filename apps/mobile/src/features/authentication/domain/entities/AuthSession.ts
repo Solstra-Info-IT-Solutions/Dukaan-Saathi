@@ -9,3 +9,7 @@ export interface AuthSession {
 export type OtpDestination = { kind: 'phone'; phoneE164: string } | { kind: 'email'; email: string };
 
 export type OtpChannel = OtpDestination['kind'];
+
+/** Result of creating an account: signed in at once, or the email must be confirmed with a code first. */
+export type SignUpResult =
+  { kind: 'signed_in'; session: AuthSession } | { kind: 'confirm_email'; email: string };

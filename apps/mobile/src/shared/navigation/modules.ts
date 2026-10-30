@@ -21,7 +21,8 @@ export interface ModuleEntry {
     | '/sync'
     | '/help'
     | '/plan'
-    | '/legal';
+    | '/legal'
+    | '/profile';
   labelKey: string;
   icon: string;
   permission?: Permission;
@@ -30,6 +31,8 @@ export interface ModuleEntry {
 }
 
 export const MORE_MODULES: readonly ModuleEntry[] = [
+  // Everyone: name, language, light / dark mode, password.
+  { key: 'profile', href: '/profile', labelKey: 'profile.title', icon: 'account-circle-outline' },
   // Everyone sees today's numbers (cashiers only their own); reports inside need report.view_sales.
   { key: 'reports', href: '/reports', labelKey: 'more.reports', icon: 'chart-bar' },
   {

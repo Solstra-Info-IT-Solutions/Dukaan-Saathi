@@ -69,7 +69,13 @@
     "AUTH_OTP_INVALID": "That code is wrong or has expired.",
     "AUTH_PROVIDER_UNAVAILABLE": "Sign-in by this method is not available right now.",
     "BACKEND_NOT_CONFIGURED": "The app is not connected to a server yet.",
-    "DS_MAINTENANCE": "We are doing maintenance. You can look at your data; saving is paused for a few minutes."
+    "DS_MAINTENANCE": "We are doing maintenance. You can look at your data; saving is paused for a few minutes.",
+    "AUTH_INVALID_CREDENTIALS": "Email or password is wrong.",
+    "AUTH_EMAIL_IN_USE": "An account with this email already exists. Sign in instead, or reset the password.",
+    "AUTH_WEAK_PASSWORD": "This password is too easy to guess. Choose a longer one.",
+    "AUTH_EMAIL_NOT_CONFIRMED": "Confirm your email first: enter the code we emailed you.",
+    "AUTH_SAME_PASSWORD": "The new password must be different from the old one.",
+    "AUTH_SIGNUP_DISABLED": "New accounts are not open right now. Please contact us."
   },
   "tabs": {
     "home": "Shop",
@@ -99,7 +105,41 @@
     "errors": {
       "invalid_phone": "Enter a 10-digit Indian mobile number.",
       "invalid_email": "Enter a valid email address.",
-      "invalid_code": "Enter the 6-digit code."
+      "invalid_code": "Enter the 6-digit code.",
+      "invalid_password": "Use a password of at least {{min}} characters.",
+      "passwords_differ": "The two passwords do not match.",
+      "invalid_name": "Enter your name (2 to 80 letters)."
+    },
+    "password": {
+      "show": "Show password",
+      "hide": "Hide password",
+      "signInTitle": "Welcome back",
+      "label": "Password",
+      "forgot": "Forgot password?",
+      "signIn": "Sign in",
+      "or": "or",
+      "useCode": "Sign in with a one-time code",
+      "newHere": "New to Dukaan Saathi?",
+      "registerShop": "Register your shop",
+      "newLabel": "New password",
+      "confirmLabel": "Confirm new password",
+      "rule": "At least {{min}} characters. A short sentence is easy to remember and hard to guess."
+    },
+    "register": {
+      "title": "Create your account",
+      "subtitle": "Free trial for 30 days. You set up your shop in the next step.",
+      "name": "Your name",
+      "create": "Create account",
+      "haveAccount": "Already have an account? Sign in"
+    },
+    "forgot": {
+      "title": "Reset your password",
+      "subtitle": "We will email you a code to set a new password.",
+      "codeSent": "Enter the code we sent to {{email}} and choose a new password.",
+      "sendCode": "Email me a code",
+      "save": "Save new password",
+      "backToSignIn": "Back to sign in",
+      "changeEmail": "Use a different email"
     }
   },
   "roles": {
@@ -928,5 +968,24 @@
   },
   "home": {
     "newBill": "New bill"
+  },
+  "profile": {
+    "title": "My profile",
+    "noName": "Add your name",
+    "details": "Your details",
+    "save": "Save name",
+    "saved": "Saved.",
+    "appearance": "Appearance",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "Auto",
+    "language": "Language",
+    "changePassword": "Change password",
+    "passwordIntro": "Signed in as {{email}}. Enter your current password, then the new one twice.",
+    "currentPassword": "Current password",
+    "savePassword": "Save new password",
+    "errors": {
+      "invalid_name": "Enter your name (2 to 80 letters)."
+    }
   }
 }

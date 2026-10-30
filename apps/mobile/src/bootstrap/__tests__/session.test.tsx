@@ -25,6 +25,11 @@ function fakeAuth(initial: AuthSession | null) {
       };
     },
     signOut: async () => {},
+    signInWithPassword: async () => initial!,
+    signUp: async () => ({ kind: 'signed_in', session: initial! }),
+    requestPasswordReset: async () => {},
+    resetPassword: async () => initial!,
+    updatePassword: async () => {},
   };
   return { repo, emit: (s: AuthSession | null) => listener?.(s) };
 }
@@ -84,6 +89,7 @@ describe('SessionController', () => {
 describe('navigation gating', () => {
   it('lists only modules the role may open', () => {
     expect(visibleModules(DEFAULT_ROLE_PERMISSIONS.owner).map((m) => m.key)).toEqual([
+      'profile',
       'reports',
       'udhaar',
       'stock',
@@ -101,6 +107,7 @@ describe('navigation gating', () => {
     // Cashiers: today's own sales, udhaar, the stock list, closing their drawer and asking us for help — not
     // suppliers, expenses, settings or staff.
     expect(visibleModules(DEFAULT_ROLE_PERMISSIONS.cashier).map((m) => m.key)).toEqual([
+      'profile',
       'reports',
       'udhaar',
       'stock',
